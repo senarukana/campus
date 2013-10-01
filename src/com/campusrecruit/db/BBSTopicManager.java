@@ -1,0 +1,107 @@
+package com.campusrecruit.db;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import com.campusrecruit.app.AppConfig;
+import com.campusrecruit.bean.BBSTopic;
+import com.campusrecruit.bean.Company;
+import com.campusrecruit.bean.Recruit;
+
+public class BBSTopicManager implements TruncatableManager{
+
+	private DBHelper helper;
+	private SQLiteDatabase db;
+	
+	private static final String TABLE_NAME = "topic";
+	
+	public BBSTopicManager(Context context){
+		helper = new DBHelper(context);
+		db = helper.getWritableDatabase();
+	}
+	
+	@Override
+	public void truncate() {
+		String sql = "DELETE FROM " + TABLE_NAME;
+		db.execSQL(sql);
+	}
+	
+	//true 所有信息 false 未收藏信息
+	public int count(boolean flag) {
+		String sql = "SELECT COUNT(*) FROM " + TABLE_NAME;
+		if (!flag)
+			sql += " WHERE isJoined = 0";
+		Cursor cursor = db.rawQuery(sql, null);
+		cursor.moveToFirst();
+		int count = cursor.getInt(0);
+		cursor.close();
+		return count;
+	}
+	
+	public boolean isEmpty(boolean flag) {
+		return count(flag) == 0;
+	}
+	
+	
+	
+	public void add(int topicID, String title, String createdTime){		
+		ContentValues cv = 	new ContentValues();
+		cv.put("topic_id", topicID);
+		cv.put("title", title);
+		cv.put("time", createdTime);
+		db.insert(TABLE_NAME, null, cv);
+	}
+	
+	
+	
+	public  ArrayList<BBSTopic> getAllData() {
+		return getList(queryAllData());
+	}
+	
+	
+	public  ArrayList<BBSTopic> getList(Cursor c){
+		 ArrayList<BBSTopic> list = new ArrayList<BBSTopic>();
+		try {
+			while(c.moveToNext()){
+				BBSTopic topic = new BBSTopic();
+				topic.setTopicID(c.getInt(c.getColumnIndex("topic_id")));
+				topic.setTitle(c.getString(c.getColumnIndex("title")));
+				topic.setCreatedTime(c.getString(c.getColumnIndex("time")));
+				topic.setUserName(c.getString(c.getColumnIndex("author")));
+				list.add(topic);
+			}
+		} finally {
+			c.close();
+		}
+		Log.i("db",String.format("return data size is %d", list.size()));
+		return list;
+	}
+
+	
+	private Cursor queryAllData(){
+		String[] columns = new String[] {
+			"topic_id","title", "time","author"
+		};
+		Cursor c = db.query(TABLE_NAME, columns, null, null, null, null, 
+				"time DESC");
+		Log.i("main","usertopic size is " + c.getCount());
+		return c;
+	}
+
+	@Override
+	public String toString() {
+		return "DBM   lee";
+	}
+	
+	public void closeDB(){
+		db.close();
+	}
+	
+	
+}

@@ -1,0 +1,623 @@
+package com.campusrecruit.activity;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.ActionBar;
+import android.app.Application;
+import android.app.ProgressDialog;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.Preference;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TabHost;
+import android.widget.Toast;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+
+import com.campusrecruit.adapter.MainFragmentAdapter;
+import com.campusrecruit.adapter.ListViewBBSSectionAdapter;
+import com.campusrecruit.adapter.ListViewCareerTalkAdapter;
+import com.campusrecruit.adapter.ListViewRecruitAdapter;
+import com.campusrecruit.adapter.ListViewRecruitFavorateAdapter;
+import com.campusrecruit.adapter.ListViewTopicsAdapter;
+import com.campusrecruit.adapter.ListViewUserTopicsAdapter;
+import com.campusrecruit.app.AppConfig;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.BBSSection;
+import com.campusrecruit.bean.BBSTopic;
+import com.campusrecruit.bean.CareerTalk;
+import com.campusrecruit.bean.Notice;
+import com.campusrecruit.bean.Recruit;
+import com.campusrecruit.bean.Result;
+import com.campusrecruit.common.UIHelper;
+import com.campusrecruit.db.DBManager;
+import com.campusrecruit.fragment.MenuFragment;
+import com.campusrecruit.widget.BadgeView;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu.CanvasTransformer;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
+import com.krislq.sliding.R;
+
+public class CopyOfMainActivity extends SlidingFragmentActivity {
+	public static DBManager mgr = null;
+	private MenuFragment menuFragment = null;
+	private MainFragmentAdapter mainFragmentAdapter = null;
+
+	private CanvasTransformer mTransformer;
+	private AppContext appContext;
+	
+	private final static int CATALOG_RECRUIT = 0;
+	private final static int CATALOG_CAREERTALK = 1;
+	private final static int CATALOG_SCHEDULE = 2;
+	private final static int CATALOG_DISCUSS = 3;
+
+	public int index = -1;
+	private boolean isSendNotice = false;
+
+	private ViewPager mViewPager = null;
+	private LinearLayout mLinearLayout = null;
+	private RadioGroup radioGroup = null;
+	private TabHost tabHost = null;
+
+	private RadioButton rdRecruit = null;
+	private RadioButton rdCareerTalk = null;
+	private RadioButton rdBBSection = null;
+
+	public static BadgeView bvRecruit;
+	public static BadgeView bvCareerTalk;
+	public static BadgeView bvBBSSection;
+
+	private ProgressDialog mProgress;
+
+	// handler
+	private Handler diskHandler;
+	private Handler internetHandler;
+
+	List<Recruit> iRecruits;
+	List<CareerTalk> iCareerTalks;
+	List<BBSSection> iSections;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		Log.i("main", "begin");
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.frame_context_v);
+		setTitle("校园招聘");
+		appContext = (AppContext) getApplication();
+		initView();
+		initAdapter();
+		initDiskData();
+
+		// set the Behind View
+		setBehindContentView(R.layout.frame_menu);
+
+		appContext = (AppContext) getApplication();
+
+		FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+				.beginTransaction();
+		Log.i("main", "new menu fragment");
+		menuFragment = new MenuFragment();
+		fragmentTransaction.replace(R.id.menu, menuFragment);
+		fragmentTransaction.commit();
+
+		initSlidingMenu();
+
+		// 初始化DBManager
+		mgr = new DBManager(getApplicationContext());
+		Log.i("main", "main create complete");
+
+		if (appContext.isLogin()) {
+			foreachUserNotice();
+		}
+	}
+
+	private void initView() {
+		Log.i("main","init view start");
+		mLinearLayout = (LinearLayout) findViewById(R.id.content);
+		mViewPager = (ViewPager) findViewById(R.id.viewpager);
+		radioGroup = (RadioGroup) findViewById(R.id.radio_group);
+		tabHost = (TabHost) findViewById(R.id.tab_host);
+		radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
+		rdRecruit = (RadioButton) findViewById(R.id.radio_campus_recruit);
+		rdCareerTalk = (RadioButton) findViewById(R.id.radio_career_talk);
+		rdBBSection = (RadioButton) findViewById(R.id.radio_discuss);
+		
+		bvRecruit = new BadgeView(this, rdRecruit);
+		bvCareerTalk = new BadgeView(this, rdCareerTalk);
+		bvBBSSection = new BadgeView(this, rdBBSection);
+
+		initBadgeView(bvRecruit);
+		initBadgeView(bvCareerTalk);
+		initBadgeView(bvBBSSection);
+		Log.i("main","init view Complete0");
+	}
+
+	private void initBadgeView(BadgeView badgeView) {
+		badgeView.setBackgroundResource(R.drawable.widget_count_bg2);
+		badgeView.setIncludeFontPadding(false);
+		badgeView.setGravity(Gravity.CENTER);
+		badgeView.setTextSize(8f);
+		badgeView.setTextColor(Color.WHITE);
+	}
+
+	private void initSlidingMenu() {
+
+		// customize the SlidingMenu
+		SlidingMenu sm = getSlidingMenu();
+		sm.setShadowWidth(50);
+		sm.setShadowDrawable(R.drawable.shadow);
+		sm.setBehindOffset(150);
+		sm.setFadeDegree(0.35f);
+		sm.setBehindScrollScale(0.0f);
+		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		mTransformer = new CanvasTransformer() {
+
+			@Override
+			public void transformCanvas(Canvas canvas, float percentOpen) {
+				float scale = (float) (percentOpen * 0.25 + 0.75);
+				canvas.scale(scale, scale, canvas.getWidth() / 2,
+						canvas.getHeight() / 2);
+			}
+		};
+		sm.setBehindCanvasTransformer(mTransformer);
+
+		// 使用左上方icon可点，这样在onOptionsItemSelected里面才可以监听到R.id.home
+		this.getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		//开始后台获取消息
+		isSendNotice = true;
+		foreachUserNotice();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		isSendNotice = false;
+		if (mViewPager.getCurrentItem() != CATALOG_RECRUIT)
+			mViewPager.setCurrentItem(CATALOG_RECRUIT);
+		
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (mgr != null) {
+			mgr.close();
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			toggle();
+			return true;
+//		case R.id.menu_settings:
+//			getSlidingMenu().showMenu();
+//			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				showViewPager();
+				 getSlidingMenu().showMenu();
+			}
+		}, 1000);
+	}
+
+	private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
+
+		@Override
+		public void onCheckedChanged(RadioGroup group, int checkedId) {
+			switch (checkedId) {
+			case R.id.radio_campus_recruit:
+				mViewPager.setCurrentItem(0);
+				clearNotice(CATALOG_RECRUIT);
+				bvRecruit.setText("");
+				break;
+			case R.id.radio_career_talk:
+				mViewPager.setCurrentItem(1);
+				clearNotice(CATALOG_CAREERTALK);
+				bvCareerTalk.setText("");
+				break;
+			case R.id.radio_schedule:
+				mViewPager.setCurrentItem(2);
+				break;
+			case R.id.radio_discuss:
+				mViewPager.setCurrentItem(3);
+				break;
+			}
+
+		}
+
+	};
+
+	public void showViewPager() {
+		index = 0;
+		mLinearLayout.setVisibility(View.GONE);
+		tabHost.setVisibility(View.VISIBLE);
+
+		mViewPager.setOffscreenPageLimit(5);
+		mViewPager.setAdapter(mainFragmentAdapter);
+		mViewPager.setOnPageChangeListener(onPageChangeListener);
+		getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		mViewPager.setCurrentItem(0);
+		radioGroup.check(R.id.radio_campus_recruit);
+	}
+
+	ViewPager.SimpleOnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+
+		@Override
+		public void onPageSelected(int position) {
+			// getActivity().getActionBar().setSelectedNavigationItem(position);
+			getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+			switch (position) {
+			case 0:
+				getSlidingMenu().setTouchModeAbove(
+						SlidingMenu.TOUCHMODE_FULLSCREEN);
+				radioGroup.check(R.id.radio_campus_recruit);
+				getActionBar().setTitle("校园招聘");
+				break;
+			case 1:
+				radioGroup.check(R.id.radio_career_talk);
+				getActionBar().setTitle("宣讲会");
+				break;
+			case 2:
+				radioGroup.check(R.id.radio_schedule);
+				getActionBar().setTitle("日程安排");
+				break;
+			case 3:
+				radioGroup.check(R.id.radio_discuss);
+				getActionBar().setTitle("讨论组");
+				break;
+			default:
+				getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+				break;
+			}
+
+		}
+
+	};
+
+	private void initAdapter() {
+		Log.i("main", "init Adapter");
+		mainFragmentAdapter = new MainFragmentAdapter(
+				getSupportFragmentManager());
+		appContext.setLvCareerTalkListAdapter(new ListViewCareerTalkAdapter(
+				this, appContext, R.layout.careertalk_item));
+		appContext.setLvRecruitListAdapter(new ListViewRecruitAdapter(this,
+				appContext, R.layout.recruit_item));
+		/*
+		 * appContext.setLvUserTopicsAdapter(new ListViewUserTopicsAdapter(this,
+		 * R.layout.user_topic_item)); appContext.setLvSectionAdapter(new
+		 * ListViewBBSSectionAdapter(this, R.layout.bbssection_item));
+		 */
+	}
+
+	private void initDiskData() {
+		Log.i("main", "init diskData");
+		diskHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				Log.i("main", "handle data");
+				/*
+				 * Log.i("main","set favoratelist");
+				 * appContext.getLvRecruitFavoratesAdapter().setData(
+				 * appContext.getLvRecruitFavorateList());
+				 * appContext.getLvRecruitFavoratesAdapter()
+				 * .notifyDataSetChanged();
+				 */
+				Log.i("main", "set carer list");
+				appContext.getLvCareerTalkListAdapter().setData(
+						appContext.getLvCareerTalkList());
+				appContext.getLvCareerTalkListAdapter().notifyDataSetChanged();
+
+				appContext.getLvRecruitListAdapter().setData(
+						appContext.getLvRecruitList());
+				appContext.getLvRecruitListAdapter().notifyDataSetChanged();
+
+				/*
+				 * appContext.getLvUserTopicsAdapter().setData(
+				 * appContext.getLvUserTopicList());
+				 * appContext.getLvUserTopicsAdapter().notifyDataSetChanged();
+				 * Log.i("internet","handle data complete");
+				 */
+				initInternetData();
+			}
+		};
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				/*
+				 * appContext.setLvRecruitFavorateList(appContext
+				 * .getRecruitFavorateList(true)); Log.i("main",
+				 * String.format("favorate list size is %d",
+				 * appContext.getLvRecruitFavorateList().size()));
+				 */
+
+				appContext.setLvUserTopicList(appContext.getUserTopics());
+				Log.i("main", String.format(
+						"appContext.getLvUserTopicList() list size is %d",
+						appContext.getLvUserTopicList().size()));
+
+				appContext
+						.setLvRecruitList(appContext.getRecruitListFromDisk());
+
+				appContext.setLvCareerTalkList(appContext
+						.getCareerTalkListFromDisk());
+
+				msg.what = 1;
+
+				diskHandler.sendMessage(msg);
+			}
+		}.start();
+
+	}
+
+	private void initInternetData() {
+		Log.i("internet", "init internet");
+		mProgress = ProgressDialog.show(this, null, "数据获取中···", true, true);
+		internetHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				mProgress.dismiss();
+				Log.i("internet", "handle internet");
+				if (msg.what == 1) {
+					handleCareerTalkData(appContext.getLvCareerTalkList(),
+							iCareerTalks);
+					handleRecruitData(appContext.getLvRecruitList(), iRecruits);
+
+					Log.i("internet", "notify3");
+					appContext.getLvCareerTalkListAdapter().setData(
+							appContext.getLvCareerTalkList());
+					appContext.getLvCareerTalkListAdapter()
+							.notifyDataSetChanged();
+
+					Log.i("main", "notify1");
+					appContext.getLvRecruitListAdapter().setData(
+							appContext.getLvRecruitList());
+					appContext.getLvRecruitListAdapter().notifyDataSetChanged();
+
+				} else {
+					((AppException) msg.obj).makeToast(CopyOfMainActivity.this);
+				}
+			}
+		};
+		new Thread() {
+			Message msg = new Message();
+
+			public void run() {
+				try {
+					iRecruits = appContext.getRecruitListFromInternet(0,
+							AppConfig.SORT_BY_CREATED_TIME);
+					Log.i("internet", String.format(
+							"iRecruits intenet list size is %d",
+							iRecruits.size()));
+					iCareerTalks = appContext.getCareerTalkListFromInternet(0,
+							AppConfig.SORT_BY_CREATED_TIME);
+					Log.i("internet", String.format(
+							"	iCareerTalks intenet list size is %d",
+							iCareerTalks.size()));
+					/*
+					 * iSections = appContext.getBBSSectionList(0);
+					 * Log.i("internet", String.format(
+					 * "	iSections intenet list size is %d", iSections.size()));
+					 */
+					msg.what = 1;
+				} catch (AppException e) {
+					msg.what = -1;
+					msg.obj = e;
+				}
+				internetHandler.sendMessage(msg);
+				Log.i("internet", "send msg" + msg.what + "");
+			}
+		}.start();
+	}
+
+	public void handleCareerTalkData(List<CareerTalk> diskList,
+			List<CareerTalk> internetList) {
+		Log.i("handle", " career data");
+		String s1 = "";
+		for (CareerTalk c1 : internetList) {
+			s1 += c1.getCareerTalkID() + ",";
+		}
+		String s = "";
+		for (CareerTalk c1 : diskList) {
+			s += c1.getCareerTalkID() + ",";
+		}
+		Log.i("handle", s);
+		Log.i("handle", s1);
+
+		List<CareerTalk> newList = new ArrayList<CareerTalk>();
+		int count = 0;
+		// 计算更新数据
+		if (diskList.isEmpty()) {
+			count = internetList.size();
+			newList.addAll(internetList);
+		} else {
+			for (CareerTalk c1 : internetList) {
+				boolean flag = false;
+				for (CareerTalk c2 : diskList) {
+					if (c1.getCareerTalkID() == c2.getCareerTalkID()) {
+						if (c2.getIsJoined() == 1) {
+							c1.setIsJoined(1);
+						}
+						diskList.remove(c2);
+						// careerTalks.add(c1);
+						newList.add(c1);
+						flag = true;
+						break;
+					}
+					if (!flag) {
+						newList.add(c1);
+						count++;
+					}
+				}
+			}
+		}
+		Log.i("ct", "handle refresh data");
+
+		if (count > 0) {
+			Toast.makeText(
+					this,
+					getString(R.string.new_data_str_toast_message, "宣讲会", count),
+					Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, getString(R.string.new_data_toast_none),
+					Toast.LENGTH_SHORT).show();
+		}
+
+		Log.i("main", "save career data");
+		Log.i("main", String.format("new list size is %d", newList.size()));
+		diskList.addAll(newList);
+		appContext.saveCareerTalkList(newList);
+	}
+
+	public void handleRecruitData(List<Recruit> diskList,
+			List<Recruit> internetList) {
+		Log.i("main", "handle recruit data");
+		List<Recruit> newList = new ArrayList<Recruit>();
+		int count = 0;
+		// 计算更新数据
+		if (diskList.isEmpty()) {
+			count = internetList.size();
+			newList.addAll(internetList);
+		} else {
+			for (Recruit c1 : internetList) {
+				boolean flag = false;
+				for (Recruit c2 : diskList) {
+					if (c1.getRecruitID() == c2.getRecruitID()) {
+						if (c2.getIsJoined() == 1)
+							c1.setIsJoined(1);
+						diskList.remove(c2);
+						newList.add(c1);
+						flag = true;
+						break;
+					}
+					if (!flag) {
+						newList.add(c1);
+						count++;
+					}
+				}
+			}
+		}
+
+		if (count > 0) {
+			Toast.makeText(
+					this,
+					getString(R.string.new_data_str_toast_message, "校园招聘",
+							count), Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, getString(R.string.new_data_toast_none),
+					Toast.LENGTH_SHORT).show();
+		}
+
+		diskList.addAll(newList);
+		appContext.saveRecruitList(newList);
+	}
+
+	private void foreachUserNotice() {
+		final Handler handler = new Handler() {
+			public void handleMessage(Message msg) {
+				if (msg.what == 1) {
+					Log.i("test", "begin send message");
+					UIHelper.sendBroadCast(CopyOfMainActivity.this, (Notice) msg.obj);
+				}
+				if (isSendNotice) {
+					foreachUserNotice();
+				}// 回调
+			}
+		};
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				try {
+					sleep(10 * 1000);
+					Notice notice = appContext.getUserNotice();
+					msg.what = 1;
+					msg.obj = notice;
+				} catch (AppException e) {
+					e.printStackTrace();
+					msg.what = -1;
+				} catch (Exception e) {
+					e.printStackTrace();
+					msg.what = -1;
+				}
+				handler.sendMessage(msg);
+			}
+		}.start();
+	}
+
+	/**
+	 * 通知信息处理
+	 * @param type
+	 * 1:@宣讲会 2:校园招聘 3:讨论组
+	 */
+
+	private void clearNotice(final int type) {
+		final Handler handler = new Handler() {
+			public void handleMessage(Message msg) {
+				if (msg.what == 1 && msg.obj != null) {
+					Result res = (Result) msg.obj;
+					if (res.OK() && res.getNotice() != null) {
+						UIHelper.sendBroadCast(CopyOfMainActivity.this,
+								res.getNotice());
+					}
+				} else {
+					((AppException) msg.obj).makeToast(CopyOfMainActivity.this);
+				}
+			}
+		};
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				try {
+					Result res = appContext.noticeClear(type);
+					msg.what = 1;
+					msg.obj = res;
+				} catch (AppException e) {
+					e.printStackTrace();
+					msg.what = -1;
+					msg.obj = e;
+				}
+				handler.sendMessage(msg);
+			}
+		}.start();
+	}
+
+}

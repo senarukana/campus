@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:orientation="vertical"
+  	android:background="@color/lightwhite">
+    
+	<!-- <include layout="@layout/topic_pub_header"/> -->
+
+	<LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_weight="1"
+	    android:orientation="vertical">
+   	   	<EditText
+	        android:id="@+id/topic_pub_title"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="top"
+	        android:hint="@string/topic_pub_title_hint"/>
+	    <EditText
+	        android:id="@+id/topic_pub_content"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:lines="8"
+	        android:autoLink="web"
+	        android:gravity="top"
+	        android:hint="@string/topic_pub_content_hint"/>
+	</LinearLayout>
+
+</LinearLayout>

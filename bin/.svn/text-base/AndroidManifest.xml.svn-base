@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.krislq.sliding"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="16" />
+
+    <application android:name="com.campusrecruit.app.AppContext" 
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.campusrecruit.activity.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.BBSTopicListActivity"
+            android:label="@string/title_activity_posts_list" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.TopicDetailActivity"
+            android:label="@string/title_activity_post_detail" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.CommentPubActivity"
+            android:label="@string/title_activity_post_detail" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.RecruitDetailActivity"
+            android:label="@string/title_activity_post_detail" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.CareerTalkDetailActivity"
+            android:label="@string/title_activity_post_detail" >
+        </activity>
+<!--         <activity
+            android:name="com.krislq.sliding.JobDetail"
+            android:label="@string/title_activity_job_detail" >
+        </activity> -->
+    </application>
+
+</manifest>

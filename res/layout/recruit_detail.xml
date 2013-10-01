@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightwhite"
+    android:orientation="vertical" >
+
+    <!-- <include layout="@layout/recruit_detail_header" /> -->
+
+    <ScrollView
+        android:id="@+id/recruit_detail_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/lightwhite" >
+
+            <include layout="@layout/recruit_detail_base" />
+
+            <include layout="@layout/recruit_description" />
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/loading_footer" />
+
+</LinearLayout>

@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 30
+/svn/app/!svn/ver/192/res/menu
+END
+schedule.xml
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/app/!svn/ver/2/res/menu/schedule.xml
+END
+menu_userinfo.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/150/res/menu/menu_userinfo.xml
+END
+bbs_topic_menu.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/135/res/menu/bbs_topic_menu.xml
+END
+menu_refresh.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/163/res/menu/menu_refresh.xml
+END
+sub_menu_famous.xml
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/app/!svn/ver/157/res/menu/sub_menu_famous.xml
+END
+menu_recommend.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/168/res/menu/menu_recommend.xml
+END
+sort.xml
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/app/!svn/ver/109/res/menu/sort.xml
+END
+post_send.xml
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/app/!svn/ver/2/res/menu/post_send.xml
+END
+menu_search_sort_show.xml
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/app/!svn/ver/144/res/menu/menu_search_sort_show.xml
+END
+activity_main.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/110/res/menu/activity_main.xml
+END
+sub_menu_bbs_show.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/152/res/menu/sub_menu_bbs_show.xml
+END
+post_detail.xml
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/app/!svn/ver/2/res/menu/post_detail.xml
+END
+tweet.xml
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/app/!svn/ver/2/res/menu/tweet.xml
+END
+job_detail.xml
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/app/!svn/ver/2/res/menu/job_detail.xml
+END
+menu_finish.xml
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/app/!svn/ver/192/res/menu/menu_finish.xml
+END
+menu_search_sort.xml
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/156/res/menu/menu_search_sort.xml
+END

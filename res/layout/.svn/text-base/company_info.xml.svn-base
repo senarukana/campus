@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_bd_margin"
+    android:orientation="vertical" >
+  <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:fadingEdge="none"
+        android:scrollbars="vertical" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/activity1_bd_margin" >
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView1"
+            android:layout_below="@+id/imageView1"
+            android:layout_marginLeft="@dimen/activity1_bd_margin"
+            android:src="@drawable/comp1" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageView4"
+            android:layout_marginLeft="@dimen/activity1_bd_margin"
+            android:layout_toRightOf="@+id/imageView4"
+            android:text="公司全称"
+            android:textSize="13sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/company_detail_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView1"
+            android:layout_alignBottom="@+id/textView1"
+            android:layout_marginLeft="22dp"
+            android:layout_toRightOf="@+id/textView1"
+            android:text="百度"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/company_address_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView5"
+            android:layout_below="@+id/imageView5"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/comp3" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView4"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/textView1"
+            android:src="@drawable/comp2" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/company_address_image"
+            android:layout_toLeftOf="@+id/company_detail_name"
+            android:text="公司行业"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/company_detail_industry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/textView3"
+            android:layout_alignBottom="@+id/textView3"
+            android:layout_alignLeft="@+id/company_detail_name"
+            android:text="计算机、通信"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/company_address_image"
+            android:layout_toLeftOf="@+id/company_detail_name"
+            android:text="公司地址"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/company_detail_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/textView5"
+            android:layout_alignLeft="@+id/company_detail_industry"
+            android:text="北京海淀区上地十街10号百度"
+            android:textSize="13sp" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView10"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:layout_weight="0.06"
+            android:src="@drawable/line" />
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView1"
+            android:layout_marginTop="5dp"
+            android:text="公司简介"
+            android:textColor="#1E90FF"
+            android:textSize="15sp" />
+        
+        <TextView
+                android:id="@+id/_company_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="公司详细介绍"
+                android:layout_below="@+id/company_address_image"
+                android:textColor="#1E90FF"
+                android:textSize="15sp" />
+
+            <ImageView
+                android:id="@+id/_company_detail_line"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:layout_below="@+id/_company_detail"
+                android:src="@drawable/line" />
+
+            <TextView
+                android:id="@+id/company_detail_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity1_bd_margin"
+                 android:layout_below="@+id/_company_detail_line"
+                android:textSize="13sp" />
+        
+    </RelativeLayout>
+
+</ScrollView>
+
+</LinearLayout>

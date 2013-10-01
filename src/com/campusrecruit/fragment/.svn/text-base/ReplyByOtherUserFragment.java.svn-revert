@@ -1,0 +1,5 @@
+package com.campusrecruit.fragment;
+
+public class ReplyByOtherUserFragment extends BaseFragment{
+	
+}

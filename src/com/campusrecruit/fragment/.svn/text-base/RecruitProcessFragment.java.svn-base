@@ -1,0 +1,113 @@
+package com.campusrecruit.fragment;
+
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.Company;
+import com.campusrecruit.bean.Recruit;
+import com.krislq.sliding.R;
+
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+@SuppressLint("ValidFragment")
+public class RecruitProcessFragment extends BaseFragment {
+	private Recruit recruit;
+	private TextView vNetTime;
+	private TextView vWritenExamTime;
+	private TextView vFaceExamTime;
+	
+	private LinearLayout recruitProcessHeaderLayout; 
+	
+	private ImageView vNetImage;
+	private ImageView vWrieImage;
+	private ImageView vFaceImage;
+	
+	private ImageView vNetToWritenImage;
+	private ImageView vWrienToFaceImage;
+	
+	private TextView vProcessInfo = null;
+
+	public RecruitProcessFragment() {
+	}
+
+	
+	public static RecruitProcessFragment newInstance(Recruit recruit) {
+		RecruitProcessFragment fragment = new RecruitProcessFragment();
+		Bundle args = new Bundle();
+		args.putSerializable("recruit", recruit);
+		fragment.setArguments(args);
+		return fragment;
+	}
+
+	private void getArgs() {
+		this.recruit = (Recruit) getArguments().getSerializable("recruit");
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getArgs();
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		// inflater the layout
+		View view = inflater.inflate(R.layout.recruit_process, null);
+
+		vProcessInfo = (TextView) view.findViewById(R.id.recruit_process_info);
+		recruitProcessHeaderLayout = (LinearLayout)view.findViewById(R.id.recruit_process_header_layout);
+		vNetTime = (TextView) view.findViewById(R.id.recruit_process_net_time);
+		vWritenExamTime = (TextView) view.findViewById(R.id.recruit_process_writen_exam_time);
+		vFaceExamTime = (TextView) view.findViewById(R.id.recruit_process_face_exam_time);
+		
+		vNetImage = (ImageView)view.findViewById(R.id.recruit_process_net_image);
+		vWrieImage = (ImageView)view.findViewById(R.id.recruit_process_write_image);
+		vFaceImage = (ImageView)view.findViewById(R.id.recruit_process_face_image);
+		vNetToWritenImage = (ImageView)view.findViewById(R.id.recruit_process_net_to_wirte);
+		vWrienToFaceImage = (ImageView)view.findViewById(R.id.recruit_process_write_to_face);
+		
+		if (recruit.getContact() == null) {
+			vProcessInfo.setText(R.string.nodata);
+		} else {
+			vProcessInfo.setText(recruit.getContact());
+		}
+		
+		if (recruit.getState() != null) {
+			if (recruit.getState() == "网申") {
+				vNetImage.setImageResource(R.drawable.net_exam1);
+				vNetTime.setText(recruit.getStatTime());
+			} else if (recruit.getState() == "笔试") {
+				vNetTime.setText("过期");
+				vNetImage.setImageResource(R.drawable.net_exam1);
+				vWrieImage.setImageResource(R.drawable.write_exam1);
+				vNetToWritenImage.setImageResource(R.drawable.recruit_processed);
+				vWritenExamTime.setText(recruit.getStatTime());
+			} else if (recruit.getState() == "笔试") {
+				vNetTime.setText("过期");
+				vWritenExamTime.setText("过期");
+				vNetImage.setImageResource(R.drawable.net_exam1);
+				vWrieImage.setImageResource(R.drawable.write_exam1);
+				vFaceImage.setImageResource(R.drawable.face_exam1);
+				vNetToWritenImage.setImageResource(R.drawable.recruit_processed);
+				vWrienToFaceImage.setImageResource(R.drawable.recruit_processed);
+				vFaceExamTime.setText(recruit.getStatTime());
+			}
+		} else {
+			recruitProcessHeaderLayout.setVisibility(View.GONE);
+		}
+		return view;
+	}
+
+}

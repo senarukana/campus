@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/lightwhite" >
+    <ScrollView
+        android:id="@+id/recruit_description_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical" 
+       >
+
+       <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" 
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            >
+
+            <TextView
+                android:id="@+id/TextView11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="5dp"
+                android:text="职位信息描述"
+                android:textColor="#1E90FF"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/line" />
+
+            <WebView
+                android:visibility="gone"
+                android:id="@+id/recruit_detail_webview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/lightwhite" />
+
+            <com.campusrecruit.widget.LinkView
+                android:id="@+id/recruit_description_info"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:autoLink="web|email"
+                android:layout_marginLeft="10dp"
+                 android:layout_marginRight="10dp"
+                android:textColor="@color/listitem_black"
+                android:textColorLink="@color/listitem_blue"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+    </ScrollView>
+    
+    <include layout="@layout/loading_footer" />
+
+</LinearLayout>

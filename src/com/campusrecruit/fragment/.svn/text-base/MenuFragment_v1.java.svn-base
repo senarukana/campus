@@ -1,0 +1,242 @@
+package com.campusrecruit.fragment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
+import android.widget.TabHost;
+import android.widget.Toast;
+
+import com.campusrecruit.activity.MainActivity;
+import com.campusrecruit.adapter.DemoFragmentAdapter;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.krislq.sliding.R;
+
+@SuppressLint("ResourceAsColor")
+public class MenuFragment_v1 extends Fragment{
+
+	private String[] items = {"首页","个人中心","校招收藏","我的帖子"};
+	private int[] item_pic_res = {R.drawable.home, R.drawable.cool, R.drawable.star, R.drawable.file};
+	
+	public int index = -1;
+	private ViewPager mViewPager = null;
+    private MainActivity   mActivity = null;
+    private LinearLayout mLinearLayout = null;
+    private RadioGroup radioGroup = null;
+    private TabHost tabHost = null;
+	
+    
+    
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
+        mActivity = (MainActivity)getActivity();
+        mLinearLayout = (LinearLayout)mActivity.findViewById(R.id.content);
+        mViewPager = (ViewPager)mActivity.findViewById(R.id.viewpager);    
+        radioGroup = (RadioGroup)mActivity.findViewById(R.id.radio_group);
+        tabHost = (TabHost)mActivity.findViewById(R.id.tab_host);
+        
+        radioGroup.setOnCheckedChangeListener(onCheckedChangeListener);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		View view = inflater.inflate(R.layout.frame_menu_v1, container, false);
+		ListView listView = (ListView)view.findViewById(R.id.menu_listview);
+		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+		for(int i = 0; i < items.length ; i++){
+			Map<String , Object> item = new HashMap<String, Object>();
+			item.put("item", items[i]);
+			item.put("image", item_pic_res[i]);
+			listItems.add(item);
+		}
+		SimpleAdapter adapter = new SimpleAdapter(getActivity(),listItems, R.layout.frame_menu_v1_item, new String[]{"item", "image"}, new int[]{R.id.menu_item, R.id.menu_img});
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new onItemClickListener());
+		return view;
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+	}
+	
+	private class onItemClickListener implements OnItemClickListener{
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			// TODO Auto-generated method stub
+			Log.i("click", parent.getChildCount()+"");
+			Toast.makeText(getActivity(), position+"", Toast.LENGTH_SHORT).show();
+			FragmentManager fragmentManager = ((MainActivity)getActivity()).getFragmentManager();
+			ContentFragment contentFragment = null;
+			getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+			switch(position){
+			case 0:
+				if(index == 0) {
+	                ((MainActivity)getActivity()).getSlidingMenu().toggle();
+	                return ;
+	            }
+				//otherwise , replace the content view via a new Content fragment
+//	            index = 0;
+	            showViewPager();
+	            break;
+			case 1:
+				if(index == 1) {
+	                ((MainActivity)getActivity()).getSlidingMenu().toggle();
+	                return;
+	            }
+	            index = 1;
+	            mLinearLayout.setVisibility(View.VISIBLE);
+	            tabHost.setVisibility(View.GONE);
+	                       
+	            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+//	            getActivity().getActionBar().setTitle(title);
+//	            FragmentManager fragmentManager = ((MainActivity)getActivity()).getFragmentManager();
+	            contentFragment = (ContentFragment)fragmentManager.findFragmentByTag("A");
+	            fragmentManager.beginTransaction()
+	            .replace(R.id.content, contentFragment == null ?new ContentFragment("个人中心"):contentFragment ,"A")
+	            .commit();
+	            break;
+			case 2:
+				if(index == 2) {
+	                ((MainActivity)getActivity()).getSlidingMenu().toggle();
+	                return ;
+	            }
+	            index = 2;
+	            mLinearLayout.setVisibility(View.VISIBLE);
+	            tabHost.setVisibility(View.GONE);
+
+	            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+	            
+	            contentFragment = (ContentFragment)fragmentManager.findFragmentByTag("B");
+	            fragmentManager.beginTransaction()
+	            .replace(R.id.content, contentFragment == null ? new ContentFragment("收藏"):contentFragment,"B")
+	            .commit();
+	            break;
+			case 3:
+				if(index == 3) {
+	                ((MainActivity)getActivity()).getSlidingMenu().toggle();
+	                return ;
+	            }
+	            index = 3;
+	            mLinearLayout.setVisibility(View.VISIBLE);
+	            tabHost.setVisibility(View.GONE);
+
+	            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+	            
+	            contentFragment = (ContentFragment)fragmentManager.findFragmentByTag("C");
+	            fragmentManager.beginTransaction()
+	            .replace(R.id.content, contentFragment == null ? new ContentFragment("帖子"):contentFragment,"C")
+	            .commit();
+			}
+			//anyway , show the sliding menu
+	        ((MainActivity)getActivity()).getSlidingMenu().toggle();
+		}
+		
+	}
+	
+	
+	public void showViewPager(){
+		index = 0;
+		 mLinearLayout.setVisibility(View.GONE);
+         tabHost.setVisibility(View.VISIBLE);
+         
+         DemoFragmentAdapter demoFragmentAdapter = new DemoFragmentAdapter(mActivity.getFragmentManager());
+//         Log.i("menu", "end adapter");
+         mViewPager.setOffscreenPageLimit(5);
+         mViewPager.setAdapter(demoFragmentAdapter);
+         mViewPager.setOnPageChangeListener(onPageChangeListener);
+         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+         //mViewPager.setCurrentItem(0);
+         radioGroup.check(R.id.radio_career_talk);
+	}
+	
+	private SlidingMenu getSlidingMenu() {
+        return mActivity.getSlidingMenu();
+    }
+	
+	ViewPager.SimpleOnPageChangeListener onPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
+    		
+        @Override
+        public void onPageSelected(int position) {
+            //getActivity().getActionBar().setSelectedNavigationItem(position);
+        	getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+            switch (position) {
+                case 0:
+                    getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+                    radioGroup.check(R.id.radio_career_talk);
+                    getActivity().getActionBar().setTitle("宣讲会");
+                    break;
+                case 1:
+                	radioGroup.check(R.id.radio_campus_recruit);
+                	getActivity().getActionBar().setTitle("校园招聘");
+                	break;
+                case 2:
+                	radioGroup.check(R.id.radio_schedule);
+                	getActivity().getActionBar().setTitle("日程安排");
+                	break;
+                case 3:
+                	radioGroup.check(R.id.radio_discuss);
+                	getActivity().getActionBar().setTitle("讨论组");
+                	break;
+                default:
+                    getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
+                    break;
+            }
+            
+           			
+			
+        }
+
+    };
+    
+    private OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener(){
+
+		@Override
+		public void onCheckedChanged(RadioGroup group, int checkedId) {
+			// TODO Auto-generated method stub
+			switch(checkedId){
+			case R.id.radio_career_talk:
+				mViewPager.setCurrentItem(0);
+				break;
+			case R.id.radio_campus_recruit:
+				mViewPager.setCurrentItem(1);
+				break;
+			case R.id.radio_schedule:
+				mViewPager.setCurrentItem(2);
+				break;
+			case R.id.radio_discuss:
+				mViewPager.setCurrentItem(3);
+				break;
+			}
+			
+		}
+    	
+    };
+}

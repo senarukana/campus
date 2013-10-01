@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/detail_footer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="horizontal" >
+
+    <ViewSwitcher
+        android:id="@+id/detail_foot_viewswitcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/widget_bar_bg_n"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/detail_footbar_editebox"
+                android:layout_width="150dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="4dip"
+                android:layout_marginRight="4dip"
+                android:background="@drawable/reply_editbox_bg1" />
+
+            <ImageView
+                style="@style/main_footbar_cutline"
+                android:src="@drawable/widget_bar_cut_off" />
+
+            <ImageView
+                android:id="@+id/detail_footbar_detail"
+                style="@style/main_footbar_image"
+                android:src="@drawable/widget_bar_detail" />
+
+            <ImageView
+                style="@style/main_footbar_cutline"
+                android:src="@drawable/widget_bar_cut_off" />
+
+            <ImageView
+                android:id="@+id/detail_footbar_commentlist"
+                style="@style/main_footbar_image"
+                android:src="@drawable/widget_bar_comment" />
+
+            <ImageView
+                style="@style/main_footbar_cutline"
+                android:src="@drawable/widget_bar_cut_off" />
+
+            <ToggleButton
+                android:id="@+id/detail_footbar_joined"
+                style="@style/main_footbar_image"
+                android:textOn=""
+                android:textOff=""
+                android:background="@drawable/widget_bar_favorite" />
+
+            <ImageView
+                style="@style/main_footbar_cutline"
+                android:src="@drawable/widget_bar_cut_off" />
+
+            <ImageView
+                android:id="@+id/detail_footbar_share"
+                style="@style/main_footbar_image"
+                android:src="@drawable/widget_bar_share" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/widget_bar_bg_n"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/detail_foot_face"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:src="@drawable/widget_bar_face" />
+
+                <EditText
+                    android:id="@+id/detail_foot_editer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_weight="1"
+                    android:autoLink="web|email"
+                    android:background="@drawable/reply_edittext_bg"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="top"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/detail_foot_pubcomment"
+                    android:layout_width="45dip"
+                    android:layout_height="34dip"
+                    android:layout_marginLeft="5dip"
+                    android:layout_marginRight="5dip"
+                    android:background="@drawable/widget_button_bg"
+                    android:text="评论"
+                    android:textColor="@color/black"
+                    android:textSize="14dip" />
+            </LinearLayout>
+
+            <GridView
+                android:id="@+id/detail_foot_faces"
+                android:layout_width="match_parent"
+                android:layout_height="220dip"
+                android:background="@color/face_bg"
+                android:columnWidth="50dip"
+                android:fadingEdge="none"
+                android:gravity="center"
+                android:numColumns="auto_fit"
+                android:scrollingCache="false"
+                android:stretchMode="columnWidth"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ViewSwitcher>
+
+</LinearLayout>

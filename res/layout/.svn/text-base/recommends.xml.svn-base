@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/aa1" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageView1"
+            android:layout_toRightOf="@+id/imageView1"
+            android:text="添加你感兴趣的关键词"
+            android:typeface="normal" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/imageView1"
+            android:layout_margin="@dimen/recommends_vertical_margin"
+            android:src="@drawable/line" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView2"
+            android:layout_below="@+id/imageView2"
+            android:layout_margin="@dimen/recommends_vertical_margin"
+            android:text="公司行业"
+            android:textColor="#0483ba"
+            android:textSize="11sp"
+            android:textStyle="normal" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageView4"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/imageView4"
+            android:src="@drawable/dou3" />
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/textView1"
+            android:layout_alignTop="@+id/imageView3"
+            android:src="@drawable/dou2" />
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/imageView2"
+            android:layout_alignTop="@+id/imageView5"
+            android:src="@drawable/dou4" />
+
+        <ImageView
+            android:id="@+id/imageView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView3"
+            android:layout_below="@+id/imageView3"
+            android:layout_marginTop="14dp"
+            android:src="@drawable/dou5" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textView2"
+            android:layout_below="@+id/textView2"
+            android:src="@drawable/dou1" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView4"
+            android:layout_alignTop="@+id/imageView7"
+            android:src="@drawable/dou6" />
+
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView5"
+            android:layout_alignTop="@+id/imageView8"
+            android:src="@drawable/dou7" />
+
+        <ImageView
+            android:id="@+id/imageView10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView6"
+            android:layout_alignTop="@+id/imageView9"
+            android:src="@drawable/dou8" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView7"
+            android:layout_below="@+id/imageView7"
+            android:layout_marginTop="14dp"
+            android:text="公司性质"
+            android:textColor="#0483ba"
+            android:textSize="11sp"
+            android:textStyle="normal" />
+
+        <ImageView
+            android:id="@+id/imageView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textView3"
+            android:layout_below="@+id/textView3"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/dd1" />
+
+        <ImageView
+            android:id="@+id/imageView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageView11"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/imageView11"
+            android:src="@drawable/dd2" />
+
+        <ImageView
+            android:id="@+id/imageView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageView12"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/imageView12"
+            android:src="@drawable/dd3" />
+
+        <ImageView
+            android:id="@+id/imageView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView11"
+            android:layout_below="@+id/imageView11"
+            android:layout_marginTop="14dp"
+            android:src="@drawable/dd4" />
+
+        <ImageView
+            android:id="@+id/imageView15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView12"
+            android:layout_alignTop="@+id/imageView14"
+            android:src="@drawable/dd5" />
+
+        <ImageView
+            android:id="@+id/imageView16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView13"
+            android:layout_alignTop="@+id/imageView15"
+            android:src="@drawable/dd6" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView14"
+            android:layout_centerVertical="true"
+            android:text="公司地点"
+            android:textColor="#0483ba"
+            android:textSize="11sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textView4"
+            android:layout_below="@+id/textView4"
+            android:layout_marginTop="16dp"
+            android:text="推送消息类型"
+            android:textColor="#0483ba"
+            android:textSize="11sp"
+            android:textStyle="normal" />
+
+        <ToggleButton
+            android:id="@+id/tg_careertalk"
+            android:layout_width="71dp"
+            android:layout_height="20dp"
+            android:layout_alignLeft="@+id/textView6"
+            android:layout_below="@+id/textView6"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/imageView12"
+            android:background="@drawable/cc1"
+            android:checked="false"
+            android:textOn=""
+            android:textOff="" />
+		<ToggleButton
+            android:id="@+id/tg_recruit"
+            android:layout_width="90dp"
+            android:layout_height="20dp"
+            android:layout_alignLeft="@+id/imageView15"
+            android:layout_alignTop="@+id/tg_careertalk"
+            android:background="@drawable/cc2"
+            android:checked="false"
+            android:textOn=""
+            android:textOff="" />
+		
+		<ToggleButton
+            android:id="@+id/tg_discuss"
+            android:layout_width="90dp"
+            android:layout_height="20dp"
+            android:layout_alignLeft="@+id/imageView16"
+            android:layout_alignTop="@+id/tg_recruit"
+            android:background="@drawable/cc3"
+            android:checked="false"
+            android:textOn=""
+            android:textOff="" />
+
+		<Button
+		    android:id="@+id/btn_recommends_province"
+		    style="?android:attr/buttonStyleSmall"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_alignBaseline="@+id/textView4"
+		    android:layout_alignBottom="@+id/textView4"
+		    android:layout_toRightOf="@+id/textView2"
+		    android:text="选择" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,32 @@
+package com.campusrecruit.db;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.campusrecruit.bean.CareerTalk;
+import com.campusrecruit.bean.Recruit;
+
+public class CareerTalkManager {
+	private DBHelper helper;
+	private SQLiteDatabase db;
+	
+	private static final String TABLE_NAME = "Recuirt";
+	
+	public CareerTalkManager(Context context){
+		helper = new DBHelper(context);
+		db = helper.getWritableDatabase();
+	}
+	
+	public void add(CareerTalk careerTalk){		
+//		db.execSQL("INSERT INTO " + TABLE_NAME + " VALUES(null, ?, ?, ?)", new Object[]{name, addr, date});
+	}
+	
+	public CareerTalk get(String recruitID) {
+		CareerTalk careerTalk = new CareerTalk();
+		return careerTalk;
+	}
+	
+	public boolean exists(String recruitID){
+		return true;
+	}
+}

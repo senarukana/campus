@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical"
+    android:paddingBottom="7dip"
+    android:paddingTop="8dip" >
+    
+ <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/user_topic_item_empty"
+    android:visibility="gone" >
+
+    <TextView 
+        android:id="@+id/empty_data_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="20sp"
+        android:text="亲，还没有发过贴哦！"
+        android:gravity="center" android:layout_gravity="center"/>
+
+</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/user_topics_item_flag"
+            android:layout_width="14.0dip"
+            android:layout_height="14.0dip"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="2dip"
+            android:src="@drawable/widget_today_icon"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/user_topics_item_title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:singleLine="true"
+            android:text="test"
+            android:textColor="@color/listitem_black"
+            android:textSize="@dimen/text_size_15"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dip"
+            android:text="发布于"
+            android:textColor="@color/listitem_gray"
+            android:textSize="@dimen/text_size_12" />
+
+        <TextView
+            android:id="@+id/user_topics_item_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dip"
+             android:layout_marginRight="10dip"
+            android:textColor="@color/listitem_gray"
+            android:textSize="@dimen/text_size_12" />
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,555 @@
+package com.campusrecruit.fragment;
+
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.campusrecruit.adapter.ListViewCareerTalkAdapter;
+import com.campusrecruit.app.AppConfig;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.CareerTalk;
+import com.campusrecruit.common.StringUtils;
+import com.campusrecruit.common.UIHelper;
+import com.campusrecruit.widget.PullToRefreshListView;
+import com.krislq.sliding.R;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.PopupMenu.OnMenuItemClickListener;
+
+@SuppressLint("ValidFragment")
+public class CareerTalkFragment extends BaseFragment implements
+		SearchView.OnQueryTextListener {
+
+	private String text;
+
+	private PullToRefreshListView pvCareerTalks = null;
+	private View listViewFooter = null;
+	private TextView footerView = null;
+
+	private ProgressBar footerProgressBar = null;
+
+	private Handler lvCareerTalkHandler = null;
+	private Handler lvCareerTalkDiskHandler = null;
+	private Handler lvCareerTalkSortHandler = null;
+
+	private int lvCareerTalkSum = 0;
+	private AppContext appContext;
+
+	private SearchView mSearchView = null;
+
+	public CareerTalkFragment() {
+	}
+
+	public CareerTalkFragment(String text) {
+		this.text = text;
+	}
+
+	@Override
+	public String getText() {
+		return text;
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		appContext = (AppContext) getActivity().getApplication();
+
+		View career_talk_view = inflater
+				.inflate(R.layout.careertalk_list, null);
+		pvCareerTalks = (PullToRefreshListView) career_talk_view
+				.findViewById(R.id.careertalk_listview);
+		listViewFooter = inflater.inflate(R.layout.listview_footer, null);
+		footerView = (TextView) listViewFooter
+				.findViewById(R.id.listview_foot_more);
+		footerProgressBar = (ProgressBar) listViewFooter
+				.findViewById(R.id.listview_foot_progress);
+		pvCareerTalks.addFooterView(listViewFooter);
+		initCareerTalkListView(pvCareerTalks);
+		if (appContext.getLvCareerTalkList().isEmpty()) {
+			loadCareerTalkDataFromDisk();
+			loadCareerTalkDataFromInternet(0, lvCareerTalkHandler,
+					UIHelper.LISTVIEW_ACTION_REFRESH);
+		} else {
+			appContext.getLvCareerTalkListAdapter().setData(
+					appContext.getLvCareerTalkList());
+			appContext.getLvCareerTalkListAdapter().notifyDataSetChanged();
+		}
+		Log.i("main", "career fragment init");
+		pvCareerTalks.setTag(UIHelper.LISTVIEW_DATA_MORE);
+		return career_talk_view;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// initCareerTalkListView(pvCareerTalks);
+		appContext = (AppContext) getActivity().getApplication();
+		appContext.setLvCareerTalkListAdapter(new ListViewCareerTalkAdapter(
+				getActivity(), appContext, R.layout.careertalk_item));
+		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.menu_search_sort, menu);
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+		mSearchView = (SearchView) searchItem.getActionView();
+		setupSearchView(searchItem);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case R.id.menu_sort:
+			View memuItemView = getActivity().findViewById(R.id.menu_sort);
+			PopupMenu popup = new PopupMenu(getActivity(), memuItemView);
+			MenuInflater inflater = popup.getMenuInflater();
+			inflater.inflate(R.menu.sort, popup.getMenu());
+			popup.setOnMenuItemClickListener(menuItemClickListener);
+			popup.show();
+			break;
+		case R.id.menu_famous:
+			View memuItemView1 = getActivity().findViewById(R.id.menu_famous);
+			PopupMenu popup1 = new PopupMenu(getActivity(), memuItemView1);
+			MenuInflater inflater1 = popup1.getMenuInflater();
+			inflater1.inflate(R.menu.sub_menu_famous, popup1.getMenu());
+			popup1.setOnMenuItemClickListener(menuItemClickListener1);
+			popup1.show();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	private void ThreadSeach(int sortby) {
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				try {
+					List<CareerTalk> list = appContext.getCareerTalkListFromInternet(0,
+							AppConfig.SORT_BY_JOINS);
+					msg.obj = list;
+					msg.what = 1;
+				} catch (AppException e) {
+					msg.what = -1;
+					msg.obj = e;
+				}
+				lvCareerTalkSortHandler.sendMessage(msg);
+			}
+		}.start();
+	}
+
+	private OnMenuItemClickListener menuItemClickListener = new OnMenuItemClickListener() {
+
+		@Override
+		public boolean onMenuItemClick(MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.sort_by_join:
+				ThreadSeach(AppConfig.SORT_BY_JOINS);
+				return true;
+			case R.id.sort_by_reply:
+				Log.i("sort", "careertalk reply");
+				ThreadSeach(AppConfig.SORT_BY_REPLYS);
+				return true;
+			case R.id.sort_by_click:
+				Log.i("sort", "careertalk click");
+				ThreadSeach(AppConfig.SORT_BY_CLICKS);
+				return true;
+			default:
+				return false;
+			}
+		}
+
+	};
+	
+	private OnMenuItemClickListener menuItemClickListener1 = new OnMenuItemClickListener() {
+
+		@Override
+		public boolean onMenuItemClick(MenuItem item) {
+			switch (item.getItemId()) {
+			case R.id.sort_by_famous:
+				Log.i("famous", "famous");
+				
+				return true;
+			case R.id.sort_by_common:
+				Log.i("famous", "common");
+				
+				return true;
+			default:
+				return false;
+			}
+		}
+
+	};
+
+	private void setupSearchView(MenuItem searchItem) {
+
+		if (isAlwaysExpanded()) {
+			mSearchView.setIconifiedByDefault(false);
+		} else {
+			searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
+					| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		}
+
+		mSearchView.setOnQueryTextListener(this);
+	}
+
+	protected boolean isAlwaysExpanded() {
+		return false;
+	}
+
+	private void initCareerTalkListView(PullToRefreshListView listView) {
+
+		Log.i("main", "career view init");
+		/*
+		 * appContext.getLvCareerTalkListAdapter() = new
+		 * ListViewCareerTalkAdapter(getActivity(), appContext,
+		 * appContext.getLvCareerTalkList(), R.layout.careertalk_item);
+		 */
+		listView.setAdapter(appContext.getLvCareerTalkListAdapter());
+		Log.i("main", "career view set adapter complete");
+		listView.setOnRefreshListener(new refreshListener());
+		listView.setOnScrollListener(new AbsListView.OnScrollListener() {
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				pvCareerTalks.onScroll(view, firstVisibleItem,
+						visibleItemCount, totalItemCount);
+
+			}
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				pvCareerTalks.onScrollStateChanged(view, scrollState);
+				if (appContext.getLvCareerTalkList().isEmpty())
+					return;
+				boolean scrollEnd = false;
+				try {
+					if (view.getLastVisiblePosition() == view
+							.getPositionForView(listViewFooter)) {
+						scrollEnd = true;
+					}
+				} catch (Exception e) {
+					scrollEnd = false;
+				}
+				Log.i("activity", StringUtils.toInt(pvCareerTalks.getTag())
+						+ "");
+				int footerState = StringUtils.toInt(pvCareerTalks.getTag());
+				if (scrollEnd && (footerState == UIHelper.LISTVIEW_DATA_MORE)) {
+					Log.i("test", "scorllEnd datamore");
+					pvCareerTalks.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+					footerView.setText(R.string.load_ing);
+					footerProgressBar.setVisibility(View.VISIBLE);
+
+					int pageIndex = lvCareerTalkSum / AppConfig.PAGE_SIZE;
+					loadCareerTalkDataFromInternet(pageIndex,
+							lvCareerTalkHandler,
+							UIHelper.LISTVIEW_ACTION_SCROLL);
+				}
+			}
+		});
+
+		lvCareerTalkHandler = this.getCareerTalkLvHandler();
+		lvCareerTalkSortHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				if (msg.what == 1) {
+					List<CareerTalk> list = (List<CareerTalk>) msg.obj;
+					for (CareerTalk c1 : list) {
+						for (CareerTalk c2 : appContext.getLvCareerTalkList()) {
+							if (c1.getCareerTalkID() == c2.getCareerTalkID()) {
+								if (c2.getIsJoined() == 1)
+									c1.setIsJoined(1);
+								break;
+							}
+						}
+					}
+					appContext.setLvCareerTalkList(list);
+					appContext.getLvCareerTalkListAdapter().setData(list);
+					appContext.getLvCareerTalkListAdapter()
+							.notifyDataSetChanged();
+				} else {
+					((AppException) msg.obj).makeToast(getActivity());
+				}
+			}
+		};
+		Log.i("main", "career view complete");
+	}
+
+	private class refreshListener implements
+			PullToRefreshListView.OnRefreshListener {
+
+		@Override
+		public void onRefresh() {
+			loadCareerTalkDataFromInternet(0, lvCareerTalkHandler,
+					UIHelper.LISTVIEW_ACTION_REFRESH);
+		}
+
+	}
+
+	private Handler getCareerTalkLvHandler() {
+		return new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				Log.i("ddd", "handle  careertalk data what" + msg.what);
+				if (msg.what > 0) {
+					handleLvData(msg.obj);
+					if (msg.what < AppConfig.PAGE_SIZE) {
+						pvCareerTalks.setTag(UIHelper.LISTVIEW_DATA_FULL);
+						appContext.getLvCareerTalkListAdapter()
+								.notifyDataSetChanged();
+						footerView.setText(R.string.load_full);
+					} else if (msg.what == AppConfig.PAGE_SIZE) {
+						pvCareerTalks.setTag(UIHelper.LISTVIEW_DATA_MORE);
+						appContext.getLvCareerTalkListAdapter()
+								.notifyDataSetInvalidated();
+						footerView.setText(R.string.load_more);
+					}
+				} else if (msg.what == -1) {
+					// loadCareerTalkDataFromDisk();
+
+					pvCareerTalks.setTag(UIHelper.LISTVIEW_DATA_FULL);
+					footerView.setText(R.string.load_error);
+
+				}
+				Log.i("ddd", "adapter "
+						+ appContext.getLvCareerTalkListAdapter().getCount()
+						+ "");
+				if (appContext.getLvCareerTalkListAdapter().getCount() == 0) {
+					pvCareerTalks.setTag(UIHelper.LISTVIEW_DATA_EMPTY);
+					footerView.setText(R.string.load_empty);
+				}
+				footerProgressBar.setVisibility(View.GONE);
+				if (msg.arg1 == UIHelper.LISTVIEW_ACTION_REFRESH) {
+					pvCareerTalks
+							.onRefreshComplete(getString(R.string.pull_to_refresh_update)
+									+ new Date().toLocaleString());
+					pvCareerTalks.setSelection(0);
+				}
+
+			}
+
+		};
+	}
+
+	private void loadCareerTalkDataFromDisk() {
+		lvCareerTalkDiskHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				/*
+				 * footerView.setVisibility(View.GONE);
+				 * footerProgressBar.setVisibility(View.GONE);
+				 */
+				Log.i("ddd", "handle cd data");
+				if (msg.what > 0) {
+					appContext.getLvCareerTalkList().addAll(
+							(List<CareerTalk>) msg.obj);
+					lvCareerTalkSum += appContext.getLvCareerTalkList().size();
+					appContext.getLvCareerTalkListAdapter().setData(
+							appContext.getLvCareerTalkList());
+					appContext.getLvCareerTalkListAdapter()
+							.notifyDataSetChanged();
+				}
+				Log.i("ddd", "begin load cd data");
+				/*
+				 * loadCareerTalkDataFromInternet(0, lvCareerTalkHandler,
+				 * UIHelper.LISTVIEW_ACTION_REFRESH);
+				 */
+			}
+		};
+		new Thread() {
+			@Override
+			public void run() {
+				Message msg = new Message();
+				List<CareerTalk> list = appContext.getCareerTalkListFromDisk();
+				Log.i("ddd", "send cd data complete");
+				if (list != null) {
+					msg.what = list.size();
+					msg.obj = list;
+					Log.i("ddd", list.size() + "");
+				} else {
+					msg.what = 0;
+					msg.obj = null;
+				}
+				lvCareerTalkDiskHandler.sendMessage(msg);
+				Log.i("ddd", "send complete cd data");
+			}
+		}.start();
+	}
+
+	private void loadCareerTalkDataFromInternet(final int pageIndex,
+			final Handler handler, final int action) {
+		Log.i("ddd", "loadCareerTalkDataFromInternet");
+		new Thread() {
+
+			@Override
+			public void run() {
+				Message msg = new Message();
+				try {
+					List<CareerTalk> list = appContext
+							.getCareerTalkListFromInternet(pageIndex,
+									AppConfig.SORT_BY_CREATED_TIME);
+					msg.what = list.size();
+					Log.i("ct", list.size() + "");
+					msg.obj = list;
+				} catch (Exception e) {
+					e.printStackTrace();
+					msg.what = -1;
+					msg.obj = e;
+				}
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_CAREER_TALK;
+
+				handler.sendMessage(msg);
+			}
+
+		}.start();
+
+	}
+
+	public void handleLvData(Object object) {
+		Log.i("ct", "handle data");
+		List<CareerTalk> newList = new ArrayList<CareerTalk>();
+		int count = 0;
+		// 计算更新数据
+		List<CareerTalk> list = (List<CareerTalk>) object;
+		if (appContext.getLvCareerTalkList().isEmpty()) {
+			count = list.size();
+			newList.addAll(list);
+		} else {
+			for (CareerTalk c1 : list) {
+				boolean flag = false;
+				for (CareerTalk c2 : appContext.getLvCareerTalkList()) {
+					if (c1.getCareerTalkID() == c2.getCareerTalkID()) {
+						if (c2.getIsJoined() == 1)
+							c1.setIsJoined(1);
+						appContext.getLvCareerTalkList().remove(c2);
+						newList.add(c1);
+						flag = true;
+						break;
+					}
+				}
+				if (!flag) {
+					newList.add(c1);
+					count++;
+				}
+			}
+		}
+		lvCareerTalkSum += count;
+
+		if (count > 0) {
+			Toast.makeText(getActivity(),
+					getString(R.string.new_data_toast_message, count),
+					Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(getActivity(),
+					getString(R.string.new_data_toast_none), Toast.LENGTH_SHORT)
+					.show();
+		}
+
+		Log.i("ct", String.format("new list size is %d", newList.size()));
+		appContext.getLvCareerTalkList().addAll(newList);
+		appContext.getLvCareerTalkListAdapter().setData(
+				appContext.getLvCareerTalkList());
+		appContext.getLvCareerTalkListAdapter().notifyDataSetChanged();
+		appContext.saveCareerTalkList(newList);
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		Log.i("search", "careertalk " + query);
+		mSearchView.clearFocus();
+		final String companyString = query;
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				try {
+					List<CareerTalk> list = appContext
+							.getCareerTalkListByCompanyName(companyString);
+					Log.i("fm","got ca list "+ list.size());
+					msg.obj = list;
+					msg.what = 1;
+				} catch (AppException e) {
+					Log.i("fm","err");
+					msg.what = -1;
+					msg.obj = e;
+				}
+				lvCareerTalkSortHandler.sendMessage(msg);
+			}
+		}.start();
+		return true;
+	}
+	/*
+	 * public void handleLvData(int what, Object object, int objectType, int
+	 * actionType) { Log.i("ct", "handle data"); List<CareerTalk> newList = new
+	 * ArrayList<CareerTalk>(); switch (actionType) { case
+	 * UIHelper.LISTVIEW_ACTION_INIT: case UIHelper.LISTVIEW_ACTION_REFRESH:
+	 * switch (objectType) { case UIHelper.LISTVIEW_DATATYPE_CAREER_TALK: //
+	 * 计算更新数据 List<CareerTalk> list = (List<CareerTalk>) object;
+	 * appContext.getLvCareerTalkList().clear();
+	 * appContext.getLvCareerTalkList().addAll(list); Log.i("ct",
+	 * "handle refresh data"); } if (actionType ==
+	 * UIHelper.LISTVIEW_ACTION_REFRESH) { if (newList.size() > 0) {
+	 * Toast.makeText( getActivity(), getString(R.string.new_data_toast_message,
+	 * newList.size()), Toast.LENGTH_SHORT).show(); } else {
+	 * Toast.makeText(getActivity(), getString(R.string.new_data_toast_none),
+	 * Toast.LENGTH_SHORT).show(); } } break; case
+	 * UIHelper.LISTVIEW_ACTION_SCROLL: switch (objectType) { case
+	 * UIHelper.LISTVIEW_DATATYPE_CAREER_TALK: List<CareerTalk> list =
+	 * (List<CareerTalk>) object; lvCareerTalkSum += what; if
+	 * (appContext.getLvCareerTalkList().size() > 0) { for (CareerTalk ct0 :
+	 * list) { boolean b = false; for (CareerTalk ct1 :
+	 * appContext.getLvCareerTalkList()) { if (ct0.getCareerTalkID() ==
+	 * ct1.getCareerTalkID()) { appContext.getLvCareerTalkList().remove(ct1);
+	 * appContext.getLvCareerTalkList().add(ct0); b = true; break; } } if (!b)
+	 * appContext.getLvCareerTalkList().add(ct0); } } else {
+	 * appContext.getLvCareerTalkList().addAll(list); break; } Log.i("ct",
+	 * "handle scoll data"); break; } } Log.i("ct", "save data");
+	 * appContext.saveCareerTalkList(newList); }
+	 */
+
+	/*
+	 * public List<CareerTalk> getLvCareerTalkList(){ CareerTalk talk0 = new
+	 * CareerTalk(); talk0.setCareerTalkID("123456");
+	 * talk0.setSchoolName("BUPT"); talk0.setCompanyName("Baidu");
+	 * talk0.setPlace("Building Three");
+	 * talk0.setStartTime("2013-09-12 14:30:00");
+	 * talk0.setEndTime("2013-09-12 16:30:00");
+	 * 
+	 * CareerTalk talk1 = new CareerTalk(); talk1.setCareerTalkID("12345");
+	 * talk0.setSchoolName("BUPT"); talk1.setCompanyName("Sina");
+	 * talk1.setPlace("Building Three");
+	 * talk1.setStartTime("2013-09-12 14:30:00");
+	 * talk0.setEndTime("2013-09-12 16:30:00");
+	 * 
+	 * List<CareerTalk> li = new ArrayList<CareerTalk>(); li.add(talk0);
+	 * li.add(talk1);
+	 * 
+	 * return li; }
+	 */
+}

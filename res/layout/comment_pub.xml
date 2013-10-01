@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+   android:background="@color/lightwhite"
+    android:orientation="vertical" >
+
+    <com.campusrecruit.widget.LinkView
+        android:id="@+id/comment_pub_quote"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dip"
+        android:autoLink="web|email"
+        android:background="@drawable/review_bg_blue"
+        android:maxLines="5"
+        android:padding="5.0dip"
+        android:textColor="@color/black"
+        android:textColorLink="@color/listitem_blue"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/comment_pub_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:gravity="top"
+        android:hint="@string/comment_pub_content_hint"
+        android:lines="7" />
+
+</LinearLayout>

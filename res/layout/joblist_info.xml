@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="vertical"
+    android:paddingBottom="7dip"
+    android:paddingLeft="6dip"
+    android:paddingRight="6dip"
+    android:paddingTop="8dip" >
+
+    <TextView android:id="@+id/company_name" 
+        android:layout_width="fill_parent" 
+     	android:layout_height="wrap_content"
+     	android:textStyle="bold"
+     	android:textSize="@dimen/text_size_25"
+     	android:textColor="@color/listitem_black"
+     	android:singleLine="true"/> 
+     
+    <TextView 
+        android:id="@+id/career_talk_id"
+        android:visibility="invisible"
+        android:layout_width="match_parent" 
+     	android:layout_height="wrap_content"/>
+
+           	
+   	<TextView android:id="@+id/interview_address"  
+		android:layout_width="match_parent" 
+       	android:layout_height="wrap_content" 
+       	android:textSize="@dimen/text_size_15"
+        android:textColor="@color/listitem_gray"/>	
+    
+    
+    <LinearLayout 
+    	android:orientation="horizontal" 
+        android:layout_width="fill_parent"  
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dip"> 
+        
+        <TextView
+    		android:layout_width="wrap_content" 
+           	android:layout_height="wrap_content" 
+           	android:textSize="@dimen/text_size_15"
+            android:textColor="@color/listitem_gray"
+            android:text="发布于"
+            android:gravity="center"/>
+       	
+       	<TextView android:id="@+id/interview_date"  
+    		android:layout_width="wrap_content" 
+           	android:layout_height="wrap_content"
+           	android:layout_marginLeft="2dip" 
+           	android:textSize="@dimen/text_size_15"
+            android:textColor="@color/listitem_gray"
+            android:gravity="center"
+            android:layout_marginRight="20dip"/>    
+            
+       	<ToggleButton
+       	    android:id="@+id/collect_button"
+       	    android:layout_width="50dp"
+       	    android:layout_height="50dp"
+       	    android:layout_gravity="center"
+       	    android:background="@drawable/toggleselector"
+       	    android:checked="false"
+       	    android:gravity="right"
+       	    android:textOff=""
+       	    android:textOn="" />
+
+	</LinearLayout>
+        
+
+</LinearLayout> 

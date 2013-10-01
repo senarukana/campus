@@ -1,0 +1,94 @@
+package com.campusrecruit.fragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+
+import com.campusrecruit.adapter.ListViewRecruitFavorateAdapter;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.bean.Recruit;
+import com.krislq.sliding.R;
+
+@SuppressLint("ValidFragment")
+public class RecruitsFavoratesFragment extends BaseFragment {
+	private String text;
+	private ListViewRecruitFavorateAdapter lvFavoratesAdapter;
+	private List<Recruit> recruits = new ArrayList<Recruit>();
+
+	private ProgressDialog mProgress;
+	private ListView lvRecruitView;
+	private AppContext appContext;
+
+	public RecruitsFavoratesFragment() {
+	}
+
+	public RecruitsFavoratesFragment(String text) {
+		this.text = text;
+	}
+
+	@Override
+	public String getText() {
+		return text;
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		appContext = (AppContext) getActivity().getApplication();
+
+		View recruitView = inflater.inflate(R.layout.recruit_favorate_list,
+				null);
+		lvRecruitView = (ListView) recruitView
+				.findViewById(R.id.recruit_favorate_list);
+		initRecruitFavoratesView(recruitView);
+		return recruitView;
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		initRecruitFavoratesData();
+	}
+
+	private void initRecruitFavoratesView(View recruitView) {
+		mProgress = ProgressDialog.show(recruitView.getContext(), null,
+				"数据载入中···", true, true);
+		lvFavoratesAdapter = new ListViewRecruitFavorateAdapter(getActivity(),
+				appContext, recruits, R.layout.recruit_favorate_item);
+		lvRecruitView.setAdapter(lvFavoratesAdapter);
+	}
+
+	private void initRecruitFavoratesData() {
+		final Handler handler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				mProgress.dismiss();
+				if (msg.what >= 0) {
+					recruits.addAll((List<Recruit>) msg.obj);
+					lvFavoratesAdapter.notifyDataSetChanged();
+				}
+			}
+		};
+		new Thread() {
+			@Override
+			public void run() {
+				Message msg = new Message();
+				List<Recruit> list = appContext.getRecruitFavorateList(true);
+				msg.what = list.size();
+				msg.obj = list;
+				handler.sendMessage(msg);
+			}
+		}.start();
+	}
+}

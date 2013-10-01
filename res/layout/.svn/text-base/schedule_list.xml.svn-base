@@ -1,0 +1,235 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:baselineAligned="false"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/numberBlock1"
+                    style="@style/NumberBlock"
+                    android:background="@color/item1_bg1"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timeBlock1"
+                    style="@style/TimeBlock"
+                    android:background="@color/item1_bg2"
+                    android:gravity="center"
+                    android:text="8:00" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lv1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6" >
+            </ListView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/numberBlock2"
+                    style="@style/NumberBlock"
+                    android:background="@color/item1_bg1"
+                    android:gravity="center"
+                    android:text="2"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timeBlock2"
+                    style="@style/TimeBlock"
+                    android:background="@color/item1_bg2"
+                    android:gravity="center"
+                    android:text="10:00" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lv2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6" >
+            </ListView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/numberBlock3"
+                    style="@style/NumberBlock"
+                    android:background="@color/item3_bg1"
+                    android:gravity="center"
+                    android:text="3"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timeBlock3"
+                    style="@style/TimeBlock"
+                    android:background="@color/item3_bg2"
+                    android:gravity="center"
+                    android:text="14:00" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lv3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6" >
+            </ListView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/numberBock4"
+                    style="@style/NumberBlock"
+                    android:background="@color/item3_bg1"
+                    android:gravity="center"
+                    android:text="4"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timeBlock4"
+                    style="@style/TimeBlock"
+                    android:background="@color/item3_bg2"
+                    android:gravity="center"
+                    android:text="16:00" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lv4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6" >
+            </ListView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/numberBlock5"
+                    style="@style/NumberBlock"
+                    android:background="@color/item4_bg1"
+                    android:gravity="center"
+                    android:text="5"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timeBlock5"
+                    style="@style/TimeBlock"
+                    android:background="@color/item4_bg2"
+                    android:gravity="center"
+                    android:text="19:00" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lv5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6" >
+            </ListView>
+        </LinearLayout>
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/numberBlock6"
+                    style="@style/NumberBlock"
+                    android:background="@color/item4_bg1"
+                    android:gravity="center"
+                    android:text="6"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/timeBlock6"
+                    style="@style/TimeBlock"
+                    android:background="@color/item4_bg2"
+                    android:gravity="center"
+                    android:text="21:00" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/lv6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6" >
+            </ListView>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
+

@@ -1,0 +1,42 @@
+10
+
+dir
+0
+https://10.108.208.64/svn/app/res/drawable-xxhdpi
+https://10.108.208.64/svn/app
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+2943c9c9-84af-6b4e-bae3-44d955b8f19e
+
+ic_launcher.png
+file
+
+
+
+add
+
+
+
+
+
+has-props
+has-prop-mods
+

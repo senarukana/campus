@@ -1,0 +1,223 @@
+package com.campusrecruit.adapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.Recruit;
+import com.campusrecruit.bean.Result;
+import com.campusrecruit.common.UIHelper;
+import com.campusrecruit.fragment.RecruitFragment;
+import com.krislq.sliding.R;
+
+import android.R.integer;
+import android.app.Activity;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+public class ListViewRecruitAdapter extends BaseAdapter{
+	
+	private Context context;
+	private List<Recruit> listItem;
+	private AppContext appContext;
+	private LayoutInflater listContainer;
+	private int itemViewResource;
+	
+	
+	static class ListItemView{
+		LinearLayout itemMainLayout;
+		TextView companyName;
+		TextView createdTime;
+		TextView position;
+		TextView place;
+		TextView companyIndustry;
+		TextView companyType;
+		
+		LinearLayout repliesLayout;
+		TextView replies;
+		LinearLayout joinsLayout;
+		TextView joins;
+		ImageView joinsImage;
+		LinearLayout shareLayout;
+		
+	}
+	
+	public void setData(List<Recruit> data) {
+		this.listItem = data;
+	}
+	
+	public ListViewRecruitAdapter(Context context, AppContext appContext, int resource){
+		this.context = context;
+		this.appContext = appContext;
+		this.listContainer = LayoutInflater.from(context);
+		this.listItem = new ArrayList<Recruit>();
+		this.itemViewResource = resource;
+	}
+
+	@Override
+	public int getCount() {
+		return this.listItem.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return null;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return 0;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		Log.i("info","start");
+		ListItemView holder = null;
+		if(convertView == null){
+			holder = new ListItemView();
+			
+			convertView = this.listContainer.inflate(this.itemViewResource, null);
+			//item
+			holder.itemMainLayout = (LinearLayout)convertView.findViewById(R.id.recruit_item_main);
+			holder.companyName = (TextView)convertView.findViewById(R.id.recruit_company_name);
+			holder.createdTime = (TextView)convertView.findViewById(R.id.recruit_created_time);
+			holder.position = (TextView)convertView.findViewById(R.id.recruit_position);
+			holder.place = (TextView)convertView.findViewById(R.id.recruit_place);
+			holder.companyType = (TextView)convertView.findViewById(R.id.recruit_company_type);
+			holder.companyIndustry = (TextView)convertView.findViewById(R.id.recruit_company_industry);
+			
+			//footer
+			holder.repliesLayout = (LinearLayout)convertView.findViewById(R.id.item_replies_layout);
+			holder.replies = (TextView)holder.repliesLayout.findViewById(R.id.item_replies);
+			holder.joinsLayout = (LinearLayout)convertView.findViewById(R.id.item_joins_layout);
+			holder.joins = (TextView)convertView.findViewById(R.id.item_joins);
+			holder.joinsImage = (ImageView)convertView.findViewById(R.id.item_joins_image);
+			holder.shareLayout = (LinearLayout)convertView.findViewById(R.id.item_share_layout);
+			
+			convertView.setTag(holder);
+		}else{
+			holder = (ListItemView) convertView.getTag();
+		}
+		
+		Recruit recruit = this.listItem.get(position);
+		holder.companyName.setText(recruit.getCompany().getCompanyName());
+		holder.companyName.setTag(recruit.getRecruitID());
+		holder.position.setText(recruit.getPosition());
+		holder.place.setText(recruit.getPlace());
+		holder.createdTime.setText(recruit.getCreatedTime());
+		holder.companyIndustry.setText(recruit.getCompany().getIndustry());
+		holder.companyType.setText(recruit.getCompany().getType());
+		holder.joins.setText(recruit.getJoins()+"");
+		holder.replies.setText(recruit.getReplies()+"");
+		
+		if (recruit.getIsJoined() == 1)
+			holder.joinsImage.setImageResource(R.drawable.star1);
+		else
+			holder.joinsImage.setImageResource(R.drawable.star);
+		
+		holder.itemMainLayout.setOnClickListener(new DetailListener(recruit));
+		holder.joinsLayout.setOnClickListener(new JoinsListener(recruit, holder.joinsImage, holder.joins));
+		holder.repliesLayout.setOnClickListener(new RepliesListener(recruit));
+		holder.shareLayout.setOnClickListener(new ShareListener(recruit));
+		
+		return convertView;
+	}
+	
+	private class ShareListener implements OnClickListener{
+		public ShareListener(Recruit recruit) {
+			this.recruit = recruit;
+		}
+		private Recruit recruit;
+		@Override
+		public void onClick(View v) {
+			//分享招聘信息
+			UIHelper.showShareRecruitDialog((Activity)context, recruit);
+		}
+		
+	}
+	
+	private class DetailListener implements OnClickListener{
+		public DetailListener(Recruit recruit) {
+			this.recruit = recruit;
+		}
+		private Recruit recruit;
+		@Override
+		public void onClick(View v) {
+			Log.i("recruit", recruit.getPosition());
+			Log.i("recruit", recruit.getCompany().getCompanyID() + "");
+			// 跳转到招聘详情
+			UIHelper.showRecruitDetail(context, recruit, true);
+		}
+		
+	}
+	
+	private class JoinsListener implements OnClickListener{
+		public JoinsListener(Recruit recruit, ImageView vJoinsImage,  TextView vJoinsText) {
+			this.recruit = recruit;
+			this.vJoinsImage = vJoinsImage;
+			this.vJoinsText = vJoinsText;
+		}
+		private Recruit recruit;
+		private ImageView vJoinsImage;
+		private TextView vJoinsText;
+		@Override
+		public void onClick(View v) {
+			if (recruit.getIsJoined() == 1) {
+				UIHelper.ToastMessage(context, "取消收藏");
+				recruit.setIsJoined(0);
+				vJoinsText.setText((Integer.parseInt(vJoinsText.getText().toString()) - 1) + "");
+				vJoinsImage.setImageDrawable(context.getResources().getDrawable((R.drawable.star)));
+				appContext.recruitJoin(recruit, false);
+			}else {
+				UIHelper.ToastMessage(context, "收藏成功");
+				recruit.setIsJoined(1);
+				vJoinsImage.setImageDrawable(context.getResources().getDrawable((R.drawable.star1)));
+				vJoinsText.setText((Integer.parseInt(vJoinsText.getText().toString()) + 1) + "");
+				appContext.recruitJoin(recruit, true);
+			}
+			recruit.setJoins(Integer.parseInt(vJoinsText.getText().toString()));
+			new Thread() {
+				public void run() {
+					try {
+						if (recruit.getIsJoined() == 1) {
+							appContext.joinRecruit(recruit.getRecruitID(), true);
+						} else {
+							appContext.joinRecruit(recruit.getRecruitID(), false);
+						}
+					} catch (AppException e) {
+						e.printStackTrace();
+					}
+				}
+			}.start();
+			ListViewRecruitAdapter.this.notifyDataSetChanged();
+		}
+		
+	}
+	
+	private class RepliesListener implements OnClickListener{
+		public RepliesListener(Recruit recruit) {
+			this.recruit = recruit;
+		}
+		private Recruit recruit;
+		@Override
+		public void onClick(View v) {
+			// 跳转到招聘详情
+			UIHelper.showRecruitDetail(context, recruit, false);
+		}
+		
+	}
+
+}

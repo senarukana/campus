@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/career_detail_header"
+   	android:layout_width="fill_parent"
+   	android:layout_height="wrap_content"
+   	android:paddingLeft="2dip"
+   	android:paddingRight="2dip"
+   	android:gravity="center_vertical"
+   	android:orientation="horizontal"
+   	android:background="@drawable/head_bg">
+   	<TextView 
+		android:layout_width="0dp"
+		android:layout_weight="1"
+   	    android:layout_height="wrap_content"
+		android:layout_gravity="center"
+   		android:text="添加感兴趣的省份"/>
+
+   	<Button
+   	    android:id="@+id/province_confirm"
+   	    android:layout_width="wrap_content"
+   	    android:layout_height="wrap_content"
+   	    android:text="完成" />
+   	
+</LinearLayout>
+

@@ -1,0 +1,419 @@
+package com.campusrecruit.fragment;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.campusrecruit.activity.MainActivity;
+import com.campusrecruit.adapter.ListViewBBSSectionAdapter;
+import com.campusrecruit.adapter.ListViewTopicsAdapter;
+import com.campusrecruit.app.AppConfig;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.BBSSection;
+import com.campusrecruit.bean.BBSTopic;
+import com.campusrecruit.bean.Recruit;
+import com.campusrecruit.common.StringUtils;
+import com.campusrecruit.common.UIHelper;
+import com.campusrecruit.widget.PullToRefreshListView;
+import com.krislq.sliding.R;
+
+import android.R.integer;
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
+
+@SuppressLint("ValidFragment")
+public class BBSSectionFragment extends EmptyFragment implements
+		SearchView.OnQueryTextListener {
+
+	private String text;
+	private PullToRefreshListView pvBBSSections = null;
+	private View vFooter = null;
+	private TextView vFooterTextView = null;
+	private ProgressBar vFooterProgressBar = null;
+	private int actionType;
+	private boolean displayFlag = false;
+
+	private int lvBBSSectionSum = 0;
+	private static final int PAGE_SIZE = 20;
+
+	private AppContext appContext;
+	private BBSSectionAsyncTask asyncTask;
+
+	private SearchView mSearchView = null;
+
+	public BBSSectionFragment() {
+	}
+
+	public BBSSectionFragment(String text) {
+		this.text = text;
+	}
+
+	@Override
+	public String getText() {
+		return text;
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		Log.i("main", "section fragment init");
+		super.onCreateView(inflater, container, savedInstanceState);
+		appContext = (AppContext) getActivity().getApplication();
+		View bbssection_view = inflater.inflate(R.layout.bbssection_list, null);
+		pvBBSSections = (PullToRefreshListView) bbssection_view
+				.findViewById(R.id.bbssection_listview);
+		vFooter = inflater.inflate(R.layout.listview_footer, null);
+		vFooterTextView = (TextView) vFooter
+				.findViewById(R.id.listview_foot_more);
+		vFooterProgressBar = (ProgressBar) vFooter
+				.findViewById(R.id.listview_foot_progress);
+		initBBSSectionListView(pvBBSSections);
+		pvBBSSections.addFooterView(vFooter);
+		pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_MORE);
+		Log.i("section", "test");
+		if (!appContext.getLvBBSSectionList().isEmpty()) {
+			appContext.getLvSectionAdapter().setData(
+					appContext.getLvBBSSectionList());
+			appContext.getLvSectionAdapter().notifyDataSetChanged();
+		} else {
+			actionType = UIHelper.LISTVIEW_ACTION_INIT;
+			asyncTask = new BBSSectionAsyncTask();
+			asyncTask.execute(0, 0);
+		}
+		// vFooterTextView.setVisibility(View.GONE);
+		// vFooterProgressBar.setVisibility(View.GONE);
+		Log.i("main", "section fragment complete");
+
+		/*
+		 * if (appContext.getLvBBSSectionList().isEmpty()) {
+		 * vFooterTextView.setText(R.string.load_empty);
+		 * pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_EMPTY); } else { if
+		 * (appContext.getLvBBSSectionList().size() < AppConfig.PAGE_SIZE) {
+		 * vFooterTextView.setText(R.string.load_full);
+		 * pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_FULL); } else {
+		 * vFooterTextView.setText(R.string.load_more);
+		 * pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_MORE); }
+		 * appContext.getLvRecruitFavoratesAdapter().setData(
+		 * appContext.getLvRecruitFavorateList());
+		 * appContext.getLvRecruitFavoratesAdapter().notifyDataSetChanged(); }
+		 */
+		return bbssection_view;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// initCareerTalkListView(pvCareerTalks);
+		appContext = (AppContext) getActivity().getApplication();
+		appContext.setLvSectionAdapter(new ListViewBBSSectionAdapter(
+				getActivity(), R.layout.bbssection_item));
+		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.menu_search_sort_show, menu);
+		MenuItem searchItem = menu.findItem(R.id.action_search_bbs);
+		mSearchView = (SearchView) searchItem.getActionView();
+		setupSearchView(searchItem);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch (item.getItemId()) {
+		case R.id.menu_sort_bbs:
+			View memuItemView1 = getActivity().findViewById(R.id.menu_sort_bbs);
+			PopupMenu popup1 = new PopupMenu(getActivity(), memuItemView1);
+			MenuInflater inflater1 = popup1.getMenuInflater();
+			inflater1.inflate(R.menu.sort, popup1.getMenu());
+			popup1.setOnMenuItemClickListener(menuItemClickListener1);
+			popup1.show();
+			break;
+		case R.id.menu_bbs_show_bbs:
+			View memuItemView2 = getActivity().findViewById(R.id.menu_bbs_show_bbs);
+			PopupMenu popup2 = new PopupMenu(getActivity(), memuItemView2);
+			MenuInflater inflater2 = popup2.getMenuInflater();
+			inflater2.inflate(R.menu.sub_menu_bbs_show, popup2.getMenu());
+			popup2.setOnMenuItemClickListener(menuItemClickListener2);
+			popup2.show();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	private OnMenuItemClickListener menuItemClickListener1 = new OnMenuItemClickListener() {
+
+		@Override
+		public boolean onMenuItemClick(MenuItem item) {
+			// TODO Auto-generated method stub
+			switch (item.getItemId()) {
+			case R.id.sort_by_join:
+				Log.i("sort", "bbs join");
+				// loadSortData(menuFragment.getViewPager().getCurrentItem(),
+				// 1);
+				return true;
+			case R.id.sort_by_reply:
+				Log.i("sort", "bbs reply");
+				// loadSortData(menuFragment.getViewPager().getCurrentItem(),
+				// 2);
+				return true;
+			case R.id.sort_by_click:
+				Log.i("sort", "bbs click");
+				// loadSortData(menuFragment.getViewPager().getCurrentItem(),
+				// 3);
+				return true;
+			default:
+				return false;
+			}
+		}
+
+	};
+	
+	private OnMenuItemClickListener menuItemClickListener2 = new OnMenuItemClickListener(){
+
+		@Override
+		public boolean onMenuItemClick(MenuItem item) {
+			// TODO Auto-generated method stub
+			switch(item.getItemId()){
+			case R.id.bbs_menu_show_all:
+				Log.i("bbs_show", "all");
+				
+				return true;
+			case R.id.bbs_menu_show_collection:
+				Log.i("bbs_show", "collection");
+				
+				return true;
+			case R.id.bbs_menu_show_famous:
+				Log.i("bbs_show", "famous");
+				
+				return true;
+			default:
+				return false;
+			}
+		}
+		
+	};
+
+	private void setupSearchView(MenuItem searchItem) {
+
+		if (isAlwaysExpanded()) {
+			mSearchView.setIconifiedByDefault(false);
+		} else {
+			searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
+					| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		}
+
+		mSearchView.setOnQueryTextListener(this);
+	}
+
+	protected boolean isAlwaysExpanded() {
+		return false;
+	}
+
+	private void initBBSSectionListView(PullToRefreshListView listView) {
+
+		Log.i("eee", "init start");
+		// appContext.getLvSectionAdapter() = new
+		// ListViewBBSSectionAdapter(getActivity(),
+		// appContext.getLvBBSSectionList(), R.layout.bbssection_item);
+		listView.setAdapter(appContext.getLvSectionAdapter());
+		listView.setOnRefreshListener(new refreshListener());
+		listView.setOnScrollListener(new bottomScrollListener());
+		listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Log.i("fragment", "click");
+				// 点击头部、底部栏无效
+				if (position == 0 || view == vFooter)
+					return;
+
+				BBSSection section = null;
+				TextView tv = (TextView) view
+						.findViewById(R.id.bbssection_company_name);
+				section = (BBSSection) tv.getTag();
+				if (section == null)
+					return;
+				// 跳转到讨论区主题列表
+				Log.i("fragment", "show TopicList");
+				UIHelper.showTopicList(view.getContext(), section);
+			}
+		});
+
+		/*
+		 * if(appContext.getLvBBSSectionList().isEmpty()){ Log.i("eee" ,
+		 * "start load init"); loadBBSSectionData(0, lvBBSSectionHandler,
+		 * UIHelper.LISTVIEW_ACTION_INIT); }
+		 */
+		Log.i("eee", appContext.getLvBBSSectionList().size() + "");
+
+	}
+
+	private class refreshListener implements
+			PullToRefreshListView.OnRefreshListener {
+
+		@Override
+		public void onRefresh() {
+			/*
+			 * loadBBSSectionData(0, lvBBSSectionHandler,
+			 * UIHelper.LISTVIEW_ACTION_REFRESH);
+			 */
+			Log.i("main", "refresh");
+			actionType = UIHelper.LISTVIEW_ACTION_REFRESH;
+			new BBSSectionAsyncTask().execute(0, 0);
+		}
+
+	}
+
+	private class bottomScrollListener implements OnScrollListener {
+
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			pvBBSSections.onScroll(view, firstVisibleItem, visibleItemCount,
+					totalItemCount);
+
+		}
+
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+			Log.i("rf", "onScrollStateChanged");
+			pvBBSSections.onScrollStateChanged(view, scrollState);
+			if (appContext.getLvBBSSectionList().isEmpty())
+				return;
+
+			boolean scrollEnd = false;
+			try {
+				if (view.getLastVisiblePosition() == view
+						.getPositionForView(vFooter)) {
+					scrollEnd = true;
+				}
+			} catch (Exception e) {
+				scrollEnd = true;
+			}
+			int footerState = StringUtils.toInt(pvBBSSections.getTag());
+			if (scrollEnd && (footerState == UIHelper.LISTVIEW_DATA_MORE)) {
+				pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+				vFooterTextView.setText(R.string.load_ing);
+				vFooterProgressBar.setVisibility(View.VISIBLE);
+				actionType = UIHelper.LISTVIEW_ACTION_SCROLL;
+				int pageIndex = lvBBSSectionSum / PAGE_SIZE;
+				/*
+				 * loadBBSSectionData(pageIndex, lvBBSSectionHandler,
+				 * UIHelper.LISTVIEW_ACTION_SCROLL);
+				 */
+				new BBSSectionAsyncTask().execute(pageIndex, 0);
+			}
+		}
+
+	}
+
+	private class BBSSectionAsyncTask extends
+			AsyncTask<Integer, Void, List<BBSSection>> {
+		@Override
+		protected List<BBSSection> doInBackground(Integer... params) {
+			try {
+				Log.i("main", "do");
+				List<BBSSection> list = appContext.getBBSSectionList(params[0],
+						displayFlag, params[1],
+						actionType == UIHelper.LISTVIEW_ACTION_REFRESH);
+				Log.i("section", "do complete");
+				return list;
+			} catch (AppException e) {
+				vFooterTextView.setText(R.string.load_more);
+				pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_MORE);
+				e.makeToast(getActivity());
+				return null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(List<BBSSection> list) {
+			Log.i("bbssection", "postexecute");
+			vFooterProgressBar.setVisibility(View.GONE);
+			if (list.isEmpty()) {
+				vFooterTextView.setText(R.string.bbs_section_null);
+				if (actionType != UIHelper.LISTVIEW_ACTION_INIT)
+					UIHelper.ToastMessage(getActivity(), "还没有加入讨论组，收藏校园招聘试试？");
+			} else {
+				Log.i("bbssection", "not empty");
+				Log.i("bbssection", "list size is " + list.size());
+				if (list.size() < AppConfig.PAGE_SIZE) {
+					vFooterTextView.setText(R.string.load_full);
+					pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_FULL);
+				} else if (list.size() == AppConfig.PAGE_SIZE) {
+					vFooterTextView.setText(R.string.load_more);
+					pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_MORE);
+				}
+				if (actionType == UIHelper.LISTVIEW_ACTION_INIT) {
+					lvBBSSectionSum = list.size();
+					appContext.setLvBBSSectionList(list);
+				} else if (actionType == UIHelper.LISTVIEW_ACTION_REFRESH) {
+					lvBBSSectionSum = list.size();
+					appContext.setLvBBSSectionList(list);
+					pvBBSSections.onRefreshComplete();
+					pvBBSSections.setSelection(0);
+					UIHelper.ToastMessage(getActivity(), "刷新完毕");
+				} else {
+					lvBBSSectionSum += list.size();
+					appContext.getLvBBSSectionList().addAll(list);
+				}
+				appContext.getLvSectionAdapter().setData(
+						appContext.getLvBBSSectionList());
+				appContext.getLvSectionAdapter().notifyDataSetChanged();
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+			Log.i("bbssection", "preexecute");
+			if (vFooterTextView != null) {
+				vFooterTextView.setText(R.string.load_ing);
+				vFooterProgressBar.setVisibility(View.VISIBLE);
+			}
+			Log.i("main", "execute");
+		}
+
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		Log.i("search", "bbs " + query);
+		mSearchView.clearFocus();
+		return false;
+	}
+
+}

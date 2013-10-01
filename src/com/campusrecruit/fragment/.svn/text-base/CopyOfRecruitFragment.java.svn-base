@@ -1,0 +1,466 @@
+package com.campusrecruit.fragment;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.BaseAdapter;
+import android.widget.PopupMenu;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
+
+import com.campusrecruit.activity.MainActivity;
+import com.campusrecruit.adapter.ListViewRecruitAdapter;
+import com.campusrecruit.app.AppConfig;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.bean.CareerTalk;
+import com.campusrecruit.bean.Recruit;
+import com.campusrecruit.common.StringUtils;
+import com.campusrecruit.common.UIHelper;
+import com.campusrecruit.widget.PullToRefreshListView;
+import com.krislq.sliding.R;
+
+@SuppressLint("ValidFragment")
+public class CopyOfRecruitFragment extends BaseFragment implements
+SearchView.OnQueryTextListener{
+
+	private String text;
+	private PullToRefreshListView pvRecruits = null;
+	private View vFooter = null;
+	private TextView vFooterTextView = null;
+	private ProgressBar vFooterProgressBar = null;
+
+	private int lvRecruitSum = 0;
+	private static final int PAGE_SIZE = 20;
+
+	private Handler lvRecruitHandler = null;
+	private Handler lvRecruitDiskHandler = null;
+	private AppContext appContext;
+	
+	private SearchView mSearchView = null;
+	
+	public CopyOfRecruitFragment() {
+
+	}
+
+	public CopyOfRecruitFragment(String text) {
+		this.text = text;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		Log.i("main","recruit fragment init");
+		super.onCreateView(inflater, container, savedInstanceState);
+		appContext = (AppContext) getActivity().getApplication();
+
+		View recruit_view = inflater.inflate(R.layout.recruit_list, null);
+		pvRecruits = (PullToRefreshListView) recruit_view
+				.findViewById(R.id.recruit_listview);
+		vFooter = inflater.inflate(R.layout.listview_footer, null);
+		vFooterTextView = (TextView) vFooter
+				.findViewById(R.id.listview_foot_more);
+		vFooterProgressBar = (ProgressBar) vFooter
+				.findViewById(R.id.listview_foot_progress);
+		vFooterProgressBar.setVisibility(View.GONE);
+
+		pvRecruits.addFooterView(vFooter);
+		initRecruitListView(pvRecruits);
+		Log.i("main","section fragment complete");
+		return recruit_view;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		// initCareerTalkListView(pvCareerTalks);
+		appContext = (AppContext) getActivity().getApplication();
+		setHasOptionsMenu(true);
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.menu_search_sort, menu);
+		MenuItem searchItem = menu.findItem(R.id.action_search);
+		mSearchView = (SearchView) searchItem.getActionView();
+		setupSearchView(searchItem);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()){
+		case R.id.menu_sort:
+			View memuItemView = getActivity().findViewById(R.id.menu_sort);
+			PopupMenu popup = new PopupMenu(getActivity(), memuItemView);
+			MenuInflater inflater = popup.getMenuInflater();
+		    inflater.inflate(R.menu.sort, popup.getMenu());
+		    popup.setOnMenuItemClickListener(menuItemClickListener);
+		    popup.show();
+		}
+		return super.onOptionsItemSelected(item);
+	}
+	
+	private OnMenuItemClickListener menuItemClickListener = new OnMenuItemClickListener(){
+
+		@Override
+		public boolean onMenuItemClick(MenuItem item) {
+			// TODO Auto-generated method stub
+			switch(item.getItemId()){
+			case R.id.sort_by_join:
+				Log.i("sort", "recruit join");
+//				loadSortData(menuFragment.getViewPager().getCurrentItem(), 1);
+				return true;
+			case R.id.sort_by_reply:
+				Log.i("sort", "recruit reply");
+//				loadSortData(menuFragment.getViewPager().getCurrentItem(), 2);
+				return true;
+			case R.id.sort_by_click:
+				Log.i("sort", "recruit click");
+//				loadSortData(menuFragment.getViewPager().getCurrentItem(), 3);
+				return true;
+			default:
+				return false;
+			}
+		}
+		
+	};
+	
+	private void setupSearchView(MenuItem searchItem) {
+
+		if (isAlwaysExpanded()) {
+			mSearchView.setIconifiedByDefault(false);
+		} else {
+			searchItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM
+					| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+		}
+
+		mSearchView.setOnQueryTextListener(this);
+	}
+	
+	protected boolean isAlwaysExpanded() {
+		return false;
+	}
+
+	private void initRecruitListView(PullToRefreshListView listView) {
+
+		Log.i("eee", "init start");
+	/*	 appContext.getLvRecruitListAdapter() = new ListViewRecruitAdapter(getActivity(),
+				appContext, appContext.getLvRecruitList(), R.layout.recruit_item);*/
+		
+		listView.setAdapter( appContext.getLvRecruitListAdapter());
+		listView.setOnRefreshListener(new refreshListener());
+		listView.setOnScrollListener(new bottomScrollListener());
+		lvRecruitHandler = this.getLvHandler(pvRecruits,  appContext.getLvRecruitListAdapter(),
+				vFooterTextView, vFooterProgressBar, PAGE_SIZE);
+
+/*		if (appContext.getLvRecruitList().isEmpty()) {
+			Log.i("eee", "start load init");
+			loadRecruitDataFromDisk();
+			// loadRecruitData(0, lvRecruitHandler,
+			// UIHelper.LISTVIEW_ACTION_INIT);
+		}*/
+
+	}
+
+	private class refreshListener implements
+			PullToRefreshListView.OnRefreshListener {
+
+		@Override
+		public void onRefresh() {
+			loadRecruitDataFromInternet(0, lvRecruitHandler,
+					UIHelper.LISTVIEW_ACTION_REFRESH);
+		}
+
+	}
+
+	private class bottomScrollListener implements OnScrollListener {
+
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+			pvRecruits.onScroll(view, firstVisibleItem, visibleItemCount,
+					totalItemCount);
+
+		}
+
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+			Log.i("rf", "onScrollStateChanged");
+			pvRecruits.onScrollStateChanged(view, scrollState);
+			if (appContext.getLvRecruitList().isEmpty())
+				return;
+
+			boolean scrollEnd = false;
+			try {
+				if (view.getLastVisiblePosition() == view
+						.getPositionForView(vFooter)) {
+					scrollEnd = true;
+				}
+			} catch (Exception e) {
+				scrollEnd = false;
+			}
+			int footerState = StringUtils.toInt(pvRecruits.getTag());
+			if (scrollEnd && (footerState == UIHelper.LISTVIEW_DATA_MORE)) {
+				Log.i("test", "scorllEnd datamore");
+				pvRecruits.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+				vFooterTextView.setText(R.string.load_ing);
+				vFooterProgressBar.setVisibility(View.VISIBLE);
+
+				int pageIndex = lvRecruitSum / PAGE_SIZE;
+				loadRecruitDataFromInternet(pageIndex, lvRecruitHandler,
+						UIHelper.LISTVIEW_ACTION_SCROLL);
+			}
+		}
+
+	}
+
+	private void loadRecruitDataFromInternet(final int pageIndex, final Handler handler, final int action) {
+		Log.i("rf", String.format("loadRecruitData %d", pageIndex));
+		new Thread() {
+
+			@Override
+			public void run() {
+				Message msg = new Message();
+				try {
+					List<Recruit> list = appContext
+							.getRecruitListFromInternet(pageIndex, AppConfig.SORT_BY_CREATED_TIME);
+					Log.i("eee list", list.size() + "");
+					msg.what = list.size();
+					msg.obj = list;
+				} catch (Exception e) {
+					e.printStackTrace();
+					msg.what = -1;
+					msg.obj = e;
+				}
+				msg.arg1 = action;
+				msg.arg2 = UIHelper.LISTVIEW_DATATYPE_RECRUIT;
+
+				handler.sendMessage(msg);
+			}
+
+		}.start();
+
+	}
+
+	private Handler getLvHandler(final PullToRefreshListView lv,
+			final BaseAdapter adapter, final TextView more,
+			final ProgressBar progress, final int pageSize) {
+		return new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				Log.i("test", "handle message datamore");
+				if (msg.what > 0) {
+					handleRecruitData((List<Recruit>)msg.obj);
+					if (msg.what < pageSize) {
+						lv.setTag(UIHelper.LISTVIEW_DATA_FULL);
+						adapter.notifyDataSetChanged();
+						more.setText(R.string.load_full);
+					} else if (msg.what == pageSize) {
+						lv.setTag(UIHelper.LISTVIEW_DATA_MORE);
+						adapter.notifyDataSetInvalidated();
+						more.setText(R.string.load_more);
+					}
+				} else if (msg.what == -1) {
+					lv.setTag(UIHelper.LISTVIEW_DATA_FULL);
+					more.setText(R.string.load_error);
+				}
+				if (adapter.getCount() == 0) {
+					lv.setTag(UIHelper.LISTVIEW_DATA_EMPTY);
+					more.setText(R.string.load_empty);
+				}
+				progress.setVisibility(View.GONE);
+				if (msg.arg1 == UIHelper.LISTVIEW_ACTION_REFRESH) {
+					lv.onRefreshComplete(getString(R.string.pull_to_refresh_update)
+							+ new Date().toLocaleString());
+					lv.setSelection(0);
+				}
+			}
+
+		};
+	}
+	
+	public void handleRecruitData(
+			List<Recruit> internetList) {
+		Log.i("main", "handle recruit data");
+		List<Recruit> newList = new ArrayList<Recruit>();
+		int count = 0;
+		// 计算更新数据
+		if (appContext.getLvRecruitList().isEmpty()) {
+			count = internetList.size();
+			newList.addAll(internetList);
+		} else {
+			for (Recruit c1 : internetList) {
+				boolean flag = false;
+				for (Recruit c2 : appContext.getLvRecruitList()) {
+					if (c1.getRecruitID() == c2.getRecruitID()) {
+						if (c2.getIsJoined() == 1)
+							c1.setIsJoined(1);
+						appContext.getLvRecruitList().remove(c2);
+						newList.add(c1);
+						flag = true;
+						break;
+					}
+					if (!flag) {
+						newList.add(c1);
+						count++;
+					}
+				}
+			}
+		}
+
+		if (count > 0) {
+			Toast.makeText(
+					getActivity(),
+					getString(R.string.new_data_str_toast_message, "校园招聘",
+							count), Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(getActivity(), getString(R.string.new_data_toast_none),
+					Toast.LENGTH_SHORT).show();
+		}
+
+		appContext.getLvRecruitList().addAll(newList);
+		appContext.saveRecruitList(newList);
+	}
+
+	@Override
+	public boolean onQueryTextChange(String arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		// TODO Auto-generated method stub
+		Log.i("search", "recruit " + query);
+		mSearchView.clearFocus();
+		return false;
+	}
+
+/*	public void handleLvData(int what, Object object, int objectType,
+			int actionType) {
+		List<Recruit> newList = new ArrayList<Recruit>(); 
+		switch (actionType) {
+		case UIHelper.LISTVIEW_ACTION_INIT:
+		case UIHelper.LISTVIEW_ACTION_REFRESH:
+			switch (objectType) {
+			case UIHelper.LISTVIEW_DATATYPE_RECRUIT:
+				List<Recruit> list = (List<Recruit>) object;
+
+				Log.i("handle appContext.getLvRecruitList() ", list.size() + "  ; what : " + what);
+				Log.i("appContext.getLvRecruitList() size", appContext.getLvRecruitList().size() + "");
+				Log.i("action", actionType + "");
+
+				lvRecruitSum = what;
+				if (actionType == UIHelper.LISTVIEW_ACTION_REFRESH) {
+					if (appContext.getLvRecruitList().size() > 0) {
+						for (Recruit r1 : list) {
+							boolean b = false;
+							for (Recruit r2 : appContext.getLvRecruitList()) {
+								if (r1.getRecruitID() == r2.getRecruitID() 
+										&& r1.getReplies() == r2.getReplies() 
+										&& r1.getJoins() == r2.getJoins()) {
+									b = true;
+									break;
+								}
+							}
+							if (!b) {
+								newList.add(r1);
+							}
+						}
+					} else {
+						appContext.getLvRecruitList().clear();
+						newList.addAll(list);
+					}
+				}
+				Log.i("appContext.getLvRecruitList() ", appContext.getLvRecruitList().size() + "");
+				break;
+			}
+			if (actionType == UIHelper.LISTVIEW_ACTION_REFRESH) {
+				if (newList.size() > 0) {
+					Toast.makeText(
+							getActivity(),
+							getString(R.string.new_data_toast_message, newList.size()),
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(getActivity(),
+							getString(R.string.new_data_toast_none),
+							Toast.LENGTH_SHORT).show();
+				}
+			}
+			break;
+		case UIHelper.LISTVIEW_ACTION_SCROLL:
+			switch (objectType) {
+			case UIHelper.LISTVIEW_DATATYPE_RECRUIT:
+				List<Recruit> list = (List<Recruit>) object;
+				lvRecruitSum += what;
+				if (appContext.getLvRecruitList().size() > 0) {
+					for (Recruit r1 : list) {
+						boolean b = false;
+						for (Recruit r2 : appContext.getLvRecruitList()) {
+							if (r1.getRecruitID() == r2.getRecruitID()) {
+								b = true;
+								break;
+							}
+						}
+						if (!b) {
+							newList.add(r1);
+						}
+					}
+				} else{
+					newList.addAll(list);
+					break;
+				}
+				break;
+			}
+		}
+		Log.i("rf", "save data");
+		appContext.getLvRecruitList().addAll(newList);
+		appContext.saveRecruitList(newList);
+	}*/
+
+	/*
+	 * private RecruitList getLvRecruitList(int pageIndex, boolean isRefresh){
+	 * 
+	 * Recruit r = new Recruit(); r.setRecruitID("123456");
+	 * r.setCompanyName("baidu"); r.setPlace("Beijing");
+	 * r.setStartTime("2013-3-4"); r.setEndTime("2013-5-4");
+	 * r.setPosition("JAVA"); r.setJoins(2); r.setReplies(0);
+	 * 
+	 * Recruit rr = new Recruit(); rr.setRecruitID("23456");
+	 * rr.setCompanyName("Sina"); rr.setPlace("上海");
+	 * rr.setStartTime("2013-3-4"); rr.setEndTime("2013-5-4");
+	 * rr.setPosition("Python"); rr.setJoins(0); rr.setReplies(4);
+	 * 
+	 * 
+	 * List<Recruit> li = new ArrayList<Recruit>(); li.add(r); li.add(rr);
+	 * 
+	 * RecruitList l = new RecruitList(); l.setPageSize(2);
+	 * l.setRecruitCount(2); l.setRecruitList(li);
+	 * 
+	 * 
+	 * return l; }
+	 */
+}

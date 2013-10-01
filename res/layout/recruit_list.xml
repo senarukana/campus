@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="@color/lightwhite"
+    >
+    <include layout="@layout/search_header"  android:layout_alignParentTop="true"/>
+	
+    <com.campusrecruit.widget.PullToRefreshListView
+        android:id="@+id/recruit_listview"
+	    style="@style/widget_listview" />
+    
+	<include android:visibility="gone" layout="@layout/loading_footer"/>
+	<LinearLayout android:id="@+id/bottom_menu"
+        android:layout_width="fill_parent" android:layout_height="wrap_content"         
+        android:orientation="vertical" android:layout_alignParentBottom="true">
+        <include layout="@layout/search_footer"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,160 @@
+package com.campusrecruit.bean;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.campusrecruit.app.AppException;
+
+import android.net.ParseException;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class BBSTopic implements Serializable{
+	private int topicID;
+	private int type;
+	private String title;
+	private String body;
+	private String createdTime;
+	private String modifiedTime;
+	private String userID;
+	private String userName;
+	private String userFace;
+	private int replies;
+	private int clicks;
+	private int status;
+	private String lastReplyTime;
+	private List<BBSReply> replyList;
+	public List<BBSReply> getReplyList() {
+		return replyList;
+	}
+	public void setReplyList(List<BBSReply> replyList) {
+		this.replyList = replyList;
+	}
+
+	public int getTopicID() {
+		return topicID;
+	}
+	public void setTopicID(int topicID) {
+		this.topicID = topicID;
+	}
+	public int getType() {
+		return type;
+	}
+	public void setType(int type) {
+		this.type = type;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getBody() {
+		return body;
+	}
+	public void setBody(String body) {
+		this.body = body;
+	}
+	public String getCreatedTime() {
+		return createdTime;
+	}
+	public void setCreatedTime(String createdTime) {
+		this.createdTime = createdTime;
+	}
+	public String getModifiedTime() {
+		return modifiedTime;
+	}
+	public void setModifiedTime(String modifiedTime) {
+		this.modifiedTime = modifiedTime;
+	}
+	public String getUserID() {
+		return userID;
+	}
+	public void setUserID(String userID) {
+		this.userID = userID;
+	}
+	public int getReplies() {
+		return replies;
+	}
+	public void setReplies(int replies) {
+		this.replies = replies;
+	}
+	public int getClicks() {
+		return clicks;
+	}
+	public void setClicks(int clicks) {
+		this.clicks = clicks;
+	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	public String getLastReplyTime() {
+		return lastReplyTime;
+	}
+	public void setLastReplyTime(String lastReplyTime) {
+		this.lastReplyTime = lastReplyTime;
+	}
+	
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+	public String getUserFace() {
+		return userFace;
+	}
+	public void setUserFace(String userFace) {
+		this.userFace = userFace;
+	}
+	
+	public static BBSTopic parseBase(JSONObject topicJsonObject) throws AppException {
+		try {
+			BBSTopic bbsTopic = new BBSTopic();
+			bbsTopic.topicID = topicJsonObject.getInt("id");
+			bbsTopic.createdTime = topicJsonObject.getString("createdTime");
+			bbsTopic.title = topicJsonObject.getString("title");
+			bbsTopic.lastReplyTime = topicJsonObject.getString("lastReplyTime");
+			bbsTopic.userName = topicJsonObject.getString("userName");
+			bbsTopic.clicks = topicJsonObject.getInt("clicks");
+			bbsTopic.replies = topicJsonObject.getInt("replies");
+			return bbsTopic;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw AppException.json(e);
+		}
+	}
+	
+	public static BBSTopic parseDetail(JSONObject topicJsonObject) throws AppException {
+		try {
+			BBSTopic bbsTopic = parseBase(topicJsonObject);
+			bbsTopic.body = topicJsonObject.getString("body");
+			bbsTopic.userID = topicJsonObject.getString("userID");
+			return bbsTopic;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw AppException.json(e);
+		}
+	}
+	
+	
+	public static BBSTopic parseNotice(JSONObject object) throws AppException {
+		try {
+			JSONObject topicJsonObject = object.getJSONObject("Topic");
+			BBSTopic bbsTopic = parseBase(topicJsonObject);
+			return bbsTopic;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			throw AppException.json(e);
+		}
+	}
+}

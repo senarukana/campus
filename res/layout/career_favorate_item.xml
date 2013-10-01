@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/career_favorate_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+   android:background="@color/lightwhite"
+    android:gravity="right"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/career_favorate_date_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/career_favorate_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:paddingTop="10dp"
+            android:text="8月30日 "
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_vertical_margin"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:src="@drawable/line" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/career_favorate_click_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <ImageView
+                android:id="@+id/career_favoratenew_flag"
+                android:layout_width="14.0dip"
+                android:layout_height="14.0dip"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="2dip"
+                android:src="@drawable/widget_today_icon"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/career_favorate_company_name"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:text="百度"
+                android:textColor="#1E90FF"
+                android:textSize="18sp" />
+
+           <Button
+                android:id="@+id/career_favorate_cancel"
+                android:layout_width="80dp"
+                android:layout_height="25dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/button_background"
+                android:text="取消收藏"
+                android:textColor="#FFFFFF"
+                android:textSize="10dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" 
+            android:layout_marginLeft="20dp">
+
+
+            <TextView
+                android:id="@+id/career_favorate_school"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="北京邮电大学"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="-"
+                android:textSize="15sp"
+                 />
+
+            <TextView
+                android:id="@+id/career_favorate_place"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:maxLines="1"
+                android:text="新科研楼9楼913"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp" >
+
+         <TextView
+            android:id="@+id/career_favorate_simple_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8月30日 "
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/career_favorate_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:text="15:00 - 16:30"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</LinearLayout>

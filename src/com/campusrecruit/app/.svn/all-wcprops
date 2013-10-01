@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/120/src/com/campusrecruit/app
+END
+AppException.java
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/app/!svn/ver/11/src/com/campusrecruit/app/AppException.java
+END
+AppContext.java
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/svn/app/!svn/ver/178/src/com/campusrecruit/app/AppContext.java
+END
+AppManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/app/!svn/ver/5/src/com/campusrecruit/app/AppManager.java
+END
+AppConfig.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/app/!svn/ver/178/src/com/campusrecruit/app/AppConfig.java
+END
+AppStart.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/app/!svn/ver/5/src/com/campusrecruit/app/AppStart.java
+END

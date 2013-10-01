@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/backg" >
+
+        <Button
+            android:id="@+id/login_weibo"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="320dp"
+            android:background="@drawable/weibologin"
+            android:onClick="weiboLogin" />
+
+        <ImageView
+            android:id="@+id/welcome_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/login_weibo"
+            android:layout_alignTop="@+id/welcome_register"
+            android:layout_marginRight="18dp"
+            android:onClick="login"
+            android:src="@drawable/qq1" />
+
+        <Button
+            android:id="@+id/welcome_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/login_weibo"
+            android:layout_below="@+id/login_weibo"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            android:onClick="register"
+            android:text="注册"
+            android:textColor="@color/white" />
+
+        <Button
+            android:id="@+id/welcome_just_see"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/welcome_login"
+            android:layout_marginBottom="17dp"
+            android:layout_toLeftOf="@+id/welcome_login"
+            android:layout_toRightOf="@+id/welcome_register"
+            android:onClick="justSee"
+            android:text="随便看看>>"
+            android:textColor="@color/white" />
+
+    </RelativeLayout>
+
+</LinearLayout>

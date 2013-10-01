@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <group android:checkableBehavior="single" >
+        <item 
+            android:id="@+id/sort_by_time_ct"
+            android:title="@string/sort_by_career_time"/>
+        <item
+            android:id="@+id/sort_by_insert_time_ct"
+            android:title="@string/sort_by_insert_time"/>
+        <item
+            android:id="@+id/sort_by_join_ct"
+            android:title="@string/sort_by_join"/>
+        <item
+            android:id="@+id/sort_by_reply_ct"
+            android:title="@string/sort_by_reply"/>
+        <item
+            android:id="@+id/sort_by_click_ct"
+            android:title="@string/sort_by_click"/>
+    </group>
+
+</menu>

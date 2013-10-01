@@ -1,0 +1,593 @@
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/app/!svn/ver/210/res/layout
+END
+schedule_item2.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/2/res/layout/schedule_item2.xml
+END
+schedule_item3.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/2/res/layout/schedule_item3.xml
+END
+title.xml
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/app/!svn/ver/37/res/layout/title.xml
+END
+schedule_item4.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/2/res/layout/schedule_item4.xml
+END
+schedule_item5.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/2/res/layout/schedule_item5.xml
+END
+schedule_item6.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/2/res/layout/schedule_item6.xml
+END
+joblist.xml
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/app/!svn/ver/41/res/layout/joblist.xml
+END
+recruit_detail_info.xml
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/app/!svn/ver/86/res/layout/recruit_detail_info.xml
+END
+empty_data.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/101/res/layout/empty_data.xml
+END
+detail_empty.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/86/res/layout/detail_empty.xml
+END
+bbssection_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/101/res/layout/bbssection_item.xml
+END
+group_postslist_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/app/!svn/ver/2/res/layout/group_postslist_item.xml
+END
+topic_detail.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/7/res/layout/topic_detail.xml
+END
+start.xml
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/app/!svn/ver/175/res/layout/start.xml
+END
+group_post_detail_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/app/!svn/ver/2/res/layout/group_post_detail_item.xml
+END
+welcome.xml
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/app/!svn/ver/86/res/layout/welcome.xml
+END
+popup_window.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/2/res/layout/popup_window.xml
+END
+update_progress.xml
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/17/res/layout/update_progress.xml
+END
+recruit_collect_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/app/!svn/ver/45/res/layout/recruit_collect_header.xml
+END
+login.xml
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/app/!svn/ver/67/res/layout/login.xml
+END
+bbssection_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/101/res/layout/bbssection_list.xml
+END
+career_detail_content.xml
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/app/!svn/ver/17/res/layout/career_detail_content.xml
+END
+topic_pub.xml
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/app/!svn/ver/41/res/layout/topic_pub.xml
+END
+recruit_process.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/101/res/layout/recruit_process.xml
+END
+comment_pub_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/app/!svn/ver/2/res/layout/comment_pub_header.xml
+END
+popup_window_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/2/res/layout/popup_window_item.xml
+END
+recommend_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/app/!svn/ver/194/res/layout/recommend_header.xml
+END
+frame_menu.xml
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/app/!svn/ver/2/res/layout/frame_menu.xml
+END
+recruit_detail.xml
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/101/res/layout/recruit_detail.xml
+END
+recruit_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/103/res/layout/recruit_item.xml
+END
+schedule_fragment.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/2/res/layout/schedule_fragment.xml
+END
+recruit_detail_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/app/!svn/ver/5/res/layout/recruit_detail_header.xml
+END
+recruit_description.xml
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/app/!svn/ver/101/res/layout/recruit_description.xml
+END
+province_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/17/res/layout/province_header.xml
+END
+toggle_button.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/41/res/layout/toggle_button.xml
+END
+comment_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/6/res/layout/comment_list.xml
+END
+recruit_process_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/app/!svn/ver/103/res/layout/recruit_process_header.xml
+END
+recruit_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/45/res/layout/recruit_list.xml
+END
+loadingdialog.xml
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/app/!svn/ver/119/res/layout/loadingdialog.xml
+END
+infor.xml
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/app/!svn/ver/130/res/layout/infor.xml
+END
+widget_dface_border.xml
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/2/res/layout/widget_dface_border.xml
+END
+group_post_send.xml
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/app/!svn/ver/2/res/layout/group_post_send.xml
+END
+careertalk_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/101/res/layout/careertalk_item.xml
+END
+frame_menu_v1.xml
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/app/!svn/ver/101/res/layout/frame_menu_v1.xml
+END
+frame_menu_v1_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/35/res/layout/frame_menu_v1_item.xml
+END
+comment_reply.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/2/res/layout/comment_reply.xml
+END
+schedule_daily_main_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/app/!svn/ver/36/res/layout/schedule_daily_main_item.xml
+END
+pull_to_refresh_head.xml
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/app/!svn/ver/5/res/layout/pull_to_refresh_head.xml
+END
+group_post_detail.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/2/res/layout/group_post_detail.xml
+END
+group_fragment.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/2/res/layout/group_fragment.xml
+END
+comment_listitem.xml
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/7/res/layout/comment_listitem.xml
+END
+joblist_info.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/41/res/layout/joblist_info.xml
+END
+job_detail.xml
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/app/!svn/ver/5/res/layout/job_detail.xml
+END
+careertalk_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/45/res/layout/careertalk_list.xml
+END
+frame_context_v.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/137/res/layout/frame_context_v.xml
+END
+listview_footer.xml
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/app/!svn/ver/2/res/layout/listview_footer.xml
+END
+user_topic_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/104/res/layout/user_topic_item.xml
+END
+topic_detail_content.xml
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/app/!svn/ver/17/res/layout/topic_detail_content.xml
+END
+news_listitem.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/86/res/layout/news_listitem.xml
+END
+comment_pub.xml
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/app/!svn/ver/6/res/layout/comment_pub.xml
+END
+recruit_favorate_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/app/!svn/ver/101/res/layout/recruit_favorate_item.xml
+END
+topic_pub_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/41/res/layout/topic_pub_header.xml
+END
+comment_refer.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/2/res/layout/comment_refer.xml
+END
+register.xml
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/app/!svn/ver/67/res/layout/register.xml
+END
+Copy of infor.xml
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/193/res/layout/Copy%20of%20infor.xml
+END
+copy_of_infor.xml
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/app/!svn/ver/210/res/layout/copy_of_infor.xml
+END
+recruit_favorate_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/app/!svn/ver/101/res/layout/recruit_favorate_list.xml
+END
+topic_detail_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/7/res/layout/topic_detail_header.xml
+END
+information.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/17/res/layout/information.xml
+END
+topic_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/app/!svn/ver/45/res/layout/topic_list.xml
+END
+company_info.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/101/res/layout/company_info.xml
+END
+career_detail.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/67/res/layout/career_detail.xml
+END
+recruit_contacts.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/45/res/layout/recruit_contacts.xml
+END
+recommends.xml
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/app/!svn/ver/41/res/layout/recommends.xml
+END
+topic_detail_footer.xml
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/7/res/layout/topic_detail_footer.xml
+END
+career_detail_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/app/!svn/ver/5/res/layout/career_detail_header.xml
+END
+user_topic.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/101/res/layout/user_topic.xml
+END
+fragment_text.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/2/res/layout/fragment_text.xml
+END
+recommend.xml
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/app/!svn/ver/194/res/layout/recommend.xml
+END
+topic_list_header.xml
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/app/!svn/ver/86/res/layout/topic_list_header.xml
+END
+detail_test.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/67/res/layout/detail_test.xml
+END
+activity_tweet.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/5/res/layout/activity_tweet.xml
+END
+aaa.xml
+K 25
+svn:wc:ra_dav:version-url
+V 38
+/svn/app/!svn/ver/9/res/layout/aaa.xml
+END
+topic_listitem.xml
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/app/!svn/ver/45/res/layout/topic_listitem.xml
+END
+recruit_info_test.xml
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/9/res/layout/recruit_info_test.xml
+END
+province_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/58/res/layout/province_item.xml
+END
+activity_test.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/67/res/layout/activity_test.xml
+END
+recommend_body.xml
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/194/res/layout/recommend_body.xml
+END
+schedule_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/2/res/layout/schedule_list.xml
+END
+item_footer.xml
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/67/res/layout/item_footer.xml
+END
+schedule_daily_main.xml
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/app/!svn/ver/36/res/layout/schedule_daily_main.xml
+END
+schedule_main_layout.xml
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/app/!svn/ver/190/res/layout/schedule_main_layout.xml
+END
+detail_footer.xml
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/5/res/layout/detail_footer.xml
+END
+province_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/58/res/layout/province_list.xml
+END
+group_item.xml
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/app/!svn/ver/8/res/layout/group_item.xml
+END
+reply_list.xml
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/app/!svn/ver/6/res/layout/reply_list.xml
+END
+schedule_daily_main_empty.xml
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/app/!svn/ver/36/res/layout/schedule_daily_main_empty.xml
+END
+schedule_item1.xml
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/2/res/layout/schedule_item1.xml
+END

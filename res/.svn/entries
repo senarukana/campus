@@ -1,0 +1,80 @@
+10
+
+dir
+9
+https://10.108.208.64/svn/app/res
+https://10.108.208.64/svn/app
+
+
+
+2013-08-28T07:54:51.670362Z
+9
+test
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+2943c9c9-84af-6b4e-bae3-44d955b8f19e
+
+anim
+dir
+
+drawable
+dir
+
+drawable-hdpi
+dir
+
+drawable-ldpi
+dir
+
+drawable-mdpi
+dir
+
+drawable-xhdpi
+dir
+
+drawable-xxhdpi
+dir
+
+
+
+add
+
+layout
+dir
+
+menu
+dir
+
+raw
+dir
+
+values
+dir
+
+values-sw600dp
+dir
+
+values-sw720dp-land
+dir
+
+values-v11
+dir
+
+values-v14
+dir
+
+xml
+dir
+

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="black">#000000</color>
+	<color name="gray">#808080</color>
+	<!--  <color name="red">#FF0000</color>-->
+	<color name="gold">#FFD700</color>
+	<color name="yellow">#FFFF00</color>
+	<color name="green">#008000</color>
+	<color name="blue">#0000FF</color>
+	<color name="purple">#800080</color>
+	<color name="pink">#FFC0CB</color>
+	<color name="orange">#FFA500</color>
+	<color name="myblue">#1E90FF</color>
+	<color name="lemonyellow">#FFFACD</color>
+	<color name="lightgray">#EBEBEB</color>
+	<color name="lightwhite">#F8F8F8</color>
+	<color name="graywhite">#F5F5F5</color>
+	<color name="grayslate">#708090</color>
+	<color name="lightblue">#1E90FF</color>
+	<color name="lightorange">#F48C12</color>
+	<color name="solid_backgroudcolor">#ffffff</color>
+	
+    <color name="full_transparent">#00000000</color>
+    <color name="half_transparent">#aa000000</color>
+    
+    <color name="bright_foreground_light">#ff000000</color>
+    <color name="bright_foreground_light_inverse">#ffffffff</color>
+    <color name="bright_foreground_light_disabled">#80000000</color>
+    
+    <color name="dim_foreground_light">#808080</color>
+    <color name="dim_foreground_light_disabled">#80323232</color>
+    <color name="dim_foreground_light_inverse">#ff006eaa</color>
+    <color name="dim_foreground_light_inverse_disabled">#80bebebe</color>
+    
+    <color name="head_text">#0e5986</color>
+    <color name="author_text">#0e5986</color>
+    
+    <color name="face_bg">#eef1f4</color>
+    
+    <color name="frame_button_text_nor">#033a5c</color>
+    <color name="frame_button_text_select">#FFFFFF</color>
+    
+    <color name="listitem_transparent">#00000000</color>
+    <color name="listitem_black">#ff000000</color>
+    <color name="listitem_white">#ffffffff</color>
+    <color name="listitem_blue">#0e5986</color>
+    <color name="listitem_gray">#ff9da19e</color>
+    <color name="listitem_green">#ffe3ffc6</color>
+    <color name="listitem_greenyellow">#ff87b869</color>
+    <color name="listitem_yellow">#fffaffbf</color>  
+    
+    <!-- Retrieved via Resources.getColor() and friends. -->
+    <color name="red">#f00</color>
+    <color name="white">#fff</color>
+    <color name="icon">#1E90FF</color>
+
+    <!-- Retrieved via Resources.getDrawable() and friends. -->
+    <drawable name="semi_black">#80000000</drawable>
+
+    <!-- Activity background color -->
+    <drawable name="class_zero_background">#7f040000</drawable>
+
+    <!-- text color -->
+    <drawable name="text_color_red">#ffff4444</drawable>
+    <drawable name="text_color_black">#ff000000</drawable>
+    <drawable name="text_color_offwhite">#55ffffff</drawable>
+    <drawable name="text_color_blue">#cc33b5e5</drawable>
+    <color name="text_hairline">#ffaaaaaa</color>
+    <color name="list_background">#fff1f1f1</color>
+    <color name="message_count_color">#66333333</color>
+    <color name="text_color_holo_blue">#cc33b5e5</color>
+
+    <color name="holo_blue_back">#dd33b5e5</color>
+
+    <!-- Chat "sent time" text background -->
+    <color name="timestamp_color">#bf000000</color>
+
+    <!-- the background color used for unread conversation -->
+    <color name="unread_bgcolor">#ffffffff</color>
+    <color name="read_bgcolor">#ffeeeeee</color>
+
+    <color name="vpi__background_holo_dark">#ff000000</color>
+    <color name="vpi__background_holo_light">#fff3f3f3</color>
+    <color name="vpi__bright_foreground_holo_dark">@color/vpi__background_holo_light</color>
+    <color name="vpi__bright_foreground_holo_light">@color/vpi__background_holo_dark</color>
+    <color name="vpi__bright_foreground_disabled_holo_dark">#ff4c4c4c</color>
+    <color name="vpi__bright_foreground_disabled_holo_light">#ffb2b2b2</color>
+    <color name="vpi__bright_foreground_inverse_holo_dark">
+        @color/vpi__bright_foreground_holo_light
+    </color>
+    <color name="vpi__bright_foreground_inverse_holo_light">
+        @color/vpi__bright_foreground_holo_dark
+    </color>
+
+
+    <!--
+    	public static final int item1_bg1=0x7f050037;
+        public static final int item1_bg2=0x7f050038;
+        public static final int item2_bg1=0x7f050039;
+        public static final int item2_bg2=0x7f05003a;
+        public static final int item3_bg1=0x7f05003b;
+        public static final int item3_bg2=0x7f05003c;
+        public static final int item4_bg1=0x7f05003d;
+        public static final int item4_bg2=0x7f05003e;
+        public static final int item5_bg1=0x7f05003f;
+        public static final int item5_bg2=0x7f050040; 
+     -->
+     
+     <color name="item1_bg1">#aa33B5E5</color>
+     <color name="item1_bg2">#aa0099CC</color>
+     <color name="item2_bg1">#aaAA66CC</color>
+     <color name="item2_bg2">#aa9933CC</color>
+     <color name="item3_bg1">#aa99CC00</color>
+     <color name="item3_bg2">#aa669900</color>
+     <color name="item4_bg1">#aaFFBB33</color>
+     <color name="item4_bg2">#aaFF8800</color>
+     <color name="item5_bg1">#aaFF4444</color>
+     <color name="item5_bg2">#aaCC0000</color>
+     <color name="classNameColor">#e6e6e6</color>
+    
+     <color name="feed_seperator_color_light">#ffcccccc</color>
+     <color name="feed_seperator_color_dark">#ff4d4d4d</color>
+	
+     
+    <color name="transparent">#00000000</color>
+    <color name="text_num_gray">#333</color>
+    <color name="dialog_title_blue">#9CCCF7</color>
+    <!-- 
+    <color name="feed_seperator_color_light">#ffff0000</color>
+    <color name="feed_seperator_color_dark">#ff00ff00</color>
+	-->
+    
+</resources>

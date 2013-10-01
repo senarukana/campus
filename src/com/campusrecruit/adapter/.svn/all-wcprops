@@ -1,0 +1,101 @@
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/186/src/com/campusrecruit/adapter
+END
+PostAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/app/!svn/ver/6/src/com/campusrecruit/adapter/PostAdapter.java
+END
+ListViewReplyAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/app/!svn/ver/199/src/com/campusrecruit/adapter/ListViewReplyAdapter.java
+END
+ListViewTopicsAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/app/!svn/ver/95/src/com/campusrecruit/adapter/ListViewTopicsAdapter.java
+END
+GridViewFaceAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/app/!svn/ver/7/src/com/campusrecruit/adapter/GridViewFaceAdapter.java
+END
+MainFragmentAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/app/!svn/ver/139/src/com/campusrecruit/adapter/MainFragmentAdapter.java
+END
+ListViewCareerTalkAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/app/!svn/ver/95/src/com/campusrecruit/adapter/ListViewCareerTalkAdapter.java
+END
+ListProvinceAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/app/!svn/ver/56/src/com/campusrecruit/adapter/ListProvinceAdapter.java
+END
+ListViewReplyByOthers.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/app/!svn/ver/183/src/com/campusrecruit/adapter/ListViewReplyByOthers.java
+END
+ListViewRecruitFavorateAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/app/!svn/ver/95/src/com/campusrecruit/adapter/ListViewRecruitFavorateAdapter.java
+END
+ViewPagerRecruitDetailAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/app/!svn/ver/95/src/com/campusrecruit/adapter/ViewPagerRecruitDetailAdapter.java
+END
+ListViewUserTopicsAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/app/!svn/ver/95/src/com/campusrecruit/adapter/ListViewUserTopicsAdapter.java
+END
+ListViewBBSSectionAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/app/!svn/ver/95/src/com/campusrecruit/adapter/ListViewBBSSectionAdapter.java
+END
+ViewPagerScheduleAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/app/!svn/ver/186/src/com/campusrecruit/adapter/ViewPagerScheduleAdapter.java
+END
+ListViewRecruitAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/app/!svn/ver/95/src/com/campusrecruit/adapter/ListViewRecruitAdapter.java
+END
+ListViewCommentAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/app/!svn/ver/7/src/com/campusrecruit/adapter/ListViewCommentAdapter.java
+END
+ViewPagerAdapter.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/app/!svn/ver/95/src/com/campusrecruit/adapter/ViewPagerAdapter.java
+END

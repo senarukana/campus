@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="@color/lightgray">
+
+    <com.campusrecruit.widget.PullToRefreshListView
+        android:id="@+id/reply_by_other_listview"
+        style="@style/widget_listview_no_divider" />
+	<include layout="@layout/empty_view"/>
+    <include layout="@layout/loading_footer" />
+
+</LinearLayout>

@@ -1,0 +1,107 @@
+package com.campusrecruit.fragment;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.campusrecruit.activity.MainActivity;
+import com.campusrecruit.adapter.ListViewTopicsAdapter;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.bean.BBSTopic;
+import com.campusrecruit.bean.Recruit;
+import com.campusrecruit.common.UIHelper;
+import com.krislq.sliding.R;
+
+import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
+
+@SuppressLint("ValidFragment")
+public class CopyOfUserTopicFragment extends BaseFragment {
+	private ProgressDialog mProgress;
+	AppContext appContext;
+	private ListView lvTopic;
+
+	/*
+	 * @Override public String getText() { return text; }
+	 */
+
+	/*
+	 * public UserTopicFragment(String text, List<BBSTopic> topics) { this.text
+	 * = text; this.topics = topics; }
+	 */
+
+	/*
+	 * public void setData(List<BBSTopic> data) { this.topics = data; }
+	 * 
+	 * public List<BBSTopic> getData() { return topics; }
+	 * 
+	 * public void Display() { if (topics.isEmpty()) {
+	 * 
+	 * } else { lvTopicsAdapter.notifyDataSetChanged(); } }
+	 */
+	
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		View view = inflater.inflate(R.layout.user_topic, null);
+
+		// fill data
+		lvTopic = (ListView) view.findViewById(R.id.user_topic_listview);
+		lvTopic.setAdapter(appContext.getLvUserTopicsAdapter());
+		lvTopic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				BBSTopic topic = null;
+				TextView tv = (TextView) view
+						.findViewById(R.id.topics_listitem_title);
+				topic = (BBSTopic) tv.getTag();
+				// 跳转到主題詳情
+				UIHelper.showTopicDetail(view.getContext(), topic);
+			}
+
+		});
+//		new RecruitFavorateAsyncTask().execute();
+		return view;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		appContext = (AppContext)getActivity().getApplication();
+	}
+
+	/*private class RecruitFavorateAsyncTask extends
+			AsyncTask<Void, Void, List<BBSTopic>> {
+		@Override
+		protected List<BBSTopic> doInBackground(Void... params) {
+			List<BBSTopic> list = appContext.getUserTopics();
+			return list;
+		}
+
+		@Override
+		protected void onPostExecute(List<BBSTopic> list) {
+			mProgress.dismiss();
+			topics = list;
+			lvTopicsAdapter.notifyDataSetChanged();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			mProgress = ProgressDialog.show(getActivity(), null, "获取数据中···",
+					true, true);
+		}
+
+	}*/
+
+}

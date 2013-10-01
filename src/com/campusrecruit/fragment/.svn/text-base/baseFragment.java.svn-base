@@ -1,0 +1,10 @@
+package com.campusrecruit.fragment;
+
+import android.app.Fragment;
+
+public class baseFragment extends Fragment{
+
+	public String getText(){
+		return null;
+	}
+}

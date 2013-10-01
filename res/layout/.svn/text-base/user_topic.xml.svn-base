@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <ListView
+        android:id="@+id/user_topic_listview"
+        style="@style/widget_listview"
+        />
+    <TextView 
+        android:id="@+id/empty_data_user_topic_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:textSize="20sp"
+        android:text="亲，还没有发过贴哦，赶紧加入讨论吧！"
+        android:visibility="gone"
+        android:gravity="center" android:layout_gravity="center"/>
+
+</LinearLayout>

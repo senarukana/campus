@@ -1,0 +1,70 @@
+package com.campusrecruit.fragment;
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.campusrecruit.bean.BBSReply;
+import com.campusrecruit.bean.Company;
+import com.campusrecruit.bean.Recruit;
+import com.krislq.sliding.R;
+
+import android.annotation.SuppressLint;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+@SuppressLint("ValidFragment")
+public class CompanyDetailFragment extends BaseFragment {
+	private Company company = null;
+	private TextView vCompanyName;
+	private TextView vCompanyPlace;
+	private TextView vCompanyIndustry;
+	private TextView vCompanyIntroduction;
+
+	public static CompanyDetailFragment newInstance(Company company) {
+		CompanyDetailFragment fragment = new CompanyDetailFragment();
+		Bundle args = new Bundle();
+		args.putSerializable("company", company);
+		fragment.setArguments(args);
+		return fragment;
+	}
+
+	private void getArgs() {
+		this.company = (Company)getArguments().getSerializable("company");
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getArgs();
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		// inflater the layout
+		Log.i("rd","create Company View");
+		View view = inflater.inflate(R.layout.company_info, null);
+
+		vCompanyName = (TextView) view.findViewById(R.id.company_detail_name);
+		vCompanyPlace = (TextView) view
+				.findViewById(R.id.company_detail_address);
+		vCompanyIndustry = (TextView) view
+				.findViewById(R.id.company_detail_industry);
+		vCompanyIntroduction = (TextView) view
+				.findViewById(R.id.company_detail_info);
+
+		vCompanyName.setText(company.getCompanyName());
+		vCompanyIndustry.setText(company.getIndustry());
+		vCompanyPlace.setText(company.getPlace());
+		vCompanyIntroduction.setText(company.getIntroduction());
+		return view;
+	}
+	
+}

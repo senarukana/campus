@@ -1,0 +1,125 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:baselineAligned="false"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/schedule_sequence"
+                    style="@style/NumberBlock"
+                    android:background="@color/item1_bg1"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/schedule_date"
+                    style="@style/TimeBlock"
+                    android:background="@color/item1_bg2"
+                    android:gravity="center"
+                    android:text="8:00" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:orientation="vertical" >
+                
+                <LinearLayout
+			        style="@style/Block"
+			        android:layout_width="match_parent"
+			        android:layout_height="40dp"
+			        android:background="@color/item1_bg1"
+			        android:gravity="center|left"
+			        android:orientation="horizontal" >
+			
+			        <ImageView
+			            android:id="@+id/imageView1"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginLeft="5dp"
+			            android:src="@drawable/book" />
+			
+			        <TextView
+			            android:id="@+id/schedule_company_name"
+			            android:layout_width="match_parent"
+			            android:layout_height="40dp"
+			            android:layout_marginLeft="5dp"
+			            android:gravity="center_vertical"
+			            android:text="TextView"
+			            android:textColor="@color/classNameColor"
+			            android:textSize="17dp" />
+			    </LinearLayout>
+			    
+                <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="40dp"
+			        android:background="@color/item1_bg2"
+			        android:gravity="center|left"
+			        android:orientation="horizontal" >
+			
+			        <ImageView
+			            android:id="@+id/imageView2"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginLeft="5dp"
+			            android:src="@drawable/clock" />
+			
+			        <TextView
+			            android:id="@+id/schedule_time"
+			            style="@style/defaultTextColor"
+			            android:layout_width="wrap_content"
+			            android:layout_height="match_parent"
+			            android:layout_marginLeft="5dp"
+			            android:gravity="center_vertical"
+			            android:text="TextView" />
+			    </LinearLayout>
+
+			    <LinearLayout
+			        android:layout_width="match_parent"
+			        android:layout_height="40dp"
+			        android:background="@color/item1_bg2"
+			        android:gravity="center_vertical"
+			        android:orientation="horizontal" >
+			
+			        <ImageView
+			            android:id="@+id/imageView3"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"
+			            android:layout_marginLeft="5dp"
+			            android:src="@drawable/location" />
+			
+			        <TextView
+			            android:id="@+id/schedule_place"
+			            style="@style/defaultTextColor"
+			            android:layout_width="match_parent"
+			            android:layout_height="match_parent"
+			            android:layout_marginLeft="5dp"
+			            android:gravity="center_vertical"
+			            android:text="TextView" />
+			    </LinearLayout>
+                
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
+

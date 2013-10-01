@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 23
+/svn/app/!svn/ver/8/bin
+END
+AndroidManifest.xml
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/app/!svn/ver/8/bin/AndroidManifest.xml
+END
+resources.ap_
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/app/!svn/ver/8/bin/resources.ap_
+END
+MainActivityTest.apk
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/app/!svn/ver/8/bin/MainActivityTest.apk
+END
+jarlist.cache
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/app/!svn/ver/7/bin/jarlist.cache
+END
+classes.dex
+K 25
+svn:wc:ra_dav:version-url
+V 35
+/svn/app/!svn/ver/8/bin/classes.dex
+END

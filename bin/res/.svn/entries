@@ -1,0 +1,34 @@
+10
+
+dir
+9
+https://10.108.208.64/svn/app/bin/res
+https://10.108.208.64/svn/app
+
+
+
+2013-08-26T07:03:57.522521Z
+8
+test
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+2943c9c9-84af-6b4e-bae3-44d955b8f19e
+
+drawable-mdpi
+dir
+
+drawable-xhdpi
+dir
+

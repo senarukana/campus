@@ -1,0 +1,185 @@
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/app/!svn/ver/126/src/com/campusrecruit/fragment
+END
+MenuFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/MenuFragment.java
+END
+RecruitFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/RecruitFragment.java
+END
+CopyOfBBSSectionFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/app/!svn/ver/113/src/com/campusrecruit/fragment/CopyOfBBSSectionFragment.java
+END
+CopyOfBaseFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/app/!svn/ver/91/src/com/campusrecruit/fragment/CopyOfBaseFragment.java
+END
+MenuFragment_v1.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/app/!svn/ver/32/src/com/campusrecruit/fragment/MenuFragment_v1.java
+END
+CareerTalkDetailFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/app/!svn/ver/97/src/com/campusrecruit/fragment/CareerTalkDetailFragment.java
+END
+ReplyByOtherUserFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/ReplyByOtherUserFragment.java
+END
+ContentFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/app/!svn/ver/72/src/com/campusrecruit/fragment/ContentFragment.java
+END
+UserInfoFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/UserInfoFragment.java
+END
+CopyOfUserTopicFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/app/!svn/ver/90/src/com/campusrecruit/fragment/CopyOfUserTopicFragment.java
+END
+ScheduleFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/ScheduleFragment.java
+END
+MenuFragment_v.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/app/!svn/ver/97/src/com/campusrecruit/fragment/MenuFragment_v.java
+END
+CopyOfCareerTalkFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/app/!svn/ver/113/src/com/campusrecruit/fragment/CopyOfCareerTalkFragment.java
+END
+CommentsFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/app/!svn/ver/82/src/com/campusrecruit/fragment/CommentsFragment.java
+END
+BBSSectionFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/BBSSectionFragment.java
+END
+CopyOfRecruitFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/app/!svn/ver/113/src/com/campusrecruit/fragment/CopyOfRecruitFragment.java
+END
+baseFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/app/!svn/ver/6/src/com/campusrecruit/fragment/baseFragment.java
+END
+BaseFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/app/!svn/ver/97/src/com/campusrecruit/fragment/BaseFragment.java
+END
+RecruitProcessFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/RecruitProcessFragment.java
+END
+RecruitDetailFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/app/!svn/ver/82/src/com/campusrecruit/fragment/RecruitDetailFragment.java
+END
+ScheduleFragment_v.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/app/!svn/ver/79/src/com/campusrecruit/fragment/ScheduleFragment_v.java
+END
+CompanyDetailFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/app/!svn/ver/82/src/com/campusrecruit/fragment/CompanyDetailFragment.java
+END
+CopyOfRecruitFavoratesFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/app/!svn/ver/106/src/com/campusrecruit/fragment/CopyOfRecruitFavoratesFragment.java
+END
+EmptyFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/app/!svn/ver/100/src/com/campusrecruit/fragment/EmptyFragment.java
+END
+CopyOfMenuFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/app/!svn/ver/107/src/com/campusrecruit/fragment/CopyOfMenuFragment.java
+END
+CareerTalkFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/app/!svn/ver/154/src/com/campusrecruit/fragment/CareerTalkFragment.java
+END
+RecruitsFavoratesFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/app/!svn/ver/72/src/com/campusrecruit/fragment/RecruitsFavoratesFragment.java
+END
+UserTopicFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/UserTopicFragment.java
+END
+ScheduleFragment_v1.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/app/!svn/ver/80/src/com/campusrecruit/fragment/ScheduleFragment_v1.java
+END
+RecruitFavoratesFragment.java
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/app/!svn/ver/171/src/com/campusrecruit/fragment/RecruitFavoratesFragment.java
+END

@@ -1,0 +1,214 @@
+package com.campusrecruit.adapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+import com.campusrecruit.activity.CareerTalkDetailActivity;
+import com.campusrecruit.activity.MainActivity;
+import com.campusrecruit.adapter.PostAdapter.Holder;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.CareerTalk;
+import com.campusrecruit.bean.Result;
+import com.campusrecruit.common.UIHelper;
+import com.krislq.sliding.R;
+
+import android.app.Activity;
+import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class ListViewCareerTalkAdapter extends BaseAdapter{
+	
+	private Context context;
+	private AppContext appContext;
+	private List<CareerTalk> listItem;
+	private LayoutInflater listContainer;
+	private int itemViewResource;
+	
+	static class ListItemView{
+		LinearLayout itemMainLayout;
+		TextView companyName;
+		TextView schoolName;
+		TextView place;
+		TextView time;
+		TextView date;
+
+		LinearLayout repliesLayout;
+		TextView replies;
+		LinearLayout joinsLayout;
+		TextView joins;
+		ImageView joinsImage;
+		LinearLayout shareLayout;
+		
+	}
+	
+	public void setData(List<CareerTalk> data) {
+		this.listItem = data;
+	}
+	
+	public ListViewCareerTalkAdapter(Context context, AppContext appContext, int resource){
+		this.context = context;
+		this.appContext = appContext;
+		this.listContainer = LayoutInflater.from(context);
+		this.listItem = new ArrayList<CareerTalk>();
+		this.itemViewResource = resource;
+	}
+
+	@Override
+	public int getCount() {
+		return this.listItem.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return null;
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return 0;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		ListItemView holder = null;
+		if(convertView == null){
+			holder = new ListItemView();
+			
+			convertView = this.listContainer.inflate(this.itemViewResource, null);
+			holder.itemMainLayout = (LinearLayout)convertView.findViewById(R.id.careertalk_item_main);
+			holder.companyName = (TextView)convertView.findViewById(R.id.career_company_name);
+			holder.schoolName = (TextView)convertView.findViewById(R.id.career_school);
+			holder.place = (TextView)convertView.findViewById(R.id.career_place);
+			holder.time = (TextView)convertView.findViewById(R.id.career_time);
+			holder.date = (TextView)convertView.findViewById(R.id.career_talk_date);
+			
+			holder.repliesLayout = (LinearLayout)convertView.findViewById(R.id.item_replies_layout);
+			holder.replies = (TextView)convertView.findViewById(R.id.item_replies);
+			holder.joinsLayout = (LinearLayout)convertView.findViewById(R.id.item_joins_layout);
+			holder.joins = (TextView)convertView.findViewById(R.id.item_joins);
+			holder.joinsImage = (ImageView)convertView.findViewById(R.id.item_joins_image);
+			holder.shareLayout = (LinearLayout)convertView.findViewById(R.id.item_share_layout);
+			
+			convertView.setTag(holder);
+		}else{
+			holder = (ListItemView) convertView.getTag();
+		}
+		CareerTalk careerTalk = this.listItem.get(position);
+		holder.companyName.setText(careerTalk.getCompanyName());
+		holder.companyName.setTag(careerTalk.getCareerTalkID());
+		holder.schoolName.setText(careerTalk.getSchoolName());
+		holder.place.setText(careerTalk.getPlace());
+		holder.time.setText(careerTalk.getTime());
+		holder.joins.setText(careerTalk.getJoins()+"");
+		holder.replies.setText(careerTalk.getReplies()+"");
+		holder.date.setText(careerTalk.getDate());
+		
+		
+		if (careerTalk.getIsJoined() == 1)
+			holder.joinsImage.setImageDrawable(context.getResources().getDrawable((R.drawable.star1)));
+		else
+			holder.joinsImage.setImageDrawable(context.getResources().getDrawable((R.drawable.star)));
+		
+		holder.itemMainLayout.setOnClickListener(new DetailListener(careerTalk));
+		holder.joinsLayout.setOnClickListener(new JoinsListener(careerTalk, holder.joinsImage, holder.joins));
+		holder.repliesLayout.setOnClickListener(new RepliesListener(careerTalk));
+		holder.shareLayout.setOnClickListener(new ShareListener(careerTalk));
+		
+		return convertView;
+	}
+	
+	private class DetailListener implements OnClickListener{
+		private CareerTalk careerTalk;
+		public DetailListener(CareerTalk careerTalk) {
+			this.careerTalk = careerTalk;
+		}
+		@Override
+		public void onClick(View v) {
+			// 跳转到宣讲会详情
+			UIHelper.showCareerTalkDetail(context, careerTalk, true);
+		}
+		
+	}
+	
+	private class ShareListener implements OnClickListener{
+		public ShareListener(CareerTalk careerTalk) {
+			this.careerTalk = careerTalk;
+		}
+		private CareerTalk careerTalk;
+		@Override
+		public void onClick(View v) {
+			//分享招聘信息
+			UIHelper.showShareCareerTalkDialog((Activity)context, careerTalk);
+		}
+		
+	}
+	
+	private class JoinsListener implements OnClickListener{
+		public JoinsListener(CareerTalk careerTalk, ImageView vJoinsImage, TextView vJoinsText) {
+			this.careerTalk = careerTalk;
+			this.vJoinsImage = vJoinsImage;
+			this.vJoinsText = vJoinsText;
+		}
+		private CareerTalk careerTalk;
+		private ImageView vJoinsImage;
+		private TextView vJoinsText;
+		@Override
+		public void onClick(View v) {
+			if (careerTalk.getIsJoined() == 1) {
+				vJoinsImage.setImageDrawable(context.getResources().getDrawable((R.drawable.star)));
+				careerTalk.setIsJoined(0);
+				vJoinsText.setText((Integer.parseInt(vJoinsText.getText().toString()) - 1) + "");
+				UIHelper.ToastMessage(context, "取消收藏");
+				appContext.caeerTalkJoin(careerTalk, false);
+			}else{
+				vJoinsImage.setImageDrawable(context.getResources().getDrawable((R.drawable.star1)));
+				vJoinsText.setText((Integer.parseInt(vJoinsText.getText().toString()) + 1) + "");
+				careerTalk.setIsJoined(1);
+				UIHelper.ToastMessage(context, "收藏成功");
+				appContext.caeerTalkJoin(careerTalk, true);
+			}
+			new Thread() {
+				public void run() {
+					try {
+						if (careerTalk.getIsJoined() == 1) {
+							appContext.joinCareerTalk(careerTalk.getCareerTalkID(), true);
+						} else {
+							appContext.joinCareerTalk(careerTalk.getCareerTalkID(), false);
+						}
+					} catch (AppException e) {
+						e.printStackTrace();
+					}
+				}
+			}.start();
+			careerTalk.setJoins(Integer.parseInt(vJoinsText.getText().toString()));
+			notifyDataSetChanged();
+		}
+		
+	}
+	
+	private class RepliesListener implements OnClickListener{
+		public RepliesListener(CareerTalk careerTalk) {
+			this.careerTalk = careerTalk;
+		}
+		private CareerTalk careerTalk;
+		@Override
+		public void onClick(View v) {
+			// 跳转到招聘详情
+			UIHelper.showCareerTalkDetail(context, careerTalk, false);
+		}
+		
+	}
+
+}

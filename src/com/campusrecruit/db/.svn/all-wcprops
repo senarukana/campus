@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/app/!svn/ver/9/src/com/campusrecruit/db
+END
+DBManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/app/!svn/ver/96/src/com/campusrecruit/db/DBManager.java
+END
+RecruitManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 65
+/svn/app/!svn/ver/96/src/com/campusrecruit/db/RecruitManager.java
+END
+DBHelper.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/app/!svn/ver/96/src/com/campusrecruit/db/DBHelper.java
+END
+CopyOfCareerTalkManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/app/!svn/ver/108/src/com/campusrecruit/db/CopyOfCareerTalkManager.java
+END
+TruncatableManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/app/!svn/ver/88/src/com/campusrecruit/db/TruncatableManager.java
+END
+CareerTalkManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/app/!svn/ver/22/src/com/campusrecruit/db/CareerTalkManager.java
+END
+BBSTopicManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/app/!svn/ver/96/src/com/campusrecruit/db/BBSTopicManager.java
+END

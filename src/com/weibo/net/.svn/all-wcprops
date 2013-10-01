@@ -1,0 +1,113 @@
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/app/!svn/ver/5/src/com/weibo/net
+END
+WeiboDialog.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/5/src/com/weibo/net/WeiboDialog.java
+END
+XAuthHeader.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/5/src/com/weibo/net/XAuthHeader.java
+END
+Utility.java
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/svn/app/!svn/ver/5/src/com/weibo/net/Utility.java
+END
+RequestToken.java
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/app/!svn/ver/5/src/com/weibo/net/RequestToken.java
+END
+Weibo.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/5/src/com/weibo/net/Weibo.java
+END
+Oauth2AccessTokenHeader.java
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/app/!svn/ver/5/src/com/weibo/net/Oauth2AccessTokenHeader.java
+END
+WeiboException.java
+K 25
+svn:wc:ra_dav:version-url
+V 57
+/svn/app/!svn/ver/5/src/com/weibo/net/WeiboException.java
+END
+WeiboDialogListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/app/!svn/ver/5/src/com/weibo/net/WeiboDialogListener.java
+END
+AccessTokenHeader.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/app/!svn/ver/5/src/com/weibo/net/AccessTokenHeader.java
+END
+DialogError.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/5/src/com/weibo/net/DialogError.java
+END
+AsyncWeiboRunner.java
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/app/!svn/ver/5/src/com/weibo/net/AsyncWeiboRunner.java
+END
+RequestHeader.java
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/svn/app/!svn/ver/5/src/com/weibo/net/RequestHeader.java
+END
+Oauth2AccessToken.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/app/!svn/ver/5/src/com/weibo/net/Oauth2AccessToken.java
+END
+Token.java
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/app/!svn/ver/5/src/com/weibo/net/Token.java
+END
+RequestTokenHeader.java
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/app/!svn/ver/5/src/com/weibo/net/RequestTokenHeader.java
+END
+AccessToken.java
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/app/!svn/ver/5/src/com/weibo/net/AccessToken.java
+END
+HttpHeaderFactory.java
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/app/!svn/ver/5/src/com/weibo/net/HttpHeaderFactory.java
+END
+WeiboParameters.java
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/app/!svn/ver/5/src/com/weibo/net/WeiboParameters.java
+END

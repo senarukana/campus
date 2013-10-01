@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:orientation="horizontal" 
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants" 
+    android:paddingLeft="6dip"
+    android:paddingRight="6dip"
+    android:paddingTop="8dip"
+    android:paddingBottom="7dip">   
+
+    <LinearLayout 
+    	android:orientation="vertical" 
+        android:layout_width="wrap_content"  
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dip"> 
+        
+        <TextView android:id="@+id/user_id" 
+	        android:layout_width="fill_parent" 
+	     	android:layout_height="wrap_content"
+	     	android:textStyle="bold"
+	     	android:textSize="@dimen/text_size_10"
+	     	android:textColor="@color/listitem_black"
+	     	android:singleLine="true"
+	     	android:text="zx150842"/> 
+	     	
+        <ImageView android:id="@+id/user_img"
+            android:layout_width="fill_parent" 
+	     	android:layout_height="wrap_content"
+	     	android:layout_gravity="left|center"
+	   		android:clickable="true"
+	   		android:src="@drawable/icon"/>
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+    	android:orientation="vertical" 
+        android:layout_width="fill_parent"  
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dip"> 
+	
+	    <LinearLayout 
+	    	android:orientation="horizontal" 
+	        android:layout_width="fill_parent"  
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="8dip">   
+	       	
+	        <TextView 
+	    		android:layout_width="wrap_content" 
+	           	android:layout_height="wrap_content" 
+	           	android:text="发帖人："
+	           	android:textSize="@dimen/text_size_15"
+	            android:textColor="@color/listitem_gray"/>
+	        
+	       	<TextView android:id="@+id/addresser"  
+	    		android:layout_width="wrap_content" 
+	           	android:layout_height="wrap_content" 
+	           	android:textSize="@dimen/text_size_15"
+	            android:textColor="@color/listitem_gray"/>	
+	    </LinearLayout>
+	    
+	    <LinearLayout 
+	    	android:orientation="horizontal" 
+	        android:layout_width="fill_parent"  
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="8dip"> 
+	        
+	        <TextView
+	    		android:layout_width="wrap_content" 
+	           	android:layout_height="wrap_content" 
+	           	android:textSize="@dimen/text_size_15"
+	            android:textColor="@color/listitem_gray"
+	            android:text="发帖时间："/>
+	       	
+	       	<TextView android:id="@+id/post_date"  
+	    		android:layout_width="wrap_content" 
+	           	android:layout_height="wrap_content"
+	           	android:layout_marginLeft="2dip" 
+	           	android:textSize="@dimen/text_size_15"
+	            android:textColor="@color/listitem_gray"/>    
+		</LinearLayout>
+		
+	    <TextView android:id="@+id/post_text"
+	    		android:layout_width="wrap_content" 
+	           	android:layout_height="wrap_content" 
+	           	android:textSize="@dimen/text_size_15"
+	            android:textColor="@color/listitem_gray"
+	            android:text="hello"/>
+	    
+	</LinearLayout>
+        
+</LinearLayout> 

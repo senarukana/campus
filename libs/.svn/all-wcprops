@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 24
+/svn/app/!svn/ver/2/libs
+END
+android-support-v4.jar
+K 25
+svn:wc:ra_dav:version-url
+V 47
+/svn/app/!svn/ver/2/libs/android-support-v4.jar
+END
+Android_SDK_v1.2_Fix.jar
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/app/!svn/ver/2/libs/Android_SDK_v1.2_Fix.jar
+END
+httpmime-4.1.3.jar
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/app/!svn/ver/2/libs/httpmime-4.1.3.jar
+END
+commons-httpclient-3.1.jar
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/app/!svn/ver/2/libs/commons-httpclient-3.1.jar
+END

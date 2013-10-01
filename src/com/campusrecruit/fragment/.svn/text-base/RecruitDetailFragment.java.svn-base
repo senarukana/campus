@@ -1,0 +1,125 @@
+package com.campusrecruit.fragment;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.Company;
+import com.campusrecruit.bean.Recruit;
+import com.campusrecruit.common.UIHelper;
+import com.krislq.sliding.R;
+
+/**
+ * 新闻详情
+ * 
+ * @author liux (http://my.oschina.net/liux)
+ * @version 1.0
+ * @created 2012-3-21
+ */
+@SuppressLint("ValidFragment")
+public class RecruitDetailFragment extends BaseFragment {
+
+	private String text;
+/*	private FrameLayout vHead;
+	private ImageView vHome;
+	private ImageView vRefresh;
+	private TextView vHeadTitle;*/
+	private TextView vRecruitDetail;
+	
+	private TextView vReplies;
+	private TextView vJoins;
+
+	TextView vCompanyName;
+	TextView vCreatedTime;
+	TextView vPosition;
+	TextView vPlace;
+	TextView vCompanyIndustry;
+	TextView vCompanyType;
+
+	// private TextView vTitle;
+	// private TextView vPubDate;
+	// private TextView vReplyCount;
+
+
+	private Recruit recruitDetail;
+	public RecruitDetailFragment(){}
+	
+	public static RecruitDetailFragment newInstance(Recruit recruitDetail) {
+		RecruitDetailFragment fragment = new RecruitDetailFragment();
+		Bundle args = new Bundle();
+		args.putSerializable("recruitDetail", recruitDetail);
+		fragment.setArguments(args);
+		return fragment;
+	}
+
+	private void getArgs() {
+		this.recruitDetail = (Recruit)getArguments().getSerializable("recruitDetail");
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getArgs();
+	}
+	
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		Log.i("rd","create recruit detail View");
+		View recruitDetailView = inflater.inflate(R.layout.recruit_detail, null);
+		
+//		getActivity().getActionBar().setDisplayShowHomeEnabled(false);
+
+		this.initView(recruitDetailView);
+		
+		return recruitDetailView;
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+	}
+	
+	// 初始化视图控件
+	private void initView(View recruitDetailView) {
+		Log.i("ac", "initView");
+
+		/*vHome = (ImageView) recruitDetailView.findViewById(R.id.recruit_detail_home);
+		vHead = (FrameLayout) recruitDetailView.findViewById(R.id.recruit_detail_header);
+		vRefresh = (ImageView) recruitDetailView.findViewById(R.id.recruit_detail_refresh);
+		vHeadTitle = (TextView) recruitDetailView.findViewById(R.id.recruit_detail_head_title);*/
+
+		vCompanyName = (TextView) recruitDetailView.findViewById(R.id.recruit_company_name);
+		vCreatedTime = (TextView) recruitDetailView.findViewById(R.id.recruit_created_time);
+		vPosition = (TextView) recruitDetailView.findViewById(R.id.recruit_position);
+		vPlace = (TextView) recruitDetailView.findViewById(R.id.recruit_place);
+		vCompanyType = (TextView) recruitDetailView.findViewById(R.id.recruit_company_type);
+		vCompanyIndustry = (TextView) recruitDetailView.findViewById(R.id.recruit_company_industry);
+		vRecruitDetail = (TextView) recruitDetailView.findViewById(R.id.recruit_description_info);
+		
+		vCompanyName.setText(recruitDetail.getCompany().getCompanyName());
+		vPosition.setText(recruitDetail.getPosition());
+		vPlace.setText(recruitDetail.getPlace());
+		vCreatedTime.setText(recruitDetail.getCreatedTime());
+		vCompanyIndustry.setText(recruitDetail.getCompany().getIndustry());
+		vCompanyType.setText(recruitDetail.getCompany().getType());
+		vRecruitDetail.setText(recruitDetail.getDescription());
+/*		vJoins.setText(recruitDetail.getJoins() + "");
+		vReplies.setText(recruitDetail.getReplies() + "");*/
+
+		Log.i("ac", "initRecruit");
+
+
+	
+	}
+
+}

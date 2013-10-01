@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="fill_parent"
+  	android:layout_height="fill_parent"
+  	android:layout_margin="@dimen/activity_bd_margin"
+  	android:orientation="vertical"
+  	android:background="#EBEBEB">
+
+	<ViewSwitcher
+    	android:id="@+id/career_detail_viewswitcher" 
+    	android:layout_width="fill_parent"
+    	android:layout_height="wrap_content"
+    	android:layout_weight="1">
+	    <ScrollView
+	    	android:id="@+id/career_detail_scrollview" 
+	    	android:layout_width="fill_parent"
+	    	android:layout_height="wrap_content"
+	    	android:layout_margin="@dimen/activity1_bd_margin"
+        	android:background="@drawable/company_info"
+	    	android:layout_weight="1"
+	    	android:scrollbars="vertical"
+	    	android:fadingEdge="none">
+		   <LinearLayout
+		   		android:orientation="vertical"
+		    	android:layout_width="fill_parent" 
+		    	android:layout_height="wrap_content">	  	   	
+				<include layout="@layout/careertalk_item"/>
+				<include layout="@layout/company_info"/>
+	        </LinearLayout>	
+	    </ScrollView>	    	    
+	    <include layout="@layout/comment_list"/>
+	    
+   	</ViewSwitcher>
+   	
+   	<include layout="@layout/detail_footer"/>
+</LinearLayout>

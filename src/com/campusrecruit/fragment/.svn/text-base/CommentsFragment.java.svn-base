@@ -1,0 +1,347 @@
+package com.campusrecruit.fragment;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
+import com.campusrecruit.adapter.ListViewReplyAdapter;
+import com.campusrecruit.app.AppConfig;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.BBSReply;
+import com.campusrecruit.bean.Recruit;
+import com.campusrecruit.common.UIHelper;
+import com.campusrecruit.widget.PullToRefreshListView;
+import com.krislq.sliding.R;
+
+@SuppressLint("ValidFragment")
+public class CommentsFragment extends BaseFragment {
+
+	private String text;
+	// reply list
+	private PullToRefreshListView pvReply;
+	private ListViewReplyAdapter lvReplyAdapter;
+	private List<BBSReply> lvReplyData;
+
+	private View lvReply_footer;
+	private TextView lvReply_foot_more;
+	private ProgressBar lvReply_foot_progress;
+	private int lvSumData;
+
+	private Handler recruitReplyHandler;
+
+	private AppContext appContext;
+	private int topicID;
+	private Recruit recruitDetail;
+
+	private int curLvDataState;
+	private int curLvPosition;// 当前listview选中的item位置
+
+	private ProgressBar vProgressbar;
+	private ScrollView vScrollView;
+
+	public static CommentsFragment newInstance(int topicID, Recruit recruit,
+			ArrayList<BBSReply> lvReplyData) {
+		CommentsFragment fragment = new CommentsFragment();
+		Bundle args = new Bundle();
+		args.putInt("topicID", topicID);
+		args.putSerializable("recruit", recruit);
+		args.putSerializable("replyList", lvReplyData);
+		fragment.setArguments(args);
+		return fragment;
+	}
+
+	private void getArgs() {
+		this.topicID = getArguments().getInt("topicID", 0);
+		this.recruitDetail = (Recruit) getArguments()
+				.getSerializable("recruit");
+		this.lvReplyData = (List<BBSReply>) getArguments().getSerializable(
+				"replyList");
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		getArgs();
+	}
+
+	/*
+	 * public CommentsFragment (int topicID, Recruit recruit, List<BBSReply>
+	 * lvReplyData) { this.topicID = topicID; this.lvReplyData = lvReplyData;
+	 * this.recruitDetail = recruit; }
+	 */
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		Log.i("rd", "create recruit detail View");
+		super.onCreateView(inflater, container, savedInstanceState);
+		View recruitDetailView = inflater.inflate(R.layout.comment_list, null);
+		lvReply_footer = inflater.inflate(R.layout.listview_footer, null);
+		lvReply_foot_more = (TextView) lvReply_footer
+				.findViewById(R.id.listview_foot_more);
+		lvReply_foot_progress = (ProgressBar) lvReply_footer
+				.findViewById(R.id.listview_foot_progress);
+		lvReply_foot_progress.setVisibility(View.GONE);
+
+		pvReply = (PullToRefreshListView) recruitDetailView
+				.findViewById(R.id.comment_list_listview);
+
+		appContext = (AppContext) getActivity().getApplication();
+		initReplyView();
+		return recruitDetailView;
+	}
+
+	// 初始化视图控件
+	private void initReplyView() {
+		Log.i("td", "initReplyView");
+		lvReplyAdapter = new ListViewReplyAdapter(getActivity(), lvReplyData,
+				R.layout.comment_listitem);
+		pvReply.addFooterView(lvReply_footer);// 添加底部视图 必须在setAdapter前
+		pvReply.setAdapter(lvReplyAdapter);
+		pvReply.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// 点击头部、底部栏无效
+				if (position == 0 || view == lvReply_footer)
+					return;
+
+				BBSReply bbsReply = null;
+				// 判断是否是TextView
+				if (view instanceof TextView) {
+					bbsReply = (BBSReply) view.getTag();
+				} else {
+					ImageView img = (ImageView) view
+							.findViewById(R.id.comment_listitem_userface);
+					bbsReply = (BBSReply) img.getTag();
+				}
+				if (bbsReply == null)
+					return;
+
+				// 跳转--回复评论界面
+				UIHelper.showCommentPub(getActivity(), topicID,
+						bbsReply.getReplyID(), bbsReply.getUserName(),
+						bbsReply.getContent());
+			}
+		});
+		pvReply.setOnScrollListener(new AbsListView.OnScrollListener() {
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				PullToRefreshListView mLvReply2 = pvReply;
+				mLvReply2.onScrollStateChanged(view, scrollState);
+
+				// 数据为空--不用继续下面代码了
+				if (lvReplyData.size() == 0)
+					return;
+
+				// 判断是否滚动到底部
+				boolean scrollEnd = false;
+				try {
+					if (view.getPositionForView(lvReply_footer) == view
+							.getLastVisiblePosition())
+						scrollEnd = true;
+				} catch (Exception e) {
+					scrollEnd = false;
+				}
+
+				if (scrollEnd && curLvDataState == UIHelper.LISTVIEW_DATA_MORE) {
+					mLvReply2.setTag(UIHelper.LISTVIEW_DATA_LOADING);
+					lvReply_foot_more.setText(R.string.load_ing);
+					lvReply_foot_progress.setVisibility(View.VISIBLE);
+					// 当前pageIndex
+					int pageIndex = lvSumData / AppConfig.PAGE_SIZE;
+					loadLvReplyData(pageIndex, recruitReplyHandler,
+							UIHelper.LISTVIEW_ACTION_SCROLL);
+				}
+			}
+
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				pvReply.onScroll(view, firstVisibleItem, visibleItemCount,
+						totalItemCount);
+			}
+		});
+		pvReply.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+			public void onRefresh() {
+				loadLvReplyData(0, recruitReplyHandler,
+						UIHelper.LISTVIEW_ACTION_REFRESH);
+			}
+		});
+
+		if (lvReplyData.size() < AppConfig.PAGE_SIZE) {
+			curLvDataState = UIHelper.LISTVIEW_DATA_FULL;
+			lvReplyAdapter.notifyDataSetChanged();
+			lvReply_foot_more.setText(R.string.load_full);
+		} else if (lvReplyData.size() == AppConfig.PAGE_SIZE) {
+			curLvDataState = UIHelper.LISTVIEW_DATA_MORE;
+			lvReplyAdapter.notifyDataSetChanged();
+			lvReply_foot_more.setText(R.string.load_more);
+		}
+
+		initCommentsHandler();
+		Log.i("rd", "complete replyView");
+	}
+
+	// 初始化评论数据
+	private void initCommentsHandler() {
+		Log.i("td", "initReplyData");
+		recruitReplyHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				Log.i("rd", "reply Handler");
+				if (msg.what >= 0) {
+					List<BBSReply> list = (List<BBSReply>) msg.obj;
+					Log.i("rd", list.size() + "");
+					// 处理listview数据
+					switch (msg.arg1) {
+					case UIHelper.LISTVIEW_ACTION_INIT:
+					case UIHelper.LISTVIEW_ACTION_REFRESH:
+						lvSumData = msg.what;
+						lvReplyData.clear();// 先清除原有数据
+						lvReplyData.addAll(list);
+						break;
+					case UIHelper.LISTVIEW_ACTION_SCROLL:
+						lvSumData += msg.what;
+						if (lvReplyData.size() > 0) {
+							for (BBSReply reply : list) {
+								boolean b = false;
+								for (BBSReply existReply : lvReplyData) {
+									if (existReply.getReplyID() == reply
+											.getReplyID()) {
+										b = true;
+										break;
+									}
+								}
+								if (!b)
+									lvReplyData.add(reply);
+							}
+						} else {
+							lvReplyData.addAll(list);
+						}
+						break;
+					}
+					if (msg.what < AppConfig.PAGE_SIZE) {
+						curLvDataState = UIHelper.LISTVIEW_DATA_FULL;
+						lvReplyAdapter.notifyDataSetChanged();
+						lvReply_foot_more.setText(R.string.load_full);
+					} else if (msg.what == AppConfig.PAGE_SIZE) {
+						curLvDataState = UIHelper.LISTVIEW_DATA_MORE;
+						lvReplyAdapter.notifyDataSetChanged();
+						lvReply_foot_more.setText(R.string.load_more);
+					}
+					Log.i("rd", "load info complete");
+					/*
+					 * // 发送通知广播 if (notice != null) {
+					 * UIHelper.sendBroadCast(RecruitDetailActivity.this,
+					 * notice); }
+					 */
+				} else if (msg.what == -1) {
+					// 有异常--显示加载出错 & 弹出错误消息
+					curLvDataState = UIHelper.LISTVIEW_DATA_MORE;
+					lvReply_foot_more.setText(R.string.load_error);
+					((AppException) msg.obj).makeToast(getActivity());
+				}
+				if (lvReplyData.size() == 0) {
+					curLvDataState = UIHelper.LISTVIEW_DATA_EMPTY;
+					lvReply_foot_more.setText(R.string.load_empty);
+				}
+				lvReply_foot_progress.setVisibility(View.GONE);
+				if (msg.arg1 == UIHelper.LISTVIEW_ACTION_REFRESH) {
+					pvReply.onRefreshComplete(getString(R.string.pull_to_refresh_update)
+							+ new Date().toLocaleString());
+					pvReply.setSelection(0);
+				}
+			}
+		};
+	}
+
+	/**
+	 * 线程加载评论数据
+	 * 
+	 * @param topicID
+	 *            当前话题ID
+	 * @param pageIndex
+	 *            当前页数
+	 * @param handler
+	 *            处理器
+	 * @param action
+	 *            动作标识
+	 */
+	private void loadLvReplyData(final int pageIndex, final Handler handler,
+			final int action) {
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				boolean isRefresh = false;
+				if (action == UIHelper.LISTVIEW_ACTION_REFRESH
+						|| action == UIHelper.LISTVIEW_ACTION_SCROLL)
+					isRefresh = true;
+				try {
+					List<BBSReply> replylist = appContext.getBBSReplyList(
+							topicID, pageIndex, isRefresh);
+					Log.i("rd", String.format("%d listsize %d", pageIndex,
+							replylist.size()));
+					msg.what = replylist.size();
+					msg.obj = replylist;
+				} catch (AppException e) {
+					e.printStackTrace();
+					msg.what = -1;
+					msg.obj = e;
+				}
+				msg.arg1 = action;// 告知handler当前action
+				handler.sendMessage(msg);
+			}
+		}.start();
+	}
+
+	private void saveUserReplyTopic() {
+		new Thread() {
+			@Override
+			public void run() {
+				appContext.saveUserTopic(recruitDetail.getTopicID(),
+						recruitDetail.getCompanyName(),
+						recruitDetail.getCreatedTime());
+			}
+
+		}.start();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode != getActivity().RESULT_OK)
+			return;
+		if (data == null)
+			return;
+		// viewSwitch(VIEWSWITCH_TYPE_COMMENTS);// 跳到评论列表
+		BBSReply comm = (BBSReply) data
+				.getSerializableExtra("COMMENT_SERIALIZABLE");
+		lvReplyData.add(0, comm);
+		lvReplyAdapter.notifyDataSetChanged();
+		pvReply.setSelection(0);
+		saveUserReplyTopic();
+
+		// 显示评论数
+		int count = recruitDetail.getReplies() + 1;
+		recruitDetail.setReplies(count);
+		/*
+		 * bv_comment.setText(count + ""); bv_comment.show();
+		 */
+	}
+}

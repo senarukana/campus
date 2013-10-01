@@ -1,0 +1,20 @@
+package com.campusrecruit.fragment;
+
+
+import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.widget.LinearLayout;
+
+public class BaseFragment extends Fragment{
+	
+	
+	public String getText(){
+		return null;
+	}
+	
+	public void displayEmpty(LinearLayout parent) {
+		Log.i("ddd","display empty");
+//		getActivity().getLayoutInflater().inflate(R.layout.empty_data, parent);
+		
+	}
+}

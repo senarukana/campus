@@ -1,0 +1,89 @@
+package com.campusrecruit.activity;
+
+import java.util.ArrayList;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import com.campusrecruit.adapter.ListProvinceAdapter;
+import com.campusrecruit.adapter.ListProvinceAdapter.ListItemView;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.common.UIHelper;
+import com.krislq.sliding.R;
+
+public class ProvinceActivity extends Activity {
+	ListView listView;
+	ListProvinceAdapter provinceAdapter;
+	Button confirmButton;
+
+	ArrayList<Integer> selectProvinces = new ArrayList<Integer>();
+	AppContext appContext;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.province_list);
+
+		Intent intent = getIntent();
+		ArrayList<Integer> list = intent
+				.getIntegerArrayListExtra("selectedProvince");
+		Log.i("province selected 1", list.toString());
+		selectProvinces.clear();
+		for (Integer i : list) {
+			selectProvinces.add(i);
+		}
+		// Log.i("province selected 2", selectProvinces.toString());
+		initView();
+	}
+
+	private void initView() {
+		appContext = (AppContext) getApplication();
+		listView = (ListView) findViewById(R.id.province_list);
+
+		provinceAdapter = new ListProvinceAdapter(this,
+				appContext.getProvinceList(), selectProvinces,
+				R.layout.province_item);
+		listView.setAdapter(provinceAdapter);
+
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos,
+					long id) {
+				// TODO Auto-generated method stub
+				if (selectProvinces.size() < 5 || ListProvinceAdapter.getIsSelected().get(pos)) {
+					ListItemView holder = (ListItemView) view.getTag();
+					// 改变checkbox的状态
+					holder.checkBox.toggle();
+					ListProvinceAdapter.getIsSelected().put(pos,holder.checkBox.isChecked());
+					Log.i("debug", selectProvinces.toString());
+					if (holder.checkBox.isChecked()) {
+						selectProvinces.add(pos);
+					} else {
+						selectProvinces.remove((Integer)pos);
+					}
+				}else{
+					Toast.makeText(ProvinceActivity.this, "最多选择五个哦", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+		});
+
+		confirmButton = (Button) findViewById(R.id.province_confirm);
+		confirmButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i("cb", selectProvinces.size() + "");
+				UIHelper.closeProvince(ProvinceActivity.this, selectProvinces);
+			}
+		});
+	}
+}

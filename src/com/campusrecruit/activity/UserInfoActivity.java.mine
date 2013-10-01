@@ -1,0 +1,491 @@
+package com.campusrecruit.activity;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.User;
+import com.campusrecruit.common.FileUtils;
+import com.campusrecruit.common.ImageUtils;
+import com.campusrecruit.common.StringUtils;
+import com.campusrecruit.common.UIHelper;
+import com.campusrecruit.widget.LoadingDialog;
+import com.krislq.sliding.R;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.ToggleButton;
+
+public class UserInfoActivity extends Activity {
+	private final static int CROP = 200;
+	private final static String FILE_SAVEPATH = Environment
+			.getExternalStorageDirectory().getAbsolutePath()
+			+ "/CampusRecruit/Portrait/";
+	private Uri origUri;
+	private Uri cropUri;
+	private File protraitFile;
+	private Bitmap protraitBitmap;
+	private String protraitPath;
+	private LoadingDialog loading;
+
+	private AppContext appContext;
+
+	private User user;
+	private Handler userInfoHandler;
+	private Handler userUpdateHandler;
+	private String userID;
+
+	private RelativeLayout textViewMainLayout;
+	private ImageView vFace;
+	private TextView vUserName;
+	private TextView vEmail;
+	private ImageView vGender;
+	private TextView vSchool;
+	private TextView vMajor;
+
+	private RelativeLayout editViewMainLayout;
+	private ImageView vEditFace;
+	private TextView vEditUserName;
+	private EditText vEditEmail;
+	private ToggleButton vEditGender;
+	private EditText vEditSchool;
+	private EditText vEditMajor;
+	
+	private String _email;
+	private String _major;
+	private String _school;
+	private int _gender;
+	
+	private boolean isEdit = true;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		Log.i("user", "init user view");
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.infor);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setTitle("个人中心");
+
+		userID = getIntent().getStringExtra("userID");
+		appContext = (AppContext) getApplication();
+		
+		textViewMainLayout = (RelativeLayout) findViewById(R.id.user_infor_text_layout);
+		editViewMainLayout = (RelativeLayout) findViewById(R.id.user_infor_edit_layout);
+		initTextView();
+		Log.i("user","init data");
+		if (!userID.equals(appContext.getLoginUid())) {
+			Log.i("user","not equal");
+			initUserData();
+		} else {
+//			initEditView();
+			user = appContext.getLoginInfo();
+			showUserData();
+		}
+	}
+	
+	//展示layout 到 修改layout的切换
+	private void viewSwitch(boolean flag) {
+		if (flag) {
+			textViewMainLayout.setVisibility(View.VISIBLE);
+			editViewMainLayout.setVisibility(View.GONE);
+		} else {
+			textViewMainLayout.setVisibility(View.GONE);
+			editViewMainLayout.setVisibility(View.VISIBLE);
+		}
+	}
+
+	private void initTextView() {
+		Log.i("user", "init text view");
+		vUserName = (TextView) findViewById(R.id.user_infor_user_name_text);
+		vEmail = (TextView) findViewById(R.id.user_infor_email_text);
+		vSchool = (TextView) findViewById(R.id.user_infor_school_text);
+		vMajor = (TextView) findViewById(R.id.user_infor_major_text);
+		vGender = (ImageView) findViewById(R.id.user_infor_gender_text);
+		vFace = (ImageView) findViewById(R.id.user_infor_face_show);
+		
+		vFace.setOnClickListener(faceClickListener);
+
+	}
+
+	private void showUserData() {
+		Log.i("user","show userData");
+		vUserName.setText(user.getName());
+		if (user.getEmail() == null) {
+			vEmail.setText(R.string.empty_field);
+			Log.i("user","emai empty");
+		}
+		else {
+			vEmail.setText(user.getEmail());
+			Log.i("user","emai not empty " + user.getEmail());
+		}
+		if (user.getEmail() == null)
+			vSchool.setText(R.string.empty_field);
+		else
+			vSchool.setText(user.getSchoolName());
+		if (user.getMajorName() == null)
+			vMajor.setText(R.string.empty_field);
+		vMajor.setText(user.getMajorName());
+		if (user.getGender() == 0) {
+			vGender.setImageResource(R.drawable.widget_gender_man);
+		} else {
+			vGender.setImageResource(R.drawable.widget_gender_woman);
+		}
+		UIHelper.showUserFace(vFace, user.getFace());
+	}
+
+	private void initUserData() {
+		Log.i("user", "initUser Data");
+		userInfoHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				if (msg.what == 1) {
+					user = (User)msg.obj;
+				} else {
+					((AppException)msg.obj).makeToast(UserInfoActivity.this);
+				}
+			}
+		};
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				try {
+					User userInfo = appContext.getUserInformation(userID);
+					msg.what = 1;
+					msg.obj = userInfo;
+				} catch (AppException e) {
+					msg.what = -1;
+					msg.obj = e;
+				}
+				userInfoHandler.sendMessage(msg);
+			}
+		}.start();
+	}
+
+/*	private void initEditView() {
+		Log.i("user","init edit view");
+		vEditUserName = (TextView) findViewById(R.id.user_infor_user_name);
+		vEditEmail = (EditText) findViewById(R.id.user_infor_email);
+		vEditSchool = (EditText) findViewById(R.id.user_infor_school);
+		vEditMajor = (EditText) findViewById(R.id.user_infor_major);
+		vEditGender = (ToggleButton) findViewById(R.id.user_infor_gender);
+		vEditFace = (ImageView) findViewById(R.id.user_infor_face);
+
+		user = appContext.getLoginInfo();
+		vEditUserName.setText(user.getName());
+		vEditEmail.setText(user.getEmail());
+		vEditSchool.setText(user.getSchoolName());
+		vEditMajor.setText(user.getMajorName());
+		if (user.getGender() == 1) {
+			vEditGender.setChecked(true);
+		} else {
+			vEditGender.setChecked(false);
+		}
+		UIHelper.showUserFace(vEditFace, user.getFace());
+		vEditFace.setOnClickListener(faceClickListener);
+	}*/
+
+	private View.OnClickListener faceClickListener = new View.OnClickListener() {
+		public void onClick(View v) {
+			CharSequence[] items = { getString(R.string.img_from_album),
+					getString(R.string.img_from_camera) };
+			imageChooseItem(items);
+		}
+	};
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.menu_userinfo, menu);
+		return true;
+	}
+	
+	private void saveUserInfo() {
+		userUpdateHandler = new Handler() {
+			public void handleMessage(Message msg) {
+				if (msg.what == 1) {
+					user = (User)msg.obj;
+					showUserData();
+					viewSwitch(true);
+				} else {
+					((AppException)msg.obj).makeToast(UserInfoActivity.this);
+				}
+			}
+		};
+		_email = vEditEmail.getText().toString();
+		_major = vEditMajor.getText().toString();
+		_school = vEditSchool.getText().toString();
+		_gender = vEditGender.isChecked() == true ? 1 : 0;
+		Log.i("user", _email + _major + _school + _gender);
+		new Thread() {
+			public void run() {
+				Message msg = new Message();
+				try {
+					Log.i("user", _email + _major + _school + _gender);
+					User updateUser = new User(_email, _major, _school, _gender);
+					appContext.setUserInformation(userID, _email, _major, _school, _gender);
+					msg.what = 1;
+					msg.obj = updateUser;
+				} catch (AppException e) {
+					e.printStackTrace();
+					msg.what = -1;
+					msg.obj = e;
+				}
+				userUpdateHandler.sendMessage(msg);
+			}
+		}.start();
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		switch(item.getItemId()){
+		case R.id.userinfo_edit:
+			if(isEdit){
+				item.setIcon(R.drawable.ic_userinfo_save);
+				item.setTitle(getResources().getText(R.string.userinfo_save));
+				//change the layout
+				viewSwitch(false);
+			}else{
+				item.setIcon(R.drawable.ic_userinfo_edit);
+				item.setTitle(getResources().getText(R.string.userinfo_edit));
+				//change the layout
+				saveUserInfo();
+			}
+			isEdit = !isEdit;
+			return true;
+		case android.R.id.home:
+			onBackPressed();
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	// 裁剪头像的绝对路径
+	private Uri getUploadTempFile(Uri uri) {
+		String storageState = Environment.getExternalStorageState();
+		if (storageState.equals(Environment.MEDIA_MOUNTED)) {
+			File savedir = new File(FILE_SAVEPATH);
+			if (!savedir.exists()) {
+				savedir.mkdirs();
+			}
+		} else {
+			UIHelper.ToastMessage(this, "无法保存上传的头像，请检查SD卡是否挂载");
+			return null;
+		}
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date());
+		String thePath = ImageUtils.getAbsolutePathFromNoStandardUri(uri);
+
+		// 如果是标准Uri
+		if (StringUtils.isEmpty(thePath)) {
+			thePath = ImageUtils.getAbsoluteImagePath(this, uri);
+		}
+		String ext = FileUtils.getFileFormat(thePath);
+		ext = StringUtils.isEmpty(ext) ? "jpg" : ext;
+		// 照片命名
+		String cropFileName = "osc_crop_" + timeStamp + "." + ext;
+		// 裁剪头像的绝对路径
+		protraitPath = FILE_SAVEPATH + cropFileName;
+		protraitFile = new File(protraitPath);
+
+		cropUri = Uri.fromFile(protraitFile);
+		return this.cropUri;
+	}
+
+	// 拍照保存的绝对路径
+	private Uri getCameraTempFile() {
+		String storageState = Environment.getExternalStorageState();
+		if (storageState.equals(Environment.MEDIA_MOUNTED)) {
+			File savedir = new File(FILE_SAVEPATH);
+			if (!savedir.exists()) {
+				savedir.mkdirs();
+			}
+		} else {
+			UIHelper.ToastMessage(this, "无法保存上传的头像，请检查SD卡是否挂载");
+			return null;
+		}
+		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss")
+				.format(new Date());
+		// 照片命名
+		String cropFileName = "osc_camera_" + timeStamp + ".jpg";
+		// 裁剪头像的绝对路径
+		protraitPath = FILE_SAVEPATH + cropFileName;
+		protraitFile = new File(protraitPath);
+		cropUri = Uri.fromFile(protraitFile);
+		this.origUri = this.cropUri;
+		return this.cropUri;
+	}
+
+	/**
+	 * 操作选择
+	 * 
+	 * @param items
+	 */
+	public void imageChooseItem(CharSequence[] items) {
+		AlertDialog imageDialog = new AlertDialog.Builder(this)
+				.setTitle("上传头像").setIcon(android.R.drawable.btn_star)
+				.setItems(items, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						// 相册选图
+						if (item == 0) {
+							startImagePick();
+						}
+						// 手机拍照
+						else if (item == 1) {
+							startActionCamera();
+						}
+					}
+				}).create();
+
+		imageDialog.show();
+	}
+
+	/**
+	 * 选择图片裁剪
+	 * 
+	 * @param output
+	 */
+	private void startImagePick() {
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		intent.setType("image/*");
+		startActivityForResult(Intent.createChooser(intent, "选择图片"),
+				ImageUtils.REQUEST_CODE_GETIMAGE_BYCROP);
+	}
+
+	/**
+	 * 相机拍照
+	 * 
+	 * @param output
+	 */
+	private void startActionCamera() {
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, this.getCameraTempFile());
+		startActivityForResult(intent,
+				ImageUtils.REQUEST_CODE_GETIMAGE_BYCAMERA);
+	}
+
+	/**
+	 * 拍照后裁剪
+	 * 
+	 * @param data
+	 *            原始图片
+	 * @param output
+	 *            裁剪后图片
+	 */
+	private void startActionCrop(Uri data) {
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		intent.setDataAndType(data, "image/*");
+		intent.putExtra("output", this.getUploadTempFile(data));
+		intent.putExtra("crop", "true");
+		intent.putExtra("aspectX", 1);// 裁剪框比例
+		intent.putExtra("aspectY", 1);
+		intent.putExtra("outputX", CROP);// 输出图片大小
+		intent.putExtra("outputY", CROP);
+		intent.putExtra("scale", true);// 去黑边
+		intent.putExtra("scaleUpIfNeeded", true);// 去黑边
+		startActivityForResult(intent,
+				ImageUtils.REQUEST_CODE_GETIMAGE_BYSDCARD);
+	}
+
+	/**
+	 * 上传新照片
+	 */
+	private void uploadNewPhoto() {
+		final Handler handler = new Handler() {
+			public void handleMessage(Message msg) {
+				if (loading != null)
+					loading.dismiss();
+				if (msg.what == 1) {
+					// 提示信息
+					UIHelper.ToastMessage(UserInfoActivity.this, "上传头像成功");
+					// 显示新头像
+					vFace.setImageBitmap(protraitBitmap);
+				} else if (msg.what == -1 && msg.obj != null) {
+					((AppException) msg.obj).makeToast(UserInfoActivity.this);
+				}
+			}
+		};
+
+		if (loading != null) {
+			loading.setLoadText("正在上传头像···");
+			loading.show();
+		}
+
+		new Thread() {
+			public void run() {
+				// 获取头像缩略图
+				if (!StringUtils.isEmpty(protraitPath) && protraitFile.exists()) {
+					protraitBitmap = ImageUtils.loadImgThumbnail(protraitPath,
+							200, 200);
+				} else {
+					loading.setLoadText("图像不存在，上传失败·");
+					loading.hide();
+				}
+
+				if (protraitBitmap != null) {
+					Message msg = new Message();
+					try {
+						appContext.updatePortrait(protraitFile);
+						// 保存新头像到缓存
+						String filename = FileUtils.getFileName(user.getFace());
+						ImageUtils.saveImage(UserInfoActivity.this, filename,
+								protraitBitmap);
+						msg.what = 1;
+					} catch (AppException e) {
+						loading.setLoadText("上传出错·");
+						loading.hide();
+						msg.what = -1;
+						msg.obj = e;
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					handler.sendMessage(msg);
+				} else {
+					loading.setLoadText("图像不存在，上传失败·");
+					loading.hide();
+				}
+			};
+		}.start();
+	}
+
+	@Override
+	public void onActivityResult(final int requestCode, final int resultCode,
+			final Intent data) {
+		if (resultCode != Activity.RESULT_OK)
+			return;
+
+		switch (requestCode) {
+		case ImageUtils.REQUEST_CODE_GETIMAGE_BYCAMERA:
+			startActionCrop(origUri);// 拍照后裁剪
+			break;
+		case ImageUtils.REQUEST_CODE_GETIMAGE_BYCROP:
+			startActionCrop(data.getData());// 选图后裁剪
+			break;
+		case ImageUtils.REQUEST_CODE_GETIMAGE_BYSDCARD:
+			uploadNewPhoto();// 上传新照片
+			break;
+		}
+	}
+
+}

@@ -1,0 +1,111 @@
+package com.campusrecruit.fragment;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.Inflater;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.campusrecruit.activity.MainActivity;
+import com.campusrecruit.adapter.ListViewRecruitAdapter;
+import com.campusrecruit.adapter.ListViewRecruitFavorateAdapter;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.bean.Recruit;
+import com.krislq.sliding.R;
+
+@SuppressLint("ValidFragment")
+public class CopyOfRecruitFavoratesFragment extends BaseFragment {
+	private String text;
+
+	private LinearLayout mainLayout;
+	private TextView emptyView;
+	private ProgressDialog mProgress;
+	private ListView lvRecruitView;
+	private AppContext appContext;
+
+
+	public CopyOfRecruitFavoratesFragment() {
+	}
+	
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		super.onCreateView(inflater, container, savedInstanceState);
+		appContext = (AppContext) getActivity().getApplication();
+		View recruitView = inflater.inflate(R.layout.recruit_favorate_list,
+				null);
+		emptyView = (TextView) recruitView
+				.findViewById(R.id.empty_data_favorate_msg);
+		mainLayout = (LinearLayout) recruitView
+				.findViewById(R.id.favorate_main);
+		lvRecruitView = (ListView) recruitView
+				.findViewById(R.id.recruit_favorate_list);
+		lvRecruitView.setAdapter(appContext.getLvRecruitFavoratesAdapter());
+		appContext.getLvRecruitFavoratesAdapter().notifyDataSetChanged();
+		
+		if (!appContext.getLvRecruitFavorateList().isEmpty()) {
+			lvRecruitView.setVisibility(View.VISIBLE);
+			emptyView.setVisibility(View.GONE);
+			appContext.getLvRecruitFavoratesAdapter().setData(appContext.getLvRecruitFavorateList());
+			appContext.getLvRecruitFavoratesAdapter().notifyDataSetChanged();
+		} else {
+			lvRecruitView.setVisibility(View.GONE);
+			emptyView.setVisibility(View.VISIBLE);
+		}
+		
+		return recruitView;
+	}
+
+
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
+		appContext = (AppContext)getActivity().getApplication();
+		appContext.setLvRecruitFavoratesAdapter(new ListViewRecruitFavorateAdapter(
+				getActivity(), appContext, R.layout.recruit_favorate_item));
+		if (appContext.getLvRecruitFavorateList().isEmpty())
+			new RecruitFavorateAsyncTask().execute();
+		
+	}
+
+
+	private class RecruitFavorateAsyncTask extends
+			AsyncTask<Void, Void, List<Recruit>> {
+		@Override
+		protected List<Recruit> doInBackground(Void... params) {
+			List<Recruit> list = appContext.getRecruitFavorateList(true);
+			return list;
+		}
+
+		@Override
+		protected void onPostExecute(List<Recruit> list) {
+			mProgress.dismiss();
+			appContext.setLvRecruitFavorateList(list);
+			appContext.getLvRecruitFavoratesAdapter().setData(list);
+			appContext.getLvRecruitFavoratesAdapter().notifyDataSetChanged();
+		}
+
+		@Override
+		protected void onPreExecute() {
+			mProgress = ProgressDialog.show(getActivity(), null, "获取数据中···",
+					true, true);
+		}
+
+	}
+}

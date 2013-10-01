@@ -1,0 +1,199 @@
+package com.campusrecruit.fragment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import android.R.integer;
+import android.annotation.SuppressLint;
+import android.app.ActionBar;
+import android.database.sqlite.SQLiteException;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.SimpleAdapter;
+import android.widget.TabHost;
+import android.widget.Toast;
+
+import com.campusrecruit.activity.MainActivity;
+import com.campusrecruit.adapter.MainFragmentAdapter;
+import com.campusrecruit.app.AppContext;
+import com.campusrecruit.bean.BBSTopic;
+import com.campusrecruit.bean.Recruit;
+import com.campusrecruit.widget.BadgeView;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.krislq.sliding.R;
+import com.tencent.weibo.api.PrivateAPI;
+
+@SuppressLint("ResourceAsColor")
+public class CopyOfMenuFragment extends Fragment {
+
+	private String[] items = { "首页", "个人中心", "校招收藏", "我的帖子" };
+	private int[] item_pic_res = { R.drawable.home, R.drawable.cool,
+			R.drawable.star, R.drawable.file };
+
+	private int index = -1;
+	private LinearLayout mLinearLayout = null;
+	private MainActivity mActivity = null;
+	private TabHost tabHost = null;
+
+
+
+
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
+		mLinearLayout = (LinearLayout) getActivity().findViewById(R.id.content);
+		tabHost = (TabHost) getActivity().findViewById(R.id.tab_host);
+		
+		Log.i("main","onCreate fragment");
+		mActivity = (MainActivity) getActivity();
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		Log.i("main","onCreateView fragment");
+		View view = inflater.inflate(R.layout.frame_menu_v1, container, false);
+		ListView listView = (ListView) view.findViewById(R.id.menu_listview);
+		List<Map<String, Object>> listItems = new ArrayList<Map<String, Object>>();
+		for (int i = 0; i < items.length; i++) {
+			Map<String, Object> item = new HashMap<String, Object>();
+			item.put("item", items[i]);
+			item.put("image", item_pic_res[i]);
+			listItems.add(item);
+		}
+		Log.i("main","onCreateView fragment");
+		SimpleAdapter adapter = new SimpleAdapter(getActivity(), listItems,
+				R.layout.frame_menu_v1_item, new String[] { "item", "image" },
+				new int[] { R.id.menu_item, R.id.menu_img });
+		Log.i("main","create fragment");
+		
+//		initFragmentData();
+
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new onItemClickListener());
+		Log.i("main","return fragment");
+		return view;
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+	}
+
+	private class onItemClickListener implements OnItemClickListener {
+
+		@Override
+		public void onItemClick(AdapterView<?> parent, View view, int position,
+				long id) {
+			Log.i("click", parent.getChildCount() + "");
+			Toast.makeText(getActivity(), position + "", Toast.LENGTH_SHORT)
+					.show();
+			FragmentManager fragmentManager = ((MainActivity) getActivity()).getSupportFragmentManager();
+			BaseFragment baseFragment = null;
+			getSlidingMenu()
+					.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+			switch (position) {
+			case 0:
+				if (index == 0) {
+					((MainActivity) getActivity()).getSlidingMenu().toggle();
+					return;
+				}
+				mActivity.showViewPager();
+				break;
+			case 1:
+				if (index == 1) {
+					((MainActivity) getActivity()).getSlidingMenu().toggle();
+					return;
+				}
+				index = 1;
+				mLinearLayout.setVisibility(View.VISIBLE);
+				tabHost.setVisibility(View.GONE);
+
+				getActivity().getActionBar().setNavigationMode(
+						ActionBar.NAVIGATION_MODE_STANDARD);
+				baseFragment = (ContentFragment) fragmentManager
+						.findFragmentByTag("A");
+				fragmentManager
+						.beginTransaction()
+						.replace(
+								R.id.content,
+								baseFragment == null ? new ContentFragment(
+										) : baseFragment, "A").commit();
+				break;
+			case 2:
+				if (index == 2) {
+					((MainActivity) getActivity()).getSlidingMenu().toggle();
+					return;
+				}
+				index = 2;
+				mLinearLayout.setVisibility(View.VISIBLE);
+				tabHost.setVisibility(View.GONE);
+
+				getActivity().getActionBar().setNavigationMode(
+						ActionBar.NAVIGATION_MODE_STANDARD);
+
+				baseFragment = (BaseFragment) fragmentManager
+						.findFragmentByTag("B");
+//				if (baseFragment == null) 
+					baseFragment = new RecruitFavoratesFragment();
+				fragmentManager
+						.beginTransaction()
+						.replace(
+								R.id.content,
+								baseFragment, "B").commit();
+				break;
+			case 3:
+				if (index == 3) {
+					((MainActivity) getActivity()).getSlidingMenu().toggle();
+					return;
+				}
+				index = 3;
+				mLinearLayout.setVisibility(View.VISIBLE);
+				tabHost.setVisibility(View.GONE);
+
+				getActivity().getActionBar().setNavigationMode(
+						ActionBar.NAVIGATION_MODE_STANDARD);
+
+				baseFragment = (BaseFragment) fragmentManager
+						.findFragmentByTag("C");
+//				if (baseFragment == null)
+					baseFragment = new UserTopicFragment();
+				fragmentManager
+						.beginTransaction()
+						.replace(
+								R.id.content,
+								baseFragment, "C").commit();
+			}
+			// anyway , show the sliding menu
+			((MainActivity) getActivity()).getSlidingMenu().toggle();
+		}
+
+	}
+
+
+	private SlidingMenu getSlidingMenu() {
+		return mActivity.getSlidingMenu();
+	}
+
+
+
+}

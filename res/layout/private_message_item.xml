@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:paddingBottom="7dip"
+    android:paddingLeft="10dip"
+    android:paddingRight="6dip"
+    android:paddingTop="8dip" >
+
+    <ImageView
+        android:id="@+id/private_message_user_face"
+        style="@style/user_face_image" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dip"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/private_message_user_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:includeFontPadding="false"
+                android:text="Lizhe"
+                android:textColor="@color/listitem_blue"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:text="发来了私信 "
+                android:textColor="@color/listitem_gray"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/private_message_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:text="2012-9-23 3:00"
+                android:textColor="@color/listitem_gray"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_marginTop="3dp"
+            android:layout_height="40dp"
+            android:layout_marginRight="3dp"
+            android:gravity="center"
+            android:background="@drawable/review_bg_gray"
+            android:orientation="vertical" >
+
+            <com.campusrecruit.widget.LinkView
+                android:id="@+id/private_message_content"
+                android:gravity="center"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:autoLink="web|email"
+                android:textColor="@color/listitem_black"
+                android:textColorLink="@color/listitem_blue"
+                android:textSize="@dimen/text_size_15" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

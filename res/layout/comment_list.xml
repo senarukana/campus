@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  	android:layout_width="match_parent"
+  	android:layout_height="match_parent"
+  	android:orientation="vertical"
+  	android:background="@color/lightwhite">
+
+	<com.campusrecruit.widget.PullToRefreshListView
+	  	android:id="@+id/comment_list_listview"
+	    style="@style/widget_listview"/>
+	
+	<include layout="@layout/empty_view"/>
+	
+	<include android:visibility="gone" layout="@layout/loading_footer"/>
+   	
+</LinearLayout>
