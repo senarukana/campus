@@ -13,7 +13,7 @@ import com.campusrecruit.app.AppContext;
 import com.campusrecruit.app.AppException;
 import com.campusrecruit.bean.Update;
 import com.campusrecruit.net.NetApiClient;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -161,7 +162,7 @@ public class UpdateManager {
 					msg.what = 1;
 					msg.obj = update;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 				}
 				handler.sendMessage(msg);
 			}			
@@ -334,9 +335,9 @@ public class UpdateManager {
 				fos.close();
 				is.close();
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				
 			} catch(IOException e){
-				e.printStackTrace();
+				
 			}
 			
 		}

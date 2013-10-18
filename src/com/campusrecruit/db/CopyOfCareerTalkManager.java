@@ -155,7 +155,7 @@ public class CopyOfCareerTalkManager implements TruncatableManager {
 				list.add(careerTalk);
 			}
 		} catch (SQLiteException e) {
-			e.printStackTrace();
+			
 			return null;
 		} finally {
 			if (c != null)

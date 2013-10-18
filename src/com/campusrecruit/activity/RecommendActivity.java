@@ -34,10 +34,10 @@ import com.campusrecruit.bean.CareerTalk;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.bean.UserPreference;
 import com.campusrecruit.common.UIHelper;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 import com.tencent.weibo.api.PrivateAPI;
 
-public class RecommendActivity extends Activity {
+public class RecommendActivity extends BaseActivity {
 
 	private ToggleButton industryComputeToggle = null;
 	private ToggleButton industryCommunicationToggle = null;
@@ -46,6 +46,15 @@ public class RecommendActivity extends Activity {
 	private ToggleButton propertySoe = null;
 	private ToggleButton propertyPrivate = null;
 	private ToggleButton propertyForeign = null;
+	private ToggleButton typeCarrertalk = null;
+	private ToggleButton typeRecruit = null;
+	private ToggleButton typeMessage = null;
+	private ToggleButton typeReply = null;
+	private ToggleButton sourceDajie = null;
+	private ToggleButton sourceByr = null;
+	private ToggleButton sourceShuiMu = null;
+	private ToggleButton sourceHaiTou = null;
+	private View notifyLayout = null;
 
 	private boolean flag = true;
 	/*
@@ -55,7 +64,6 @@ public class RecommendActivity extends Activity {
 	 */
 
 	private ProgressDialog vProgress;
-	private Button btnSubmit = null;
 	private RelativeLayout addressSelect = null;
 	private TextView selectedProvinceTextview = null;
 	private TextView selectedProvinceTextviewShow = null;
@@ -65,7 +73,7 @@ public class RecommendActivity extends Activity {
 
 	private Handler preferenceHandler;
 
-	private AppContext appContext;
+	
 
 	private boolean init;
 
@@ -73,7 +81,6 @@ public class RecommendActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.recommend);
-		appContext = (AppContext) getApplication();
 
 		init = getIntent().getBooleanExtra("init", true);
 
@@ -87,6 +94,7 @@ public class RecommendActivity extends Activity {
 			Log.i("recommend", "not null");
 			initPreference();
 		}
+		
 	}
 
 	@Override
@@ -94,6 +102,7 @@ public class RecommendActivity extends Activity {
 		getMenuInflater().inflate(R.menu.menu_recommend, menu);
 		return true;
 	}
+	
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -109,8 +118,12 @@ public class RecommendActivity extends Activity {
 					String v = null;
 					if (key.equals("property"))
 						v = "公司性质";
-					else
+					else if (key.equals("industry"))
 						v = "公司类型";
+					else if (key.equals("type"))
+						v = "推送消息类型";
+					else
+						v = "数据来源";
 					UIHelper.ToastMessage(RecommendActivity.this,
 							getString(R.string.recommend_hint, v));
 					return true;
@@ -124,7 +137,7 @@ public class RecommendActivity extends Activity {
 				return true;
 			}
 
-			if (count < 3 && flag) {
+			/*if (count < 3 && flag) {
 				AlertDialog.Builder adb = new AlertDialog.Builder(
 						RecommendActivity.this);
 				adb.setTitle(R.string.recommend_too_litter_hint);
@@ -136,14 +149,24 @@ public class RecommendActivity extends Activity {
 						return;
 					}
 				});
-				adb.setPositiveButton("确定", null);
 				adb.show();
-			}
-			if (flag) {
+				
+				AlertDialog.Builder adbConfirm = new AlertDialog.Builder(
+						RecommendActivity.this);
+				adbConfirm.setPositiveButton("确定",  new AlertDialog.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						setPreference();
+						return;
+					}
+				});
+				adbConfirm.show();
+			}*/
+			/*if (flag) {
 				setPreference();
 			} else {
 				return true;
-			}
+			}*/
 
 			/*
 			 * Log.i("map", map.toString()); boolean mapEmpty = map.isEmpty();
@@ -162,6 +185,7 @@ public class RecommendActivity extends Activity {
 			 * Toast.makeText(RecommendActivity.this, "亲，您有类别没有选择哦",
 			 * Toast.LENGTH_SHORT).show(); } else { setPreference(); }
 			 */
+			setPreference();
 			return true;
 		default:
 			return false;
@@ -171,6 +195,7 @@ public class RecommendActivity extends Activity {
 	private void initView() {
 		/* btnSubmit = (Button)findViewById(R.id.recommend_submit_button); */
 		addressSelect = (RelativeLayout) findViewById(R.id.recommend_address_select);
+		notifyLayout = findViewById(R.id.recommend_notify_layout);
 
 		selectedProvinceTextview = (TextView) findViewById(R.id.selected_province_textview);
 		selectedProvinceTextviewShow = (TextView) findViewById(R.id.selected_province_text_show_view);
@@ -181,16 +206,14 @@ public class RecommendActivity extends Activity {
 		propertySoe = (ToggleButton) findViewById(R.id.recommend_property_soe_toggle);
 		propertyPrivate = (ToggleButton) findViewById(R.id.recommend_property_private_toggle);
 		propertyForeign = (ToggleButton) findViewById(R.id.recommend_property_foreign_toggle);
-		/*
-		 * typeCarrertalk =
-		 * (ToggleButton)findViewById(R.id.recommend_type_careertalk_toggle);
-		 * typeRecruit =
-		 * (ToggleButton)findViewById(R.id.recommend_type_recruit_toggle);
-		 * typeMessage =
-		 * (ToggleButton)findViewById(R.id.recommend_type_message_toggle);
-		 * typeReply =
-		 * (ToggleButton)findViewById(R.id.recommend_type_reply_toggle);
-		 */
+		typeCarrertalk = (ToggleButton) findViewById(R.id.recommend_type_careertalk_toggle);
+		typeRecruit = (ToggleButton) findViewById(R.id.recommend_type_recruit_toggle);
+		typeMessage = (ToggleButton) findViewById(R.id.recommend_type_message_toggle);
+		typeReply = (ToggleButton) findViewById(R.id.recommend_type_reply_toggle);
+		sourceDajie = (ToggleButton) findViewById(R.id.recommend_source_dajie_toggle);
+		sourceByr = (ToggleButton) findViewById(R.id.recommend_source_byr_toggle);
+		sourceShuiMu = (ToggleButton) findViewById(R.id.recommend_source_shuimu_toggle);
+		sourceHaiTou = (ToggleButton) findViewById(R.id.recommend_source_haitou_toggle);
 
 		industryComputeToggle.setOnCheckedChangeListener(toggleListener);
 		industryCommunicationToggle.setOnCheckedChangeListener(toggleListener);
@@ -199,16 +222,23 @@ public class RecommendActivity extends Activity {
 		propertySoe.setOnCheckedChangeListener(toggleListener);
 		propertyPrivate.setOnCheckedChangeListener(toggleListener);
 		propertyForeign.setOnCheckedChangeListener(toggleListener);
-		/*
-		 * typeCarrertalk.setOnCheckedChangeListener(toggleListener);
-		 * typeRecruit.setOnCheckedChangeListener(toggleListener);
-		 * typeReply.setOnCheckedChangeListener(toggleListener);
-		 * typeMessage.setOnCheckedChangeListener(toggleListener);
-		 */
-
+		typeCarrertalk.setOnCheckedChangeListener(toggleListener);
+		typeRecruit.setOnCheckedChangeListener(toggleListener);
+		typeReply.setOnCheckedChangeListener(toggleListener);
+		typeMessage.setOnCheckedChangeListener(toggleListener);
+		sourceDajie.setOnCheckedChangeListener(toggleListener);
+		sourceByr.setOnCheckedChangeListener(toggleListener);
+		sourceShuiMu.setOnCheckedChangeListener(toggleListener);
+		sourceHaiTou.setOnCheckedChangeListener(toggleListener);
+		
 		provinceBuilder = new StringBuilder();
 
 		addressSelect.setOnClickListener(addressSelectListener);
+		if (!init) {
+			notifyLayout.setVisibility(View.VISIBLE);
+		} else {
+			notifyLayout.setVisibility(View.GONE);
+		}
 		/* btnSubmit.setOnClickListener(buttonListener); */
 	}
 
@@ -217,6 +247,9 @@ public class RecommendActivity extends Activity {
 		String[] provinces = preference.getProvince().split(",");
 		String[] industries = preference.getCompanyIndustry().split(",");
 		String[] companyTypes = preference.getCompanyType().split(",");
+		String[] notifyTypes = preference.getNotifyType().split(",");
+		String[] sources = preference.getSources().split(",");
+		
 		for (int i = 0; i < industries.length; i++) {
 			if (industries[i].equals("1"))
 				industryComputeToggle.setChecked(true);
@@ -235,13 +268,28 @@ public class RecommendActivity extends Activity {
 			if (companyTypes[i].equals("3"))
 				propertyForeign.setChecked(true);
 		}
-		/*
-		 * for(int i = 0; i < notifyTypes.length; i++){
-		 * if(notifyTypes[i].equals("1")) typeCarrertalk.setChecked(true);
-		 * if(notifyTypes[i].equals("2")) typeRecruit.setChecked(true);
-		 * if(notifyTypes[i].equals("3")) typeMessage.setChecked(true);
-		 * if(notifyTypes[i].equals("4")) typeReply.setChecked(true); }
-		 */
+		
+		for (int i = 0; i < notifyTypes.length; i++) {
+			if (notifyTypes[i].equals("1"))
+				typeCarrertalk.setChecked(true);
+			if (notifyTypes[i].equals("2"))
+				typeRecruit.setChecked(true);
+			if (notifyTypes[i].equals("3"))
+				typeMessage.setChecked(true);
+			if (notifyTypes[i].equals("4"))
+				typeReply.setChecked(true);
+		}
+		for (int i = 0; i < sources.length; i++) {
+			if (sources[i].equals("1"))
+				sourceDajie.setChecked(true);
+			if (sources[i].equals("2"))
+				sourceByr.setChecked(true);
+			if (sources[i].equals("3"))
+				sourceShuiMu.setChecked(true);
+			if (sources[i].equals("4")) 
+				sourceHaiTou.setChecked(true);
+		}
+		 
 
 		selectProvinceList.clear();
 		provinceBuilder = new StringBuilder();
@@ -287,10 +335,10 @@ public class RecommendActivity extends Activity {
 			@Override
 			public void run() {
 				try {
-					appContext.setPreference(map);
+					appContext.setPreference(map,init);
 					msg.what = 1;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -323,25 +371,7 @@ public class RecommendActivity extends Activity {
 			Log.i("map", map.toString());
 		}
 	};
-
-	/*
-	 * private OnClickListener buttonListener = new OnClickListener() {
-	 * 
-	 * @Override public void onClick(View v) { Log.i("map button",
-	 * map.toString()); map.put("province", selectProvinceList); boolean
-	 * mapEmpty = map.isEmpty(); boolean keyEmpty = map.keySet().size()!=4;
-	 * boolean valueEmpty = false; Set<String> names = map.keySet();
-	 * Log.i("map set", names.toString()); Iterator<String> l =
-	 * names.iterator(); while(l.hasNext()){ String name = l.next();
-	 * if(map.get(name).isEmpty()){ valueEmpty = true; break; } }
-	 * 
-	 * Log.i("map boolean", mapEmpty+","+keyEmpty+","+valueEmpty);
-	 * 
-	 * if(mapEmpty || keyEmpty || valueEmpty){
-	 * Toast.makeText(RecommendActivity.this, "亲，您有类别没有选择哦",
-	 * Toast.LENGTH_SHORT).show(); } else { setPreference(); } } };
-	 */
-
+	
 	private OnClickListener addressSelectListener = new OnClickListener() {
 
 		@Override
@@ -357,15 +387,13 @@ public class RecommendActivity extends Activity {
 			selectProvinceList.clear();
 			provinceBuilder = new StringBuilder();
 			ArrayList<Integer> list = data
-					.getIntegerArrayListExtra("selectedList");
+					.getIntegerArrayListExtra("selection");
 			for (Integer i : list) {
 				selectProvinceList.add(i);
 				provinceBuilder.append(appContext.getProvinceList().get(i) + " ");
 			}
 			selectedProvinceTextviewShow.setText(provinceBuilder.toString());
-		} else {
-			selectedProvinceTextviewShow.setText(selectProvinceList.toString() + "");
-		}
+		} 
 
 	}
 

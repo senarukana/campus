@@ -33,16 +33,16 @@
             android:id="@+id/user_topics_item_flag"
             android:layout_width="14.0dip"
             android:layout_height="14.0dip"
+            android:layout_marginLeft="5dip"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="2dip"
             android:src="@drawable/widget_today_icon"
-            android:visibility="gone" />
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/user_topics_item_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dip"
             android:layout_weight="1"
             android:singleLine="true"
             android:text="test"

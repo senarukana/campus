@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 /**
  * A class for annotating a CharSequence with spans to convert textual emoticons
@@ -85,13 +85,13 @@ public class SmileyParser {
 			resId = (Integer) field.get(drawalbes);
 		} catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		} catch (IllegalAccessException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 		return resId;
 	}

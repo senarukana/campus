@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 /**
  * 
  * @author <a href="mailto:kris@krislq.com">Kris.lee</a>

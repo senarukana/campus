@@ -9,7 +9,7 @@ import com.campusrecruit.common.SmileyParser;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ListViewReplyAdapter extends BaseAdapter {
+	
 	private AppContext appContext;
 	private Context context;// 运行上下文
 	private List<BBSReply> listItems;// 数据集合

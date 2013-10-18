@@ -14,7 +14,7 @@ import com.campusrecruit.bean.BBSTopic;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -33,7 +33,7 @@ import android.widget.TextView;
 
 @SuppressLint("ValidFragment")
 public class UserTopicFragment extends EmptyFragment {
-	private AppContext appContext;
+	
 	private PullToRefreshListView pvTopic;
 
 	@Override
@@ -47,10 +47,6 @@ public class UserTopicFragment extends EmptyFragment {
 		// fill data
 		pvTopic = (PullToRefreshListView) view
 				.findViewById(R.id.user_topic_listview);
-		if (appContext == null) {
-			Log.i("bug", "user topic empty appcontext");
-		}
-		Log.i("bug", " topicset adapter");
 		pvTopic.setAdapter(appContext.getLvUserTopicsAdapter());
 		if (isloading) {
 			showLoadProgress(pvTopic);
@@ -77,31 +73,23 @@ public class UserTopicFragment extends EmptyFragment {
 				TextView title = (TextView) view
 						.findViewById(R.id.user_topics_item_title);
 				int topicID = Integer.parseInt(title.getTag().toString());
-				Log.i("click", "topicid" + topicID);
 				// 跳转到主題詳情
 				UIHelper.showTopicDetail(view.getContext(), topicID);
 			}
 
 		});
 		pvTopic.setOnRefreshListener(new refreshListener());
-
-		Log.i("bug", "complete usertopic");
-
 		return view;
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.i("bug", "userTopicbegin");
 		super.onCreate(savedInstanceState);
 		if (this.appContext == null) {
 			appContext = (AppContext) getActivity().getApplication();
 		}
 		appContext.setLvUserTopicsAdapter(new ListViewUserTopicsAdapter(
 				getActivity(), R.layout.user_topic_item));
-		/*
-		 * if (!isloading) new UserTopicAsyncTask().execute();
-		 */
 	}
 
 	private class refreshListener implements
@@ -140,7 +128,6 @@ public class UserTopicFragment extends EmptyFragment {
 		@Override
 		protected void onPostExecute(List<BBSTopic> list) {
 			pvTopic.onRefreshComplete();
-			Log.i("bug", "user topic handle");
 			if (!appContext.getLvUserTopicList().isEmpty()) {
 				// 去重
 				for (BBSTopic topic : list) {

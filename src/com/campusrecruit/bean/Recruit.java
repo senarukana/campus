@@ -38,6 +38,14 @@ public class Recruit implements Serializable, Comparable<Recruit>{
 	private String contact; //招聘方式
 	private String state;
 	private String statTime;
+	
+	private String content;
+	public String getContent() {
+		return content;
+	}
+	public void setContent(String content) {
+		this.content = content;
+	}
 	//for adapter header
 	private int flag = 0;
 //	private String endTime;
@@ -259,7 +267,7 @@ public class Recruit implements Serializable, Comparable<Recruit>{
 			recruitBase.status = 1; //new data
 			return recruitBase;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -269,10 +277,9 @@ public class Recruit implements Serializable, Comparable<Recruit>{
 			Recruit recruitBase = new Recruit();
 			recruitBase.companyName = recruitObject.getString("companyName");
 			recruitBase.position = recruitObject.getString("position");
-			Log.i("notice", recruitBase.companyName +":" + recruitBase.position);
 			return recruitBase;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -281,18 +288,23 @@ public class Recruit implements Serializable, Comparable<Recruit>{
 		Recruit recruit = new Recruit();
 		try {
 			recruit.description = recruitObject.getString("description");
-			recruit.contact = recruitObject.getString("contact");
 			recruit.form = recruitObject.getString("form");
 			recruit.url = recruitObject.getString("url");
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
+		return recruit;
+	}
+	
+	public static Recruit parseDetailSimple(JSONObject recruitObject) throws AppException {
+		Recruit recruit = new Recruit();
 		try {
-			recruit.state = recruitObject.getString("state");
-			recruit.statTime = recruitObject.getString("stateTime");
-		} catch(JSONException e) {
-			Log.i("jsonexception","no state");
+			recruit.content = recruitObject.getString("content");
+			recruit.url = recruitObject.getString("url");
+		} catch (JSONException e) {
+			
+			throw AppException.json(e);
 		}
 		return recruit;
 	}
@@ -301,15 +313,13 @@ public class Recruit implements Serializable, Comparable<Recruit>{
 		Recruit recruit = new Recruit();
 		try {
 			recruit.contact = recruitObject.getString("contact");
+			if (recruitObject.has("state")) {
+				recruit.state = recruitObject.getString("state");
+				recruit.statTime = recruitObject.getString("stateTime");
+			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
-		}
-		try {
-			recruit.state = recruitObject.getString("state");
-			recruit.statTime = recruitObject.getString("stateTime");
-		} catch(JSONException e) {
-			Log.i("jsonexception","no state");
 		}
 		return recruit;
 	}

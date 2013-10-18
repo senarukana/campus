@@ -20,7 +20,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="选择感兴趣的公司信息，尽可能多选哦" />
+            android:text="选择感兴趣的信息" />
     </LinearLayout>
 
     <ImageView

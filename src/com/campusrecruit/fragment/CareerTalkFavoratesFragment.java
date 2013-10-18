@@ -29,12 +29,12 @@ import com.campusrecruit.adapter.ListViewRecruitFavorateAdapter;
 import com.campusrecruit.app.AppContext;
 import com.campusrecruit.bean.CareerTalk;
 import com.campusrecruit.bean.Recruit;
-import com.krislq.sliding.R;
+import com.campusrecruit.common.UIHelper;
+import com.pcncad.campusRecruit.R;
 
 public class CareerTalkFavoratesFragment extends EmptyFragment {
 	private LinearLayout mainLayout;
 	private ListView lvCareerTalkView;
-	private AppContext appContext;
 
 	public CareerTalkFavoratesFragment() {
 	}
@@ -43,18 +43,27 @@ public class CareerTalkFavoratesFragment extends EmptyFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		Log.i("test", "init ct f view");
 		appContext = (AppContext) getActivity().getApplication();
 		View careerView = inflater.inflate(R.layout.career_favorate_list, null);
 		initLoadingView(careerView);
 		setEmptyText(R.string.career_favorate_empty);
-		
+
 		mainLayout = (LinearLayout) careerView
 				.findViewById(R.id.career_favorate_main);
 		lvCareerTalkView = (ListView) careerView
 				.findViewById(R.id.career_favorate_list);
 		lvCareerTalkView.setAdapter(appContext
 				.getLvCareerTalkFavoratesAdapter());
+		emptyText.setTextColor(getResources().getColor(R.color.myblue));
+		emptyLayout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				MainActivity.currentViewPosition = 1;
+				getActivity().setResult(Activity.RESULT_OK);
+				getActivity().finish();
+			}
+		});
 
 		if (isloading) {
 			showLoadProgress(lvCareerTalkView);
@@ -71,7 +80,7 @@ public class CareerTalkFavoratesFragment extends EmptyFragment {
 						.notifyDataSetChanged();
 			}
 		}
-		Log.i("test","career complete");
+		Log.i("test", "career complete");
 		return careerView;
 	}
 

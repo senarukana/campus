@@ -23,7 +23,7 @@ import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class RecruitDetailFragment extends LoadingFragment {
 
@@ -31,12 +31,13 @@ public class RecruitDetailFragment extends LoadingFragment {
 	 * private FrameLayout vHead; private ImageView vHome; private ImageView
 	 * vRefresh; private TextView vHeadTitle;
 	 */
-	private LinkView vRecruitDetail;
-	private ScrollView scrollView;
+	protected ScrollView scrollView;
+	protected TextView vContentHeaderTextView;
+	protected TextView vContentTextView;
+	protected TextView vGoToBBSSection;
 
 	private ImageView vFamousFlag;
 	private View vURLLayout;
-	private WebView vForm;
 	private TextView vSourceFrom;
 	private TextView vCompanyName;
 	private TextView vCreatedTime;
@@ -47,19 +48,9 @@ public class RecruitDetailFragment extends LoadingFragment {
 
 	private Handler recruitHandler;
 
-	private AppContext appContext;
-
-	private Recruit recruitDetail;
+	protected Recruit recruitDetail;
 
 	public RecruitDetailFragment() {
-	}
-
-	public static RecruitDetailFragment newInstance(Recruit recruit) {
-		RecruitDetailFragment fragment = new RecruitDetailFragment();
-		Bundle args = new Bundle();
-		args.putSerializable("recruit", recruit);
-		fragment.setArguments(args);
-		return fragment;
 	}
 
 	private void getArgs() {
@@ -70,11 +61,8 @@ public class RecruitDetailFragment extends LoadingFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		appContext = (AppContext) getActivity().getApplication();
 		if (recruitDetail == null)
 			getArgs();
-		if (appContext == null)
-			Log.i("bug", "fuck!!! recruit detail");
 		if (recruitDetail.getDescription() == null)
 			initData(appContext);
 		if (recruitHandler == null) {
@@ -96,14 +84,11 @@ public class RecruitDetailFragment extends LoadingFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		Log.i("bug", "create recruit detail View");
 		View recruitDetailView = inflater
 				.inflate(R.layout.recruit_detail, null);
-		scrollView = (ScrollView) recruitDetailView
-				.findViewById(R.id.recruit_description_layout);
+		initView(recruitDetailView);
 		// getActivity().getActionBar().setDisplayShowHomeEnabled(false);
 		initLoadingView(recruitDetailView);
-		initView(recruitDetailView);
 		if (!isloading && recruitDetail.getDescription() != null) {
 			hideLoadProgress(scrollView);
 			fillView();
@@ -114,6 +99,7 @@ public class RecruitDetailFragment extends LoadingFragment {
 		if (loadError) {
 			hideLoadProgressWithError(scrollView);
 		}
+		Log.i("bug", "create View complete");
 		return recruitDetailView;
 	}
 
@@ -121,7 +107,7 @@ public class RecruitDetailFragment extends LoadingFragment {
 	public void onStart() {
 		super.onStart();
 	}
-	
+
 	private void initHandler() {
 		if (recruitHandler == null) {
 			recruitHandler = new Handler() {
@@ -138,6 +124,10 @@ public class RecruitDetailFragment extends LoadingFragment {
 		}
 	}
 
+	protected Recruit getData() throws AppException {
+		return null;
+	}
+
 	public void initData(AppContext context) {
 		if (isloading) {
 			return;
@@ -147,6 +137,7 @@ public class RecruitDetailFragment extends LoadingFragment {
 		Log.i("test", "init recruit data");
 		if (recruitDetail == null)
 			getArgs();
+		initHandler();
 		showLoadProgress(scrollView);
 		new Thread() {
 			public void run() {
@@ -154,11 +145,16 @@ public class RecruitDetailFragment extends LoadingFragment {
 				try {
 					if (appContext == null)
 						Log.i("bug", "recruit detail app contest is null !!!!");
-					Recruit result = appContext.getRecruitDetail(recruitDetail
-							.getRecruitID());
-					recruitDetail.setDescription(result.getDescription());
-					recruitDetail.setForm(result.getForm());
-					recruitDetail.setUrl(result.getUrl());
+					Recruit result = getData();
+					if (result.getDescription() != null) {
+						recruitDetail.setDescription(result.getDescription());
+						recruitDetail.setForm(result.getForm());
+						recruitDetail.setUrl(result.getUrl());
+					} else {
+						recruitDetail.setContent(result.getContent());
+						recruitDetail.setUrl(result.getUrl());
+						Log.i("test","url is "+recruitDetail.getUrl());
+					}
 					msg.what = 1;
 				} catch (AppException e) {
 					msg.what = -1;
@@ -169,63 +165,34 @@ public class RecruitDetailFragment extends LoadingFragment {
 		}.start();
 	}
 
-	private void fillView() {
-		Log.i("bug", "fill view");
-		if (recruitDetail == null)
+	protected void fillView() {
+		Log.i("ac", "fill View");
+		if (recruitDetail == null || recruitDetail.getUrl() == null)
 			return;
 		hideLoadProgress(scrollView);
+		if (vURLLayout != null) {
+			if (!recruitDetail.getUrl().isEmpty()) {
+				vURLLayout.setVisibility(View.VISIBLE);
+			}
+		}
+		Log.i("ac", "fill View 2");
 		if (appContext.recruitLoadFromDisk) {
 			appContext.recruitLoadFromDisk = false;
-			UIHelper.ToastMessage(getActivity(), getString(R.string.load_fail));
+			UIHelper.ToastMessage(getActivity(),
+					getString(R.string.load_fail));
 		}
-		if (vForm != null) {
-			Log.i("bug", "vform");
-			if (recruitDetail.getForm() != null
-					&& !recruitDetail.getForm().isEmpty()) {
-				vForm.setVisibility(View.VISIBLE);
-				vForm.getSettings().setSupportZoom(true);
-				vForm.getSettings().setBuiltInZoomControls(true);
-				vForm.getSettings().setDefaultFontSize(13);
-				// String body = UIHelper.WEB_STYLE + recruitDetail.getForm() +
-				// "<div style=\"margin-bottom: 20px\" />";
-				String body = recruitDetail.getForm();
-				vForm.loadDataWithBaseURL(null, body, "text/html", "utf-8",
-						null);
-			} else {
-				vForm.setVisibility(View.GONE);
-			}
-		}
-		if (vURLLayout != null) {
-			Log.i("bug", "vurl");
-			if (recruitDetail.getUrl() != null
-					&& !recruitDetail.getUrl().isEmpty()) {
-				vURLLayout.setVisibility(View.VISIBLE);
-				vURLLayout.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						Log.i("bug", "click");
-						Log.i("bug", "url is :" + recruitDetail.getUrl());
-						UIHelper.openBrowser(v.getContext(), recruitDetail.getUrl());
-
-					}
-				});
-			}
-		}
-		if (vRecruitDetail != null) {
-			if ((recruitDetail.getDescription() == null || recruitDetail.getDescription().isEmpty())
-					&& (recruitDetail.getUrl() != null && !recruitDetail.getUrl().isEmpty()))
-				vRecruitDetail.setText("暂时没有该数据");
-			else
-				vRecruitDetail.setText(recruitDetail.getDescription());
-		}
-		Log.i("bug", "fill view complete");
 	}
 
 	// 初始化视图控件
-	private void initView(View recruitDetailView) {
+	protected void initView(View recruitDetailView) {
 		Log.i("ac", "initView");
-
+		scrollView = (ScrollView) recruitDetailView
+				.findViewById(R.id.recruit_description_layout);
+		vContentHeaderTextView = (TextView) recruitDetailView
+				.findViewById(R.id.recruit_content_header_text);
+		vContentTextView = (TextView) recruitDetailView
+				.findViewById(R.id.recruit_content_info);
+		Log.i("ac", "1");
 		vFamousFlag = (ImageView) recruitDetailView
 				.findViewById(R.id.recruit_famous_flag);
 		vSourceFrom = (TextView) recruitDetailView
@@ -241,13 +208,11 @@ public class RecruitDetailFragment extends LoadingFragment {
 				.findViewById(R.id.recruit_company_type);
 		vCompanyIndustry = (TextView) recruitDetailView
 				.findViewById(R.id.recruit_company_industry);
-		vRecruitDetail = (LinkView) recruitDetailView
-				.findViewById(R.id.recruit_description_info);
-		vForm = (WebView) recruitDetailView
-				.findViewById(R.id.recruit_detail_webview);
-		vURLLayout = recruitDetailView.findViewById(R.id.recruit_original_url_layout);
+		vGoToBBSSection = (TextView)recruitDetailView
+				.findViewById(R.id.recruit_goto_section);
+		vURLLayout = recruitDetailView
+				.findViewById(R.id.recruit_original_url_layout);
 		vURLLayout.setVisibility(View.GONE);
-
 		if (recruitDetail.getFamous() == 1)
 			vFamousFlag.setVisibility(View.VISIBLE);
 		else {
@@ -257,6 +222,7 @@ public class RecruitDetailFragment extends LoadingFragment {
 		vCompanyName.setText(recruitDetail.getCompany().getCompanyName());
 		vPosition.setText(recruitDetail.getPosition());
 		vPlace.setText(recruitDetail.getPlace());
+		
 		String friendlyTime = null;
 		try {
 			friendlyTime = StringUtils.friendly_created_time(recruitDetail
@@ -272,10 +238,23 @@ public class RecruitDetailFragment extends LoadingFragment {
 		 * vJoins.setText(recruitDetail.getJoins() + "");
 		 * vReplies.setText(recruitDetail.getReplies() + "");
 		 */
-
-		if (recruitDetail.getDescription() != null) {
-			fillView();
+		if (vURLLayout == null) {
+			Log.i("test","vurl is null");
 		}
+		vURLLayout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Log.i("bug", "click");
+				Log.i("bug", "url is :" + recruitDetail.getUrl());
+				UIHelper.openBrowser(v.getContext(), recruitDetail.getUrl());
+
+			}
+		});
+		
+		vURLLayout.setVisibility(View.GONE);
+		Log.i("ac", "fillView");
+		fillView();
 
 		Log.i("ac", "initRecruit");
 

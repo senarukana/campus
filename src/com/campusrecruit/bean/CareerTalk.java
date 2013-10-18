@@ -254,7 +254,7 @@ public class CareerTalk implements Serializable, Comparable<CareerTalk>{
 			careerTalkBase.famous = careerObject.getInt("famous");
 			return careerTalkBase;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -267,7 +267,7 @@ public class CareerTalk implements Serializable, Comparable<CareerTalk>{
 			careerTalk.date = careerObject.getString("date");
 			return careerTalk;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}

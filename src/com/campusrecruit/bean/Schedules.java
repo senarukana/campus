@@ -16,6 +16,8 @@ public class Schedules implements Serializable {
 	private String place;
 	private String date;
 	private String time;
+	private String alarmTime;
+
 
 	public Schedules() {
 
@@ -75,6 +77,14 @@ public class Schedules implements Serializable {
 
 	public void setTime(String time) {
 		this.time = time;
+	}
+	
+	public String getAlarmTime() {
+		return alarmTime;
+	}
+
+	public void setAlarmTime(String alarmTime) {
+		this.alarmTime = alarmTime;
 	}
 
 }

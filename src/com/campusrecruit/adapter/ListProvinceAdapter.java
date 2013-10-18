@@ -16,7 +16,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.campusrecruit.bean.Province;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class ListProvinceAdapter extends BaseAdapter
 {

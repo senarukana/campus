@@ -43,7 +43,7 @@ import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 @SuppressLint("ValidFragment")
 public class RecruitFragment extends ListFragment implements
@@ -52,21 +52,21 @@ public class RecruitFragment extends ListFragment implements
 	private PullToRefreshListView pvRecruits = null;
 
 	private MenuItem sortItem = null;
-	private MenuItem famousItem = null;
+	// private MenuItem famousItem = null;
 	int icon_res = R.drawable.ic_action_sort;
-	int icon_famous_res = R.drawable.header_all;
+	// int icon_famous_res = R.drawable.header_all;
 
 	private View pvFooter;
 	private TextView pvFooterTextView;
 	private ProgressBar pvFooterProgressBar;
 
-	// private int lvRecruitSum = 0;
+	private int lvRecruitSum = 0;
 
 	private Handler lvRecruitHandler = null;
 	private Handler lvRecruitDiskHandler = null;
 	private Handler lvRecruitSearchHandler = null;
 
-	private AppContext appContext;
+	private boolean isSearch = false;
 
 	private List<Recruit> savedList = new ArrayList<Recruit>();
 	private SearchView mSearchView = null;
@@ -75,7 +75,6 @@ public class RecruitFragment extends ListFragment implements
 	// private String saveFooterText = null;
 
 	private int sortby = AppConfig.SORT_BY_CREATED_TIME;
-	private boolean famousFlag = false;
 
 	// TODO 应该有更好解决办法
 	// 如果是用户向上拉更新数据则不需要清空老数据，如果是通过sort方法则需要清空
@@ -85,7 +84,6 @@ public class RecruitFragment extends ListFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.i("main", "recruit fragment init");
 		super.onCreateView(inflater, container, savedInstanceState);
 		View recruit_view = inflater.inflate(R.layout.recruit_list, null);
 		initLoadingView(recruit_view);
@@ -99,31 +97,21 @@ public class RecruitFragment extends ListFragment implements
 		pvFooterProgressBar = (ProgressBar) pvFooter
 				.findViewById(R.id.listview_foot_progress);
 		pvRecruits.addFooterView(pvFooter);
-		initListHeaderView(inflater, pvRecruits);
-		Log.i("main", "test fragment init");
-		/*
-		 * if (saveFooterText != null && pvFooterTextView != null)
-		 * pvFooterTextView.setText(saveFooterText);
-		 */
+		initListHeaderView(inflater, pvRecruits, true);
 
 		if (!appContext.getLvRecruitList().isEmpty()) {
 			appContext.getLvRecruitListAdapter().setData(
 					appContext.getLvRecruitList());
 			appContext.getLvRecruitListAdapter().notifyDataSetChanged();
 		}
-		Log.i("main", "recruit fragment init");
-		// pvRecruits.setTag(UIHelper.LISTVIEW_DATA_MORE);
 		initRecruitListView(pvRecruits);
-		Log.i("main", "recruit fragment complete");
 		return recruit_view;
 	}
 
 	private class ReturnBackListener implements OnClickListener {
 		@Override
 		public void onClick(View v) {
-			Log.i("test", "click");
 			if (!savedList.isEmpty()) {
-				Log.i("test", "test1234");
 				hideLoadProgress(pvRecruits);
 				UIHelper.ToastMessage(getActivity(),
 						getString(R.string.search_return, Toast.LENGTH_SHORT));
@@ -141,13 +129,11 @@ public class RecruitFragment extends ListFragment implements
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// initRecruitListView(pvRecruits);
 		appContext = (AppContext) getActivity().getApplication();
 		if (appContext.getLvRecruitListAdapter() == null) {
 			appContext.setLvRecruitListAdapter(new ListViewRecruitAdapter(
 					getActivity(), appContext, R.layout.recruit_item));
 		}
-		Log.i("test", "aaaaa");
 		initHandler();
 		setHasOptionsMenu(true);
 	}
@@ -157,9 +143,6 @@ public class RecruitFragment extends ListFragment implements
 		super.onPrepareOptionsMenu(menu);
 		if (sortItem != null) {
 			sortItem.setIcon(icon_res);
-		}
-		if (famousItem != null) {
-			famousItem.setIcon(icon_famous_res);
 		}
 	}
 
@@ -185,21 +168,17 @@ public class RecruitFragment extends ListFragment implements
 			}
 		}
 
-		famousFlag = false;
-		if (famousItem != null)
-			famousItem.setIcon(icon_famous_res);
-		View memuItemView1 = getActivity().findViewById(R.id.menu_famous);
-		if (memuItemView1 != null) {
-			PopupMenu popup1 = new PopupMenu(getActivity(), memuItemView1);
-			if (popup1 != null) {
-				MenuInflater inflater1 = popup1.getMenuInflater();
-				if (inflater1 != null) {
-					inflater1.inflate(R.menu.sub_menu_famous, popup1.getMenu());
-					popup1.getMenu().getItem(famousFlag == true ? 0 : 1)
-							.setChecked(true);
-				}
-			}
-		}
+		/*
+		 * famousFlag = false; if (famousItem != null)
+		 * famousItem.setIcon(icon_famous_res); View memuItemView1 =
+		 * getActivity().findViewById(R.id.menu_famous); if (memuItemView1 !=
+		 * null) { PopupMenu popup1 = new PopupMenu(getActivity(),
+		 * memuItemView1); if (popup1 != null) { MenuInflater inflater1 =
+		 * popup1.getMenuInflater(); if (inflater1 != null) {
+		 * inflater1.inflate(R.menu.sub_menu_famous, popup1.getMenu());
+		 * popup1.getMenu().getItem(famousFlag == true ? 0 : 1)
+		 * .setChecked(true); } } }
+		 */
 	}
 
 	@Override
@@ -207,7 +186,7 @@ public class RecruitFragment extends ListFragment implements
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.menu_search_sort, menu);
 		sortItem = menu.findItem(R.id.menu_sort);
-		famousItem = menu.findItem(R.id.menu_famous);
+		// famousItem = menu.findItem(R.id.menu_famous);
 		MenuItem searchItem = menu.findItem(R.id.action_search);
 		mSearchView = (SearchView) searchItem.getActionView();
 		setupSearchView(searchItem);
@@ -225,15 +204,16 @@ public class RecruitFragment extends ListFragment implements
 			popup.setOnMenuItemClickListener(menuItemClickListener);
 			popup.show();
 			break;
-		case R.id.menu_famous:
-			View memuItemView1 = getActivity().findViewById(R.id.menu_famous);
-			PopupMenu popup1 = new PopupMenu(getActivity(), memuItemView1);
-			MenuInflater inflater1 = popup1.getMenuInflater();
-			inflater1.inflate(R.menu.sub_menu_famous, popup1.getMenu());
-			popup1.getMenu().getItem(famousFlag == true ? 0 : 1)
-					.setChecked(true);
-			popup1.setOnMenuItemClickListener(menuItemClickListener1);
-			popup1.show();
+		/*
+		 * case R.id.menu_famous: View memuItemView1 =
+		 * getActivity().findViewById(R.id.menu_famous); PopupMenu popup1 = new
+		 * PopupMenu(getActivity(), memuItemView1); MenuInflater inflater1 =
+		 * popup1.getMenuInflater(); inflater1.inflate(R.menu.sub_menu_famous,
+		 * popup1.getMenu()); popup1.getMenu().getItem(famousFlag == true ? 0 :
+		 * 1) .setChecked(true);
+		 * popup1.setOnMenuItemClickListener(menuItemClickListener1);
+		 * popup1.show();
+		 */
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -265,7 +245,7 @@ public class RecruitFragment extends ListFragment implements
 					msg.obj = list;
 					msg.what = list.size();
 				} catch (AppException e) {
-					e.printStackTrace();
+
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -277,8 +257,12 @@ public class RecruitFragment extends ListFragment implements
 	}
 
 	public void ThreadSearch(final int pageIndex, final int action) {
+		isSearch = false;
 		hideSearchView();
 		isloading = true;
+		if (lvRecruitSum < (pageIndex + 1) * AppConfig.PAGE_SIZE) {
+			lvRecruitSum = (pageIndex + 1) * AppConfig.PAGE_SIZE;
+		}
 		if (action == UIHelper.LISTVIEW_ACTION_SORT) {
 			showLoadProgress(pvRecruits);
 		} else if (action == UIHelper.LISTVIEW_ACTION_SCROLL) {
@@ -289,7 +273,9 @@ public class RecruitFragment extends ListFragment implements
 				Message msg = new Message();
 				try {
 					List<Recruit> list = appContext.getRecruitListFromInternet(
-							pageIndex, sortby, isFamous);
+							pageIndex, sortby, isFamous, selectProvinceList,
+							selectCompanyTypeList, selectCompanyIndustryList,
+							selectSourceList);
 					msg.obj = list;
 					msg.what = list.size();
 					msg.arg1 = action;
@@ -364,43 +350,27 @@ public class RecruitFragment extends ListFragment implements
 
 	};
 
-	private OnMenuItemClickListener menuItemClickListener1 = new OnMenuItemClickListener() {
-
-		@Override
-		public boolean onMenuItemClick(MenuItem item) {
-			switch (item.getItemId()) {
-			case R.id.sort_by_famous:
-				if (famousFlag) {
-					UIHelper.ToastMessage(getActivity(),
-							getString(R.string.sort_same), Toast.LENGTH_SHORT);
-					return true;
-				}
-				icon_famous_res = R.drawable.header_famous;
-				Log.i("famous", "famous");
-				famousItem.setIcon(R.drawable.header_famous);
-				famousFlag = true;
-				manualRefresh = true;
-				pvRecruits.clickRefresh();
-				return true;
-			case R.id.sort_by_common:
-				if (!famousFlag) {
-					UIHelper.ToastMessage(getActivity(),
-							getString(R.string.sort_same), Toast.LENGTH_SHORT);
-					return true;
-				}
-				icon_famous_res = R.drawable.header_all;
-				Log.i("famous", "common");
-				famousItem.setIcon(R.drawable.header_all);
-				famousFlag = false;
-				manualRefresh = true;
-				pvRecruits.clickRefresh();
-				return true;
-			default:
-				return false;
-			}
-		}
-
-	};
+	/*
+	 * private OnMenuItemClickListener menuItemClickListener1 = new
+	 * OnMenuItemClickListener() {
+	 * 
+	 * @Override public boolean onMenuItemClick(MenuItem item) { switch
+	 * (item.getItemId()) { case R.id.sort_by_famous: if (famousFlag) {
+	 * UIHelper.ToastMessage(getActivity(), getString(R.string.sort_same),
+	 * Toast.LENGTH_SHORT); return true; } icon_famous_res =
+	 * R.drawable.header_famous; Log.i("famous", "famous");
+	 * famousItem.setIcon(R.drawable.header_famous); famousFlag = true;
+	 * manualRefresh = true; pvRecruits.clickRefresh(); return true; case
+	 * R.id.sort_by_common: if (!famousFlag) {
+	 * UIHelper.ToastMessage(getActivity(), getString(R.string.sort_same),
+	 * Toast.LENGTH_SHORT); return true; } icon_famous_res =
+	 * R.drawable.header_all; Log.i("famous", "common");
+	 * famousItem.setIcon(R.drawable.header_all); famousFlag = false;
+	 * manualRefresh = true; pvRecruits.clickRefresh(); return true; default:
+	 * return false; } }
+	 * 
+	 * };
+	 */
 
 	private void setupSearchView(MenuItem searchItem) {
 
@@ -497,9 +467,13 @@ public class RecruitFragment extends ListFragment implements
 
 		lvRecruitSearchHandler = new Handler() {
 			public void handleMessage(Message msg) {
+
 				pvFooter.setVisibility(View.GONE);
-				savedList.clear();
-				savedList.addAll(appContext.getLvRecruitList());
+				if (!isSearch) {
+					savedList.clear();
+					savedList.addAll(appContext.getLvRecruitList());
+				}
+				isSearch = true;
 				if (msg.what == 0) {
 					completeSearchWithEmpty(pvRecruits, _searchStr);
 					return;
@@ -539,6 +513,7 @@ public class RecruitFragment extends ListFragment implements
 			if (manualRefresh) {
 				ThreadSearch(0, UIHelper.LISTVIEW_ACTION_SORT);
 				manualRefresh = false;
+				lvRecruitSum = AppConfig.PAGE_SIZE;
 			} else {
 				ThreadSearch(0, UIHelper.LISTVIEW_ACTION_REFRESH);
 			}
@@ -579,8 +554,7 @@ public class RecruitFragment extends ListFragment implements
 				pvFooterTextView.setText(R.string.load_ing);
 				pvFooterProgressBar.setVisibility(View.VISIBLE);
 
-				int pageIndex = appContext.getLvRecruitList().size()
-						/ AppConfig.PAGE_SIZE;
+				int pageIndex = lvRecruitSum / AppConfig.PAGE_SIZE;
 				ThreadSearch(pageIndex, UIHelper.LISTVIEW_ACTION_SCROLL);
 			}
 		}
@@ -624,7 +598,6 @@ public class RecruitFragment extends ListFragment implements
 				if (list != null) {
 					msg.what = list.size();
 					msg.obj = list;
-					Log.i("ddd", list.size() + "recruit list from disk");
 				} else {
 					msg.what = 0;
 					msg.obj = null;
@@ -638,7 +611,7 @@ public class RecruitFragment extends ListFragment implements
 			boolean isDisk) {
 		if (list == null)
 			return;
-
+		hideLoadProgress(pvRecruits);
 		// 如果是读的磁盘数据，或者是刷新事件，清空list
 		if (isDisk || actionType == UIHelper.LISTVIEW_ACTION_SORT) {
 			// lvRecruitSum = list.size();
@@ -654,7 +627,6 @@ public class RecruitFragment extends ListFragment implements
 						getString(R.string.load_complete, "校园招聘"),
 						Toast.LENGTH_SHORT).show();
 			}
-			hideLoadProgress(pvRecruits);
 		} else {
 			Log.i("recruit bug", "recruit disk inter list size is"
 					+ appContext.getLvRecruitList().size());
@@ -711,18 +683,13 @@ public class RecruitFragment extends ListFragment implements
 
 			// lvRecruitSum += count;
 			appContext.getLvRecruitList().addAll(newList);
-			Collections.sort(appContext.getLvRecruitList());
+			if (sortby == AppConfig.SORT_BY_CREATED_TIME) {
+				Collections.sort(appContext.getLvRecruitList());
+			}
 			appContext.getLvRecruitListAdapter().setData(
 					appContext.getLvRecruitList());
 			appContext.getLvRecruitListAdapter().notifyDataSetChanged();
 			appContext.saveRecruitList(newList);
-			// Log.i("recruit bug","now the lv recruit sum is " + lvRecruitSum);
-			Log.i("recruit bug", "now the recruit list size is"
-					+ appContext.getLvRecruitList().size());
-			/*
-			 * Log.i("recruit bug", "load recruit data from disk!!!!!!!!!!!!!" +
-			 * lvRecruitSum);
-			 */
 		}
 	}
 

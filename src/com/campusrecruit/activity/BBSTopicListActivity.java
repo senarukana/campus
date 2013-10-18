@@ -14,7 +14,7 @@ import com.campusrecruit.bean.BBSTopic;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -31,7 +31,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class BBSTopicListActivity extends Activity {
+public class BBSTopicListActivity extends BaseActivity {
 	// private ProgressBar mHeadProgress;
 
 	private PullToRefreshListView pvTopics;
@@ -42,7 +42,6 @@ public class BBSTopicListActivity extends Activity {
 	private View vFooter;
 	private TextView vFooterTextView;
 	private ProgressBar vFooterProgressBar;
-	private AppContext appContext;// 全局Context
 
 	private final static int DATA_LOAD_ING = 0x001;
 	private final static int DATA_LOAD_COMPLETE = 0x002;
@@ -56,7 +55,6 @@ public class BBSTopicListActivity extends Activity {
 		setContentView(R.layout.topic_list);
 		getActionBar().setHomeButtonEnabled(true);
 		bbsSection = (BBSSection) getIntent().getSerializableExtra("section");
-		appContext = (AppContext) getApplication();
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle(bbsSection.getSectionName());
 		initTopicsListView();
@@ -78,11 +76,9 @@ public class BBSTopicListActivity extends Activity {
 				return true;
 			}
 			UIHelper.showTopicPub(BBSTopicListActivity.this,
-					bbsSection.getSectionID(), 0);
+					bbsSection.getSectionID(), bbsSection.getCompanyID());
 			return true;
 		case R.id.menu_refresh_id:
-			Log.i("refresh", "bbs refresh");
-
 			return true;
 		case android.R.id.home:
 			onBackPressed();
@@ -99,21 +95,22 @@ public class BBSTopicListActivity extends Activity {
 		if (data == null)
 			return;
 		Log.i("ac", "new topic");
-		BBSTopic topic = (BBSTopic) data.getSerializableExtra("topic");
+		final BBSTopic topic = (BBSTopic) data.getSerializableExtra("topic");
 		lvTopicsData.add(0, topic);
 		lvTopicsAdapter.notifyDataSetChanged();
 		pvTopics.setSelection(0);
+		appContext.commentPubAfter(topic);
+		new Thread() {
+			@Override
+			public void run() {
+				appContext.saveUserTopic(topic.getTopicID(),
+						topic.getTitle(), topic.getCreatedTime());
+			}
+
+		}.start();
 	}
-
-	private View.OnClickListener newTopicListener = new View.OnClickListener() {
-		public void onClick(View v) {
-			Log.i("ac", "newTopic");
-			Log.i("ac", bbsSection.getSectionID() + "");
-			UIHelper.showTopicPub(BBSTopicListActivity.this,
-					bbsSection.getSectionID(), bbsSection.getCompanyID());
-		}
-	};
-
+	
+	
 	// 初始化控件数据
 	private void initTopicsListData() {
 		Log.i("test", "initTopicsListData");
@@ -290,7 +287,7 @@ public class BBSTopicListActivity extends Activity {
 					msg.what = 1;
 					msg.obj = list;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}

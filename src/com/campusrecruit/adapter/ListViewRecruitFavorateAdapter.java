@@ -11,7 +11,7 @@ import com.campusrecruit.bean.Result;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.fragment.RecruitFragment;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.R.integer;
 import android.app.Activity;
@@ -35,6 +35,7 @@ import android.widget.Toast;
 public class ListViewRecruitFavorateAdapter extends BaseAdapter {
 
 	private List<Recruit> listItem;
+	
 	private AppContext appContext;
 	private Context context;
 	private LayoutInflater listContainer;
@@ -172,7 +173,11 @@ public class ListViewRecruitFavorateAdapter extends BaseAdapter {
 		public void onClick(View v) {
 			Log.i("recruit", recruit.getPosition());
 			// 跳转到招聘详情
-			UIHelper.showRecruitDetail(context, recruit, true);
+			if (recruit.getSourceFrom().equals("大街网")) {
+				UIHelper.showRecruitDetail(context, recruit, true);
+			} else {
+				UIHelper.showRecruitSimpleDetail(context, recruit, true);
+			}
 		}
 
 	}
@@ -203,7 +208,7 @@ public class ListViewRecruitFavorateAdapter extends BaseAdapter {
 								appContext.joinRecruit(recruit.getRecruitID(),
 										false);
 							} catch (AppException e) {
-								e.printStackTrace();
+								
 								e.makeToast(context);
 							}
 

@@ -16,7 +16,7 @@ import com.campusrecruit.widget.DateWidgetDayCell;
 import com.campusrecruit.widget.DateWidgetDayHeader;
 import com.campusrecruit.widget.DayStyle;
 import com.campusrecruit.widget.Lunar;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -71,6 +71,8 @@ public class ScheduleFragment extends BaseFragment {
 	private int mYear;
 	private int mMonth;
 	private int mDay;
+	
+	private List<Schedules> scheduleList;
 
 	private Animation slideLeftIn;
 	private Animation slideLeftOut;
@@ -323,7 +325,10 @@ public class ScheduleFragment extends BaseFragment {
 //
 //		list.add(s1);
 //		list.add(s2);
-		return mAppContext.scheduleGetAll();
+		if (scheduleList == null) {
+			scheduleList = mAppContext.scheduleGetAll();
+		}
+		return scheduleList;
 //		return list;
 	}
 	
@@ -401,7 +406,7 @@ public class ScheduleFragment extends BaseFragment {
 			// check schedule
 			boolean bScheduled = false;
 
-			for (Schedules s : mAppContext.scheduleGetAll()) {
+			for (Schedules s : getSchedulesList()) {
 				String date = s.getDate();
 				Calendar c = Calendar.getInstance();
 				SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -409,7 +414,7 @@ public class ScheduleFragment extends BaseFragment {
 					c.setTime(sdFormat.parse(date));
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					
 				}
 				if (c.get(Calendar.YEAR) == iYear
 						&& c.get(Calendar.MONTH) == iMonth
@@ -509,16 +514,14 @@ public class ScheduleFragment extends BaseFragment {
 			// this is the schedule list that contains the schedule on the click
 			// day
 			ArrayList<Schedules> schedule_intent_list = new ArrayList<Schedules>();
-			Log.i("daily", calScheduleList.size() + " ");
-			for (Schedules s : mAppContext.scheduleGetAll()) {
+			for (Schedules s : getSchedulesList()) {
 				String date = s.getDate();
 				Calendar c = Calendar.getInstance();
 				SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				try {
 					c.setTime(sdFormat.parse(date));
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					
 				}
 				if (c.get(Calendar.YEAR) == calSelected.get(Calendar.YEAR)
 						&& c.get(Calendar.MONTH) == calSelected
@@ -528,11 +531,6 @@ public class ScheduleFragment extends BaseFragment {
 					schedule_intent_list.add(s);
 				}
 			}
-			if (schedule_intent_list.size() != 0) {
-				Toast.makeText(getActivity(), "bingo", Toast.LENGTH_SHORT)
-						.show();
-			}
-			Log.i("schedule", "begin");
 			Intent i = new Intent(getActivity(), DailyActivity.class);
 			i.putExtra("schedule_list", schedule_intent_list);
 			startActivityForResult(i,UIHelper.REQUEST_CODE_FOR_SCHEDULE);

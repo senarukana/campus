@@ -129,7 +129,7 @@ public class BBSTopic implements Serializable{
 			bbsTopic.replies = topicJsonObject.getInt("replies");
 			return bbsTopic;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -141,7 +141,7 @@ public class BBSTopic implements Serializable{
 			bbsTopic.userID = topicJsonObject.getString("userID");
 			return bbsTopic;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -153,7 +153,7 @@ public class BBSTopic implements Serializable{
 			BBSTopic bbsTopic = parseBase(topicJsonObject);
 			return bbsTopic;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}

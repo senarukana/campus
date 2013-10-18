@@ -2,7 +2,7 @@ package com.campusrecruit.widget;
 
 import java.util.Calendar;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.content.Context;
 import android.graphics.Canvas;

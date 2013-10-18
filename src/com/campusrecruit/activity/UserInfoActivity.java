@@ -21,7 +21,7 @@ import com.campusrecruit.common.ImageUtils;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LoadingDialog;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,6 +43,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -56,7 +57,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-public class UserInfoActivity extends Activity {
+public class UserInfoActivity extends BaseActivity {
 	private final static int CROP = 200;
 	private final static String FILE_SAVEPATH = Environment
 			.getExternalStorageDirectory().getAbsolutePath()
@@ -68,34 +69,19 @@ public class UserInfoActivity extends Activity {
 	private String protraitPath;
 	private LoadingDialog loading;
 
-	private AppContext appContext;
-
 	private User user;
 	private Handler userInfoHandler;
 	private Handler userUpdateHandler;
-	private Handler preferenceHandler;
 	private String userID;
 
-	private TableLayout textViewMainLayout;
 	private ImageView vFace;
 	private TextView vUserName;
 	private TextView vEmail;
-	private ImageView vGender;
+	private ToggleButton vGender;
 	private TextView vSchool;
 	private TextView vMajor;
-	private Button vLogout;
 
-	private TableLayout editViewMainLayout;
 	private EditText vEditEmail;
-	private ToggleButton vEditGender;
-	private EditText vEditSchool;
-	private EditText vEditMajor;
-
-	private RelativeLayout addressSelect = null;
-	private TextView selectedProvinceTextview = null;
-	private StringBuilder provinceBuilder;
-	private ArrayList<Integer> selectProvinceList = new ArrayList<Integer>();
-	private Map<String, ArrayList<Integer>> map = new HashMap<String, ArrayList<Integer>>();
 
 	/*
 	 * private ToggleButton industryComputeToggle = null; private ToggleButton
@@ -115,7 +101,7 @@ public class UserInfoActivity extends Activity {
 
 	private boolean faceChanged = true;
 
-	private boolean isEdit = true;
+	private boolean isEdit = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -127,11 +113,9 @@ public class UserInfoActivity extends Activity {
 		getActionBar().setTitle("个人中心");
 		Log.i("user", "init user action ok");
 		userID = getIntent().getStringExtra("userID");
-		appContext = (AppContext) getApplication();
-		Log.i("user", "init user view userID");
-		textViewMainLayout = (TableLayout) findViewById(R.id.infor_show_layout);
-		editViewMainLayout = (TableLayout) findViewById(R.id.infor_edit_layout);
-		Log.i("user", "init text view");
+		getWindow().setSoftInputMode(
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
 		initTextView();
 		/*
 		 * initPreferenceView(); initPreferenceListener();
@@ -139,38 +123,19 @@ public class UserInfoActivity extends Activity {
 
 		Log.i("user", "init data");
 		if (!userID.equals(appContext.getLoginUid())) {
+			vEmail.setClickable(false);
+			vMajor.setClickable(false);
+			vSchool.setClickable(false);
+			vFace.setClickable(false);
+			vGender.setClickable(false);
 			initUserData();
 		} else {
 			vFace.setOnClickListener(faceClickListener);
 			initEditView();
 			user = appContext.getLoginUser();
-			// initPreference();
 			showUserData();
-			// enableToggleButton();
 		}
 		Log.i("user", "disable data");
-		// disableToggleButton();
-	}
-
-	// 展示layout 到 修改layout的切换
-	private void viewSwitch(boolean flag) {
-		if (flag) {
-			Log.i("test", "viewswich true");
-			vFace.setClickable(false);
-			Log.i("test", "viewswich true1");
-			textViewMainLayout.setVisibility(View.VISIBLE);
-			Log.i("test", "viewswich true2");
-			editViewMainLayout.setVisibility(View.GONE);
-			Log.i("test", "viewswich true3");
-		} else {
-			Log.i("test", "viewswich f");
-			vFace.setClickable(true);
-			Log.i("test", "viewswich f1");
-			textViewMainLayout.setVisibility(View.GONE);
-			Log.i("test", "viewswich f2");
-			editViewMainLayout.setVisibility(View.VISIBLE);
-			Log.i("test", "viewswich f3");
-		}
 	}
 
 	private void initTextView() {
@@ -179,76 +144,51 @@ public class UserInfoActivity extends Activity {
 		vEmail = (TextView) findViewById(R.id.user_infor_email_text);
 		vSchool = (TextView) findViewById(R.id.user_infor_school_text);
 		vMajor = (TextView) findViewById(R.id.user_infor_major_text);
-		vGender = (ImageView) findViewById(R.id.user_infor_gender_text);
+		vGender = (ToggleButton) findViewById(R.id.user_infor_gender_text);
 		vFace = (ImageView) findViewById(R.id.user_infor_face_show);
-		vFace.setClickable(false);
+		vSchool.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				UIHelper.showSchool(UserInfoActivity.this, user.getSchoolName());
+			}
+		});
+
+		vMajor.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				UIHelper.showMajor(UserInfoActivity.this, user.getMajorName());
+			}
+		});
+
+		vEmail.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				v.setVisibility(View.GONE);
+				vEditEmail.setVisibility(View.VISIBLE);
+				if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+					vEditEmail.setText(vEmail.getText());
+				}
+				InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+				imm.showSoftInputFromInputMethod(vEditEmail.getWindowToken(), 0);
+				vEditEmail.requestFocus();
+			}
+		});
+		vGender.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				isEdit = true;
+			}
+		});
 	}
 
 	private void initEditView() {
-		Log.i("user", "init edit view");
 		vEditEmail = (EditText) findViewById(R.id.user_infor_email);
-		vEditSchool = (EditText) findViewById(R.id.user_infor_school);
-		vEditMajor = (EditText) findViewById(R.id.user_infor_major);
-		vEditGender = (ToggleButton) findViewById(R.id.user_infor_gender);
-		/*
-		 * vLogout = (Button) findViewById(R.id.logout_btn);
-		 * vLogout.setVisibility(View.VISIBLE); vLogout.setOnClickListener(new
-		 * View.OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) { AlertDialog.Builder adb = new
-		 * AlertDialog.Builder(UserInfoActivity.this); adb.setTitle("退出登陆?");
-		 * adb.setMessage("这将会清除掉你所有本地数据，并退出应用"); adb.setNegativeButton("取消",
-		 * null); adb.setPositiveButton("确定", new AlertDialog.OnClickListener()
-		 * {
-		 * 
-		 * @Override public void onClick(DialogInterface dialog, int which) {
-		 * Log.i("test","登出"); appContext.cleanLoginInfo();
-		 * Log.i("test","登出 complete"); finish(); Log.i("test","ok"); } });
-		 * adb.show();
-		 * 
-		 * } });
-		 */
 
-		user = appContext.getLoginUser();
-		if (user.getEmail() != null)
-			vEditEmail.setText(user.getEmail());
-		if (user.getSchoolName() != null) {
-			vEditSchool.setText(user.getSchoolName());
-		}
-		if (user.getMajorName() != null) {
-			vEditMajor.setText(user.getMajorName());
-		}
-		if (user.getGender() == 1) {
-			vEditGender.setChecked(true);
-		} else {
-			vEditGender.setChecked(false);
-		}
-		Log.i("user", "init edit view");
 	}
 
-	/*
-	 * private void initPreferenceView() { industryComputeToggle =
-	 * (ToggleButton) findViewById(R.id.recommend_industry_computer_toggle);
-	 * industryCommunicationToggle = (ToggleButton)
-	 * findViewById(R.id.recommend_industry_communication_toggle);
-	 * industryElectronicToggle = (ToggleButton)
-	 * findViewById(R.id.recommend_industry_electronic_toggle);
-	 * industryEconomyToggle = (ToggleButton)
-	 * findViewById(R.id.recommend_industry_economic_toggle); propertySoe =
-	 * (ToggleButton) findViewById(R.id.recommend_property_soe_toggle);
-	 * propertyPrivate = (ToggleButton)
-	 * findViewById(R.id.recommend_property_private_toggle); propertyForeign =
-	 * (ToggleButton) findViewById(R.id.recommend_property_foreign_toggle);
-	 * typeCarrertalk = (ToggleButton)
-	 * findViewById(R.id.recommend_type_careertalk_toggle); typeRecruit =
-	 * (ToggleButton) findViewById(R.id.recommend_type_recruit_toggle);
-	 * typeMessage = (ToggleButton)
-	 * findViewById(R.id.recommend_type_message_toggle); typeReply =
-	 * (ToggleButton) findViewById(R.id.recommend_type_reply_toggle);
-	 * addressSelect = (RelativeLayout)
-	 * findViewById(R.id.recommend_address_select); selectedProvinceTextview =
-	 * (TextView) findViewById(R.id.selected_province_textview); }
-	 */
 	private void showUserData() {
 		if (user == null)
 			return;
@@ -258,10 +198,11 @@ public class UserInfoActivity extends Activity {
 		if (user.getEmail() == null
 				|| (user.getEmail() != null && user.getEmail().isEmpty())) {
 			vEmail.setText(R.string.empty_field);
-			Log.i("user", "emai empty");
 		} else {
 			vEmail.setText(user.getEmail());
-			Log.i("user", "emai not empty " + user.getEmail());
+			if (user.getUid().equals(appContext.getLoginUid())) {
+				vEditEmail.setText(user.getEmail());
+			}
 		}
 		if (user.getSchoolName() == null
 				|| (user.getSchoolName() != null && user.getSchoolName()
@@ -278,9 +219,9 @@ public class UserInfoActivity extends Activity {
 			vMajor.setText(user.getMajorName());
 		}
 		if (user.getGender() == 0) {
-			vGender.setImageResource(R.drawable.widget_gender_man);
+			vGender.setChecked(false);
 		} else {
-			vGender.setImageResource(R.drawable.widget_gender_woman);
+			vGender.setChecked(true);
 		}
 		BitmapManager bmpManager = new BitmapManager(
 				BitmapFactory.decodeResource(this.getResources(),
@@ -302,70 +243,6 @@ public class UserInfoActivity extends Activity {
 			vFace.setVisibility(View.GONE);
 		}
 	}
-
-	/*
-	 * private void initPreference() { UserPreference preference =
-	 * user.getPreference(); String[] provinces =
-	 * preference.getProvince().split(","); String[] industries =
-	 * preference.getCompanyIndustry().split(","); String[] companyTypes =
-	 * preference.getCompanyType().split(","); String[] notifyTypes =
-	 * preference.getNotifyType().split(",");
-	 * 
-	 * for (int i = 0; i < industries.length; i++) { if
-	 * (industries[i].equals("1")) industryComputeToggle.setChecked(true); if
-	 * (industries[i].equals("2")) industryCommunicationToggle.setChecked(true);
-	 * if (industries[i].equals("3")) industryElectronicToggle.setChecked(true);
-	 * if (industries[i].equals("4")) industryEconomyToggle.setChecked(true); }
-	 * for (int i = 0; i < companyTypes.length; i++) { if
-	 * (companyTypes[i].equals("1")) propertySoe.setChecked(true); if
-	 * (companyTypes[i].equals("2")) propertyPrivate.setChecked(true); if
-	 * (companyTypes[i].equals("3")) propertyForeign.setChecked(true); } for
-	 * (int i = 0; i < notifyTypes.length; i++) { if
-	 * (notifyTypes[i].equals("1")) typeCarrertalk.setChecked(true); if
-	 * (notifyTypes[i].equals("2")) typeRecruit.setChecked(true); if
-	 * (notifyTypes[i].equals("3")) typeMessage.setChecked(true); if
-	 * (notifyTypes[i].equals("4")) typeReply.setChecked(true); }
-	 * selectProvinceList.clear(); provinceBuilder = new StringBuilder(); for
-	 * (int i = 0; i < provinces.length; i++) {
-	 * selectProvinceList.add(Integer.parseInt(provinces[i]));
-	 * provinceBuilder.append(appContext.getProvinceList()
-	 * .get(Integer.parseInt(provinces[i])).getProvinceName() + " "); }
-	 * selectedProvinceTextview.setText(provinceBuilder.toString()); }
-	 * 
-	 * private void initPreferenceListener() {
-	 * industryComputeToggle.setOnCheckedChangeListener(toggleListener);
-	 * industryCommunicationToggle.setOnCheckedChangeListener(toggleListener);
-	 * industryElectronicToggle.setOnCheckedChangeListener(toggleListener);
-	 * industryEconomyToggle.setOnCheckedChangeListener(toggleListener);
-	 * propertySoe.setOnCheckedChangeListener(toggleListener);
-	 * propertyPrivate.setOnCheckedChangeListener(toggleListener);
-	 * propertyForeign.setOnCheckedChangeListener(toggleListener);
-	 * typeCarrertalk.setOnCheckedChangeListener(toggleListener);
-	 * typeRecruit.setOnCheckedChangeListener(toggleListener);
-	 * typeMessage.setOnCheckedChangeListener(toggleListener);
-	 * typeReply.setOnCheckedChangeListener(toggleListener);
-	 * addressSelect.setOnClickListener(addressSelectListener); }
-	 * 
-	 * private void disableToggleButton() {
-	 * industryComputeToggle.setClickable(false);
-	 * industryCommunicationToggle.setClickable(false);
-	 * industryElectronicToggle.setClickable(false);
-	 * industryEconomyToggle.setClickable(false);
-	 * propertySoe.setClickable(false); propertyPrivate.setClickable(false);
-	 * propertyForeign.setClickable(false); typeCarrertalk.setClickable(false);
-	 * typeRecruit.setClickable(false); typeMessage.setClickable(false);
-	 * typeReply.setClickable(false); addressSelect.setClickable(false); }
-	 * 
-	 * private void enableToggleButton() {
-	 * industryComputeToggle.setClickable(true);
-	 * industryCommunicationToggle.setClickable(true);
-	 * industryElectronicToggle.setClickable(true);
-	 * industryEconomyToggle.setClickable(true); propertySoe.setClickable(true);
-	 * propertyPrivate.setClickable(true); propertyForeign.setClickable(true);
-	 * typeCarrertalk.setClickable(true); typeRecruit.setClickable(true);
-	 * typeReply.setClickable(true); typeMessage.setClickable(true);
-	 * addressSelect.setClickable(true); }
-	 */
 
 	private void initUserData() {
 		Log.i("user", "initUser Data");
@@ -396,31 +273,9 @@ public class UserInfoActivity extends Activity {
 		}.start();
 	}
 
-	/*
-	 * private void initEditView() { Log.i("user", "init edit view");
-	 * vEditUserName = (TextView) findViewById(R.id.user_infor_user_name);
-	 * vEditEmail = (EditText) findViewById(R.id.user_infor_email); vEditSchool
-	 * = (EditText) findViewById(R.id.user_infor_school); vEditMajor =
-	 * (EditText) findViewById(R.id.user_infor_major); vEditGender =
-	 * (ToggleButton) findViewById(R.id.user_infor_gender); vEditFace =
-	 * (ImageView) findViewById(R.id.user_infor_face);
-	 * 
-	 * user = appContext.getLoginInfo(); vEditUserName.setText(user.getName());
-	 * vEditEmail.setText(user.getEmail());
-	 * vEditSchool.setText(user.getSchoolName());
-	 * vEditMajor.setText(user.getMajorName()); if (user.getGender() == 1) {
-	 * vEditGender.setChecked(true); } else { vEditGender.setChecked(false); }
-	 * UIHelper.showUserFace(vEditFace, user.getFace());
-	 * vEditFace.setOnClickListener(faceClickListener); }
-	 */
-
 	private View.OnClickListener faceClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			faceChanged = true;
-			/*
-			 * CharSequence[] items = { getString(R.string.img_from_album),
-			 * getString(R.string.img_from_camera) }; imageChooseItem(items);
-			 */
 			CharSequence[] items = { getString(R.string.img_from_album) };
 			imageChooseItem(items);
 		}
@@ -428,7 +283,9 @@ public class UserInfoActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu_userinfo, menu);
+		if (userID.equals(appContext.getLoginUid())) {
+			getMenuInflater().inflate(R.menu.menu_userinfo, menu);
+		}
 		return true;
 	}
 
@@ -449,19 +306,19 @@ public class UserInfoActivity extends Activity {
 					if (u.getGender() != 0) {
 						user.setGender(u.getGender());
 					}
-					Log.i("test", "handkle begin");
+					vEditEmail.setVisibility(View.GONE);
+					vEmail.setText(vEditEmail.getText());
+					vEmail.setVisibility(View.VISIBLE);
 					showUserData();
-					Log.i("test", "handkle");
-					viewSwitch(true);
 				} else {
 					((AppException) msg.obj).makeToast(UserInfoActivity.this);
 				}
 			}
 		};
 		_email = vEditEmail.getText().toString();
-		_major = vEditMajor.getText().toString();
-		_school = vEditSchool.getText().toString();
-		_gender = vEditGender.isChecked() == true ? 1 : 0;
+		_major = vMajor.getText().toString();
+		_school = vSchool.getText().toString();
+		_gender = vGender.isChecked() == true ? 1 : 0;
 
 		if (!_email.isEmpty() && !StringUtils.isEmail(_email)) {
 			UIHelper.ToastMessage(this, R.string.msg_login_email_error);
@@ -483,76 +340,31 @@ public class UserInfoActivity extends Activity {
 					msg.what = 1;
 					msg.obj = updateUser;
 				} catch (AppException e) {
-					e.printStackTrace();
+
 					msg.what = -1;
 					msg.obj = e;
 				}
 				userUpdateHandler.sendMessage(msg);
 			}
 		}.start();
-		isEdit = !isEdit;
+		isEdit = false;
 		InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromInputMethod(vEditEmail.getWindowToken(), 0);
 		return true;
 	}
 
-	/*
-	 * private boolean saveInfo() { map.put("province", selectProvinceList);
-	 * Log.i("map", map.toString()); boolean mapEmpty = map.isEmpty(); boolean
-	 * keyEmpty = map.keySet().size() != 3; boolean valueEmpty = false;
-	 * Set<String> names = map.keySet(); Log.i("map set", names.toString());
-	 * Iterator<String> l = names.iterator(); while (l.hasNext()) { String name
-	 * = l.next(); if (map.get(name).isEmpty()) { valueEmpty = true; break; } }
-	 * if (mapEmpty || keyEmpty || valueEmpty) {
-	 * Toast.makeText(UserInfoActivity.this, "亲，您有类别没有选择哦",
-	 * Toast.LENGTH_SHORT).show(); return false; } else { isEdit = !isEdit;
-	 * saveUserInfo(); // savePreference(); return true; } }
-	 */
-	/*
-	 * private void savePreference() {
-	 * 
-	 * preferenceHandler = new Handler() {
-	 * 
-	 * @Override public void handleMessage(Message msg) { Log.i("test",
-	 * "preferenceHandler"); if (msg.what == 1) { disableToggleButton(); } else
-	 * { ((AppException) (msg.obj)).makeToast(UserInfoActivity.this); } }
-	 * 
-	 * }; new Thread() { Message msg = new Message();
-	 * 
-	 * @Override public void run() { try { Log.i("map preference",
-	 * map.toString()); appContext.setPreference(map); msg.what = 1; } catch
-	 * (AppException e) { e.printStackTrace(); msg.what = -1; msg.obj = e; }
-	 * preferenceHandler.sendMessage(msg); } }.start(); }
-	 */
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.userinfo_edit:
-			if (isEdit) {
-				if (user != null && userID.equals(appContext.getLoginUid())) {
-					// enableToggleButton();
-					isEdit = !isEdit;
-					item.setIcon(R.drawable.ic_userinfo_save);
-					item.setTitle(getResources()
-							.getText(R.string.userinfo_save));
-					// change the layout
-					viewSwitch(false);
-				} else {
-					if (user != null) {
-						// 发私信
-						UIHelper.showPrivateMessageList(UserInfoActivity.this,
-								userID, user.getName(), null);
-					}
-				}
-			} else {
-				// change the layout
-				if (saveUserInfo()) {
-					item.setIcon(R.drawable.ic_userinfo_edit);
-					item.setTitle(getResources()
-							.getText(R.string.userinfo_edit));
-					// disableToggleButton();
-				}
+			// change the layout
+			if (saveUserInfo()) {
+				/*
+				 * item.setIcon(R.drawable.ic_userinfo_edit);
+				 * item.setTitle(getResources
+				 * ().getText(R.string.userinfo_edit));
+				 */
+				// disableToggleButton();
+				UIHelper.ToastMessage(UserInfoActivity.this, "资料保存成功");
 			}
 			return true;
 		case android.R.id.home:
@@ -560,6 +372,52 @@ public class UserInfoActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (!user.getUid().equals(appContext.getLoginUid())) {
+			backPressed();
+		} else {
+			if (vEditEmail.getVisibility() == View.VISIBLE) {
+				vEditEmail.setVisibility(View.GONE);
+				vEmail.setVisibility(View.VISIBLE);
+				if (!StringUtils.isEmpty(vEditEmail.getText().toString())) {
+					user.setEmail(vEmail.getText().toString());
+					vEmail.setText(vEditEmail.getText());
+				} else {
+					user.setEmail(null);
+					vEmail.setText(R.string.empty_field);
+				}
+			} else if (isEdit
+					|| (user.getEmail() != null && !user.getEmail().isEmpty() && !user
+							.getEmail().equals(vEmail.getText().toString()))) {
+				AlertDialog.Builder adb = new AlertDialog.Builder(
+						UserInfoActivity.this);
+				adb.setTitle("保存修改的数据吗?");
+				adb.setMessage("你做出了修改，但尚未保存");
+				adb.setNegativeButton("取消", new AlertDialog.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						backPressed();
+					}
+				});
+				adb.setPositiveButton("保存", new AlertDialog.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						saveUserInfo();
+						backPressed();
+					}
+				});
+				adb.show();
+			} else {
+				backPressed();
+			}
+		}
+	}
+
+	private void backPressed() {
+		super.onBackPressed();
 	}
 
 	// 裁剪头像的绝对路径
@@ -574,16 +432,13 @@ public class UserInfoActivity extends Activity {
 			UIHelper.ToastMessage(this, "无法保存上传的头像，请检查SD卡是否挂载");
 			return null;
 		}
-		Log.i("test", "ttt1");
 		String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss")
 				.format(new Date());
 		String thePath = ImageUtils.getAbsolutePathFromNoStandardUri(uri);
-		Log.i("test", "ttt2");
 		// 如果是标准Uri
 		if (StringUtils.isEmpty(thePath)) {
 			thePath = ImageUtils.getAbsoluteImagePath(this, uri);
 		}
-		Log.i("test", "ttt3");
 		String ext = FileUtils.getFileFormat(thePath);
 		ext = StringUtils.isEmpty(ext) ? "jpg" : ext;
 		// 照片命名
@@ -751,7 +606,7 @@ public class UserInfoActivity extends Activity {
 						msg.what = -1;
 						msg.obj = e;
 					} catch (IOException e) {
-						e.printStackTrace();
+
 					}
 					handler.sendMessage(msg);
 				} else {
@@ -765,17 +620,17 @@ public class UserInfoActivity extends Activity {
 	@Override
 	public void onActivityResult(final int requestCode, final int resultCode,
 			final Intent data) {
-		if (resultCode == UIHelper.REQUEST_PROVINCE_FOR_RESULT) {
-			selectProvinceList.clear();
-			provinceBuilder = new StringBuilder();
-			ArrayList<Integer> list = data
-					.getIntegerArrayListExtra("selectProvinces");
-			for (Integer i : list) {
-				selectProvinceList.add(i);
-				provinceBuilder.append(appContext.getProvinceList().get(i)
-						+ " ");
-			}
-			selectedProvinceTextview.setText(provinceBuilder.toString());
+		if (requestCode == UIHelper.REQUEST_SCHOOL_RESULT
+				&& resultCode == RESULT_OK) {
+			String school = data.getStringExtra("selectStr");
+			vSchool.setText(school);
+			isEdit = true;
+			return;
+		} else if (requestCode == UIHelper.REQUEST_MAJOR_RESULT
+				&& resultCode == RESULT_OK) {
+			String major = data.getStringExtra("selectStr");
+			vMajor.setText(major);
+			isEdit = true;
 			return;
 		}
 
@@ -794,38 +649,5 @@ public class UserInfoActivity extends Activity {
 			break;
 		}
 	}
-
-	private OnCheckedChangeListener toggleListener = new OnCheckedChangeListener() {
-
-		@Override
-		public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
-			String tag = (String) buttonView.getTag();
-			String[] tags = tag.split("_");
-			String tag_pre = tags[0];
-			Integer tag_last = Integer.parseInt(tags[1]);
-			if (isChecked) {
-				if (map.containsKey(tag_pre)) {
-					map.get(tag_pre).add(tag_last);
-				} else {
-					ArrayList<Integer> list = new ArrayList<Integer>();
-					list.add(tag_last);
-					map.put(tag_pre, list);
-				}
-			} else {
-				map.get(tag_pre).remove(tag_last);
-			}
-
-			Log.i("map", map.toString());
-		}
-	};
-
-	private OnClickListener addressSelectListener = new OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			UIHelper.showProvince(UserInfoActivity.this, selectProvinceList);
-		}
-	};
 
 }

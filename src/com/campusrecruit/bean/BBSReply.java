@@ -111,7 +111,7 @@ public class BBSReply implements Serializable{
 			reply.face = replyJsonObject.getInt("face");
 			return reply;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -126,7 +126,7 @@ public class BBSReply implements Serializable{
 			}
 			return reply;
 		} catch (JSONException e) {	
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	} 
@@ -144,7 +144,7 @@ public class BBSReply implements Serializable{
 			reply.createdTime = replyJsonObject.getString("createdTime");
 			return reply;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -161,7 +161,7 @@ public class BBSReply implements Serializable{
 			reply.createdTime = replyJsonObject.getString("createdTime");
 			return reply;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -174,7 +174,7 @@ public class BBSReply implements Serializable{
 			Log.i("test","parse reply complete");
 			return reply;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}

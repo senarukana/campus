@@ -16,7 +16,7 @@ import com.campusrecruit.common.BitmapManager;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -102,7 +102,7 @@ public class TopicDetailActivity extends LoadingActivity {
 	private final static int DATA_LOAD_ING = 0x001;
 	private final static int DATA_LOAD_COMPLETE = 0x002;
 
-	private AppContext appContext;
+	
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +110,7 @@ public class TopicDetailActivity extends LoadingActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.topic_detail);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		appContext = (AppContext) getApplication();
+		
 		topicID = getIntent().getIntExtra("topicID", 0);
 		Log.i("test", "topicID" + topicID);
 		// 初始化视图控件
@@ -152,7 +152,7 @@ public class TopicDetailActivity extends LoadingActivity {
 		username.setText(topicDetail.getUserName());
 		BitmapManager bmpManager = new BitmapManager(BitmapFactory.decodeResource(
 				this.getResources(), R.drawable.user_face));
-		//TODO
+		bmpManager.loadBitmap(topicDetail.getUserID(), userface);
 		userface.setOnClickListener(faceClickListener);
 		content.setText(topicDetail.getBody());
 		date.setText(topicDetail.getCreatedTime());
@@ -187,7 +187,7 @@ public class TopicDetailActivity extends LoadingActivity {
 					msg.what = 1;
 					msg.obj = topic;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -262,6 +262,27 @@ public class TopicDetailActivity extends LoadingActivity {
 		// image = (ImageView)lvHeader.findViewById(R.id.topic_listitem_image);
 
 		content = (TextView) lvHeader.findViewById(R.id.topic_listitem_content);
+		
+		lvHeader.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// 系统用户内容不能回复
+				if (topicDetail.getUserID().equals("0")) {
+					UIHelper.ToastMessage(TopicDetailActivity.this,
+							"不能回复系统");
+					return;
+				}
+				if (topicDetail.getUserID().equals(appContext.getLoginUid())) {
+					UIHelper.ToastMessage(TopicDetailActivity.this,
+							"不能回复自己");
+					return;
+				}
+				UIHelper.showCommentPub(TopicDetailActivity.this,
+						topicDetail.getTopicID(), -1,
+						topicDetail.getUserName(), topicDetail.getBody());
+			}
+		});
 
 		// content =
 		// (WebView)lvHeader.findViewById(R.id.topic_listitem_content);
@@ -430,7 +451,7 @@ public class TopicDetailActivity extends LoadingActivity {
 										msg.what = 1;
 										msg.obj = res;
 									} catch (AppException e) {
-										e.printStackTrace();
+										
 										msg.what = -1;
 										msg.obj = e;
 									}
@@ -568,7 +589,7 @@ public class TopicDetailActivity extends LoadingActivity {
 					msg.what = commentlist.size();
 					msg.obj = commentlist;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -759,7 +780,7 @@ public class TopicDetailActivity extends LoadingActivity {
 						msg.what = 1;
 						msg.obj = reply;
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 						msg.what = -1;
 						msg.obj = e;
 					}

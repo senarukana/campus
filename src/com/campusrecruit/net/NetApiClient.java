@@ -124,7 +124,7 @@ public class NetApiClient {
 		GetMethod httpGet = new GetMethod(url);
 		// 设置 请求超时时间
 		httpGet.getParams().setSoTimeout(TIMEOUT_SOCKET);
-		httpGet.setRequestHeader("Host", URLs.HOST);
+		httpGet.setRequestHeader("Host", URLs.getHost());
 		httpGet.setRequestHeader("Connection", "Keep-Alive");
 		httpGet.setRequestHeader("Cookie", cookie);
 		httpGet.setRequestHeader("User-Agent", userAgent);
@@ -137,7 +137,7 @@ public class NetApiClient {
 		PostMethod httpPost = new PostMethod(url);
 		// 设置 请求超时时间
 		httpPost.getParams().setSoTimeout(TIMEOUT_SOCKET);
-		httpPost.setRequestHeader("Host", URLs.HOST);
+		httpPost.setRequestHeader("Host", URLs.getHost());
 		httpPost.setRequestHeader("Connection", "Keep-Alive");
 		httpPost.setRequestHeader("Cookie", cookie);
 		httpPost.setRequestHeader("User-Agent", userAgent);
@@ -160,6 +160,21 @@ public class NetApiClient {
 		}
 
 		return url.toString().replace("?&", "?");
+	}
+
+	public static boolean pingHost(AppContext appContext, String url)
+			throws IOException {
+		HttpClient httpClient = null;
+		String userAgent = getUserAgent(appContext);
+		String cookie = getCookie(appContext);
+		httpClient = getHttpClient();
+		GetMethod httpGet = getHttpGet(url, cookie, userAgent);
+		int statusCode = httpClient.executeMethod(httpGet);
+		if (statusCode == HttpStatus.SC_OK) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -212,7 +227,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生致命的异常，可能是协议不对或者返回的内容有问题
-				e.printStackTrace();
+
 				throw AppException.http(e);
 			} catch (IOException e) {
 				time++;
@@ -224,7 +239,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生网络异常
-				e.printStackTrace();
+
 				throw AppException.network(e);
 			} finally {
 				// 释放连接
@@ -271,7 +286,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生致命的异常，可能是协议不对或者返回的内容有问题
-				e.printStackTrace();
+
 				throw AppException.http(e);
 			} catch (IOException e) {
 				time++;
@@ -283,7 +298,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生网络异常
-				e.printStackTrace();
+
 				throw AppException.network(e);
 			} finally {
 				// 释放连接
@@ -300,7 +315,7 @@ public class NetApiClient {
 			return new JSONObject(httpGet(appContext, url))
 					.getString(AppConfig.JSON_IDENTIFIER);
 		} catch (JSONException e) {
-			e.printStackTrace();
+
 			throw AppException.json(e);
 		}
 	}
@@ -312,11 +327,9 @@ public class NetApiClient {
 			JSONObject object = new JSONObject(httpGet(appContext, url));
 			return object.getJSONObject(AppConfig.JSON_IDENTIFIER);
 		} catch (NullPointerException ne) {
-			ne.printStackTrace();
-			Log.i("test", "login err");
 			return null;
 		} catch (JSONException e) {
-			e.printStackTrace();
+
 			throw AppException.json(e);
 		}
 	}
@@ -328,10 +341,9 @@ public class NetApiClient {
 			return new JSONObject(httpGet(appContext, url))
 					.getJSONArray(AppConfig.JSON_IDENTIFIER);
 		} catch (NullPointerException ne) {
-			ne.printStackTrace();
 			return null;
 		} catch (JSONException e) {
-			e.printStackTrace();
+
 			throw AppException.json(e);
 		}
 	}
@@ -371,7 +383,7 @@ public class NetApiClient {
 				try {
 					parts[i++] = new FilePart(file, files.get(file));
 				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+
 				}
 				// System.out.println("post_key_file==> "+file);
 			}
@@ -423,7 +435,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生致命的异常，可能是协议不对或者返回的内容有问题
-				e.printStackTrace();
+
 				throw AppException.http(e);
 			} catch (IOException e) {
 				time++;
@@ -435,7 +447,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生网络异常
-				e.printStackTrace();
+
 				throw AppException.network(e);
 			} finally {
 				// 释放连接
@@ -457,7 +469,7 @@ public class NetApiClient {
 		 * Result.parse(new ByteArrayInputStream(responseBody.getBytes()));
 		 * if(res.getErrorCode() == 0){ appContext.Logout();
 		 * appContext.getUnLoginHandler().sendEmptyMessage(1); } } catch
-		 * (Exception e) { e.printStackTrace(); } }
+		 * (Exception e) { } }
 		 */
 		Log.i("test", "test");
 		return null;
@@ -471,7 +483,7 @@ public class NetApiClient {
 			return new JSONObject(httpPost(appContext, url, params, files))
 					.getString(AppConfig.JSON_IDENTIFIER);
 		} catch (JSONException e) {
-			e.printStackTrace();
+
 			throw AppException.json(e);
 		}
 	}
@@ -511,7 +523,7 @@ public class NetApiClient {
 				try {
 					parts[i++] = new FilePart(file, files.get(file));
 				} catch (FileNotFoundException e) {
-					e.printStackTrace();
+
 				}
 				// System.out.println("post_key_file==> "+file);
 			}
@@ -525,6 +537,7 @@ public class NetApiClient {
 				httpPost.setRequestEntity(new MultipartRequestEntity(parts,
 						httpPost.getParams()));
 				int statusCode = httpClient.executeMethod(httpPost);
+				Log.i("test", statusCode + " ");
 				if (statusCode != HttpStatus.SC_OK) {
 					time++;
 					throw AppException.http(statusCode);
@@ -551,7 +564,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生致命的异常，可能是协议不对或者返回的内容有问题
-				e.printStackTrace();
+
 				throw AppException.http(e);
 			} catch (IOException e) {
 				time++;
@@ -563,7 +576,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生网络异常
-				e.printStackTrace();
+
 				throw AppException.network(e);
 			} finally {
 				// 释放连接
@@ -645,7 +658,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生致命的异常，可能是协议不对或者返回的内容有问题
-				e.printStackTrace();
+
 				throw AppException.http(e);
 			} catch (IOException e) {
 				time++;
@@ -657,7 +670,7 @@ public class NetApiClient {
 					continue;
 				}
 				// 发生网络异常
-				e.printStackTrace();
+
 				throw AppException.network(e);
 			} finally {
 				// 释放连接
@@ -742,7 +755,7 @@ public class NetApiClient {
 			JSONObject jsonObject = httpGetJson(appContext, newUrl);
 			if (jsonObject == null)
 				return null;
-			return User.parseDetail(jsonObject, true);
+			return User.parseDetail(jsonObject);
 		} catch (Exception e) {
 			if (e instanceof AppException) {
 				if (((AppException) e).getType() == AppException.TYPE_JSON) {
@@ -765,13 +778,22 @@ public class NetApiClient {
 	public static int register(AppContext appContext, final String uid,
 			final String userName, final String pwd) throws AppException {
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("userName", userName);
+		String encodeUserName = null;
+		try {
+			encodeUserName = URLEncoder.encode(userName, "utf-8");
+		} catch (UnsupportedEncodingException e1) {
+			Log.i("oops", "编码错误");
+			e1.printStackTrace();
+			return -1;
+		}
+		params.put("userName", encodeUserName);
+		Log.i("test", encodeUserName);
 		params.put("pwd", pwd);
 		Log.i("db", uid);
 		params.put("userID", uid);
+		String url = _MakeURL(URLs.USER_REGISTER, params);
 		try {
-			return Integer.parseInt(httpPostJsonStr(appContext,
-					URLs.USER_REGISTER, params, null));
+			return Integer.parseInt(httpGetStr(appContext, url));
 		} catch (Exception e) {
 			if (e instanceof AppException)
 				throw (AppException) e;
@@ -787,16 +809,15 @@ public class NetApiClient {
 	 * @return
 	 * @throws AppException
 	 */
-	public static User getUserInfo(AppContext appContext, final String uid,
-			boolean login) throws AppException {
+	public static User getUserInfo(AppContext appContext, final String uid)
+			throws AppException {
 		String newUrl = _MakeURL(URLs.USER_INFO, new HashMap<String, Object>() {
 			{
 				put("userID", uid);
 			}
 		});
 		try {
-			User user = User
-					.parseDetail(httpGetJson(appContext, newUrl), login);
+			User user = User.parseDetail(httpGetJson(appContext, newUrl));
 			if (user != null) {
 				user.setUid(uid);
 			}
@@ -845,14 +866,15 @@ public class NetApiClient {
 	 * @throws AppException
 	 */
 	public static void setPreference(AppContext appContext, String uid,
-			String industry, String property, String province)
+			String industry, String property, String source, String province)
 			throws AppException {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userID", uid);
 		params.put("province", province);
 		params.put("industry", industry);
 		params.put("type", property);
-		Log.i("url",uid);
+		params.put("source", source);
+		Log.i("url", uid);
 		try {
 			httpPostNoReply(appContext, URLs.USER_SET_PREFERENCE, params, null);
 		} catch (Exception e) {
@@ -861,7 +883,7 @@ public class NetApiClient {
 			throw AppException.network(e);
 		}
 	}
-	
+
 	/**
 	 * 我的推送信息偏好设置
 	 * 
@@ -872,13 +894,12 @@ public class NetApiClient {
 	 * @throws AppException
 	 */
 	public static void setPreference(AppContext appContext, String uid,
-			String notifyType)
-			throws AppException {
+			String notifyType) throws AppException {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("userID", uid);
 		params.put("notifyType", notifyType);
 		String newUrl = _MakeURL(URLs.USER_SET_PREFERENCE, params);
-		Log.i("test",newUrl);
+		Log.i("test", newUrl);
 		try {
 			httpGetNotReply(appContext, newUrl);
 		} catch (Exception e) {
@@ -957,6 +978,62 @@ public class NetApiClient {
 	}
 
 	/**
+	 * 获取校园招聘信息列表
+	 * 
+	 * @param appContext
+	 * @param uid
+	 *            用户id
+	 * @param pageIndex
+	 *            页数
+	 * @param orderby
+	 *            排序方式
+	 * @return
+	 * @throws AppException
+	 */
+	public static List<Recruit> getRecruitList(AppContext appContext,
+			final String uid, final int pageIndex, final int orderby,
+			final boolean famous, final String province, final String industry,
+			final String type, final String source) throws AppException {
+		String newUrl = _MakeURL(URLs.RECRUIT_LIST,
+				new HashMap<String, Object>() {
+					{
+						put("userID", uid);
+						put("pageIndex", pageIndex);
+						put("order", orderby);
+						if (famous)
+							put("famous", 1);
+						else
+							put("famous", 0);
+						if (province != null) {
+							put("province", province);
+						}
+						if (industry != null) {
+							put("industry", industry);
+						}
+						if (type != null) {
+							put("type", type);
+						}
+						if (source != null) {
+							put("source", source);
+						}
+					}
+				});
+		try {
+			JSONArray recruitArray = httpGetJsonArray(appContext, newUrl);
+			ArrayList<Recruit> recruitList = new ArrayList<Recruit>();
+			for (int i = 0; i < recruitArray.length(); i++) {
+				recruitList
+						.add(Recruit.parseBase(recruitArray.getJSONObject(i)));
+			}
+			return recruitList;
+		} catch (Exception e) {
+			if (e instanceof AppException)
+				throw (AppException) e;
+			throw AppException.network(e);
+		}
+	}
+
+	/**
 	 * 按公司名称搜索校园招聘信息
 	 * 
 	 * @param appContext
@@ -999,16 +1076,7 @@ public class NetApiClient {
 		}
 	}
 
-	/**
-	 * 获取招聘流程信息
-	 * 
-	 * @param appContext
-	 * @param uid
-	 * @param careerTalkID
-	 * @return
-	 * @throws AppException
-	 */
-	public static String getRecruitProcessInfo(AppContext appContext,
+	public static Recruit getRecruitProcessInfo(AppContext appContext,
 			final int recruitID) throws AppException {
 		String newUrl = _MakeURL(URLs.RECRUIT_JOB_PROCESS_INFO,
 				new HashMap<String, Object>() {
@@ -1017,9 +1085,7 @@ public class NetApiClient {
 					}
 				});
 		try {
-			Log.i("api", "get Recruit Process");
-			return httpGetStr(appContext, newUrl);
-
+			return Recruit.parseRecruitProcess(httpGetJson(appContext, newUrl));
 		} catch (Exception e) {
 			if (e instanceof AppException)
 				throw (AppException) e;
@@ -1037,6 +1103,23 @@ public class NetApiClient {
 				});
 		try {
 			return Recruit.parseDetail(httpGetJson(appContext, newUrl));
+		} catch (Exception e) {
+			if (e instanceof AppException)
+				throw (AppException) e;
+			throw AppException.network(e);
+		}
+	}
+
+	public static Recruit getRecruitSimpleDetail(AppContext appContext,
+			final int recruitID) throws AppException {
+		String newUrl = _MakeURL(URLs.RECRUIT_SIMPLE_DETAIL,
+				new HashMap<String, Object>() {
+					{
+						put("recruitID", recruitID);
+					}
+				});
+		try {
+			return Recruit.parseDetailSimple(httpGetJson(appContext, newUrl));
 		} catch (Exception e) {
 			if (e instanceof AppException)
 				throw (AppException) e;
@@ -1134,6 +1217,56 @@ public class NetApiClient {
 							put("famous", 0);
 					}
 				});
+		try {
+			List<CareerTalk> careerTalkList = new ArrayList<CareerTalk>();
+			JSONArray careerArray = httpGetJsonArray(appContext, newUrl);
+			for (int i = 0; i < careerArray.length(); i++) {
+				careerTalkList.add(CareerTalk.parseBase(careerArray
+						.getJSONObject(i)));
+			}
+			return careerTalkList;
+		} catch (Exception e) {
+			if (e instanceof AppException)
+				throw (AppException) e;
+			throw AppException.network(e);
+		}
+	}
+
+	public static List<CareerTalk> getCareerTalkList(AppContext appContext,
+			final String uid, final int pageIndex, final int orderby,
+			final boolean famous, final String province, final String industry,
+			final String type, final String school) throws AppException {
+		String encodedSchool = null;
+		if (school != null) {
+			try {
+				encodedSchool = URLEncoder.encode(school, "utf-8");
+			} catch (UnsupportedEncodingException e1) {
+				return null;
+			}
+		}
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userID", uid);
+		params.put("pageIndex", pageIndex);
+		params.put("order", orderby);
+		if (famous)
+			params.put("famous", 1);
+		else
+			params.put("famous", 0);
+		if (province != null) {
+			params.put("province", province);
+		}
+		if (industry != null) {
+			params.put("industry", industry);
+		}
+		if (type != null) {
+			params.put("type", type);
+		}
+		if (school != null) {
+			params.put("school", encodedSchool);
+		}
+		String newUrl = _MakeURL(URLs.CAREERTALK_LIST,
+				params);
 		try {
 			List<CareerTalk> careerTalkList = new ArrayList<CareerTalk>();
 			JSONArray careerArray = httpGetJsonArray(appContext, newUrl);
@@ -1427,7 +1560,7 @@ public class NetApiClient {
 			throw AppException.network(e);
 		}
 	}
-	
+
 	/**
 	 * 获取用户消息列表
 	 * 
@@ -1436,8 +1569,8 @@ public class NetApiClient {
 	 * @return
 	 * @throws AppException
 	 */
-	public static ArrayList<BBSTopic> getUserTopicList(
-			AppContext appContext, final String userID) throws AppException {
+	public static ArrayList<BBSTopic> getUserTopicList(AppContext appContext,
+			final String userID) throws AppException {
 		String newUrl = _MakeURL(URLs.USER_TOPIC_LIST,
 				new HashMap<String, Object>() {
 					{
@@ -1730,6 +1863,7 @@ public class NetApiClient {
 				});
 		try {
 			httpGetNotReply(appContext, newUrl);
+			Log.i("test", "join recruit no reply");
 		} catch (Exception e) {
 			if (e instanceof AppException)
 				throw (AppException) e;
@@ -1761,6 +1895,34 @@ public class NetApiClient {
 						put("userID", uid);
 					}
 				});
+		try {
+			httpGetNotReply(appContext, newUrl);
+		} catch (Exception e) {
+			if (e instanceof AppException)
+				throw (AppException) e;
+			throw AppException.network(e);
+		}
+	}
+
+	/**
+	 * 参与宣讲会
+	 * 
+	 * @param appContext
+	 * @param uid
+	 * @param careerTalkID
+	 * @return
+	 * @throws AppException
+	 */
+	public static void cancelBBSSection(AppContext appContext,
+			final String uid, final int sectionID) throws AppException {
+		String newUrl = _MakeURL(URLs.CANCEL_BBSSECTION,
+				new HashMap<String, Object>() {
+					{
+						put("sectionID", sectionID);
+						put("userID", uid);
+					}
+				});
+		Log.i("url", newUrl);
 		try {
 			httpGetNotReply(appContext, newUrl);
 		} catch (Exception e) {

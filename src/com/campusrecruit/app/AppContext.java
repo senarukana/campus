@@ -9,11 +9,15 @@ import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -39,6 +43,8 @@ import com.campusrecruit.bean.Province;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.bean.Result;
 import com.campusrecruit.bean.Schedules;
+import com.campusrecruit.bean.URLs;
+import com.campusrecruit.bean.Update;
 import com.campusrecruit.bean.User;
 import com.campusrecruit.bean.UserMessage;
 import com.campusrecruit.bean.UserPreference;
@@ -54,15 +60,18 @@ import com.campusrecruit.db.MessageListManager;
 import com.campusrecruit.db.RecruitManager;
 import com.campusrecruit.db.ScheduleManager;
 import com.campusrecruit.net.NetApiClient;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.R.bool;
 import android.R.integer;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.Bitmap;
@@ -74,6 +83,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
 //import android.webkit.CacheManager;
 import android.util.Log;
 import android.util.Pair;
@@ -84,6 +94,7 @@ public class AppContext extends Application {
 	public static final int NETTYPE_CMWAP = 0x02;
 	public static final int NETTYPE_CMNET = 0x03;
 	private static final String app_key = "campusRecruit";
+	private SharedPreferences mPreferences;
 
 	private User loginUser = null;
 	private Hashtable<String, Object> memCacheRegion = new Hashtable<String, Object>();
@@ -296,6 +307,57 @@ public class AppContext extends Application {
 		return getScheduleManager().scheduleGetAll();
 	}
 
+	public String getLocalIpAddress() {
+		try {
+			for (Enumeration<NetworkInterface> en = NetworkInterface
+					.getNetworkInterfaces(); en.hasMoreElements();) {
+				NetworkInterface intf = en.nextElement();
+				for (Enumeration<InetAddress> enumIpAddr = intf
+						.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+					InetAddress inetAddress = enumIpAddr.nextElement();
+					if (!inetAddress.isLoopbackAddress()) {
+						return inetAddress.getHostAddress().toString();
+					}
+				}
+			}
+		} catch (SocketException ex) {
+		}
+		return null;
+	}
+
+	public void isInnerAddress() {
+		String addr = getLocalIpAddress();
+		if (addr == null) {
+			return;
+		}
+		boolean flag = StringUtils.ipIsInNet(addr);
+		final Handler handler = new Handler() {
+			public void handleMessage(Message msg) {
+				if (msg.what == 1) {
+					URLs.isPrivate = true;
+				}
+			}
+		};
+		if (flag) {
+			new Thread() {
+				public void run() {
+					boolean isOnline = pingHost();
+					if (isOnline) {
+						handler.sendEmptyMessage(1);
+					}
+				}
+			}.start();
+		}
+	}
+
+	private boolean pingHost() {
+		try {
+			return NetApiClient.pingHost(this, URLs.BYR_HOST);
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
 	/*
 	 * 收藏宣讲会 修改用户收藏讨论组列表
 	 */
@@ -388,6 +450,7 @@ public class AppContext extends Application {
 	 * 收藏校园招聘 1. 修改用户收藏列表 2. 修改用户讨论组列表
 	 */
 	public void recruitJoin(Recruit recruit, boolean flag) {
+		Log.i("test", "recruit join");
 		if (flag) {
 			boolean check = false;
 			for (BBSSection section : lvBBSSectionList) {
@@ -434,9 +497,11 @@ public class AppContext extends Application {
 			for (Recruit r : lvRecruitFavorateList) {
 				if (recruit.getRecruitID() == r.getRecruitID()) {
 					lvRecruitFavorateList.remove(r);
-					lvRecruitFavoratesAdapter.notifyDataSetChanged();
 					break;
 				}
+			}
+			if (lvRecruitFavoratesAdapter != null) {
+				lvRecruitFavoratesAdapter.notifyDataSetChanged();
 			}
 
 		}
@@ -511,6 +576,81 @@ public class AppContext extends Application {
 					AppConfig.DEFAULT_SAVE_IMAGE_PATH);
 			saveImagePath = AppConfig.DEFAULT_SAVE_IMAGE_PATH;
 		}
+		mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		mPreferences.edit().putInt(AppConfig.VERSION,
+				AppConfig.SHARED_PREFERENCES_VERSION);
+	}
+
+	public void setTutorialCompleted() {
+		final Editor edit = mPreferences.edit();
+		edit.putBoolean(AppConfig.TUTORIAL_COMPLETED, true);
+		edit.commit();
+	}
+
+	public boolean getTutorialCompleted() {
+		boolean tutorialCompleted = mPreferences.getBoolean(
+				AppConfig.TUTORIAL_COMPLETED, false);
+		return tutorialCompleted;
+	}
+
+	public void setTutorialMainPageCompleted() {
+		final Editor edit = mPreferences.edit();
+		edit.putBoolean(AppConfig.TUTORIAL_MAIN_PAGE, true);
+		edit.commit();
+	}
+
+	public boolean getTutorialMainPageCompleted() {
+		boolean tutorialCompleted = mPreferences.getBoolean(
+				AppConfig.TUTORIAL_MAIN_PAGE, false);
+		return tutorialCompleted;
+	}
+
+	public void setTutorialCareerFavorate() {
+		final Editor edit = mPreferences.edit();
+		edit.putBoolean(AppConfig.TUTORIAL_CAREER_FAVORATE, true);
+		edit.commit();
+	}
+
+	public boolean getTutorialCareerFavorate() {
+		boolean tutorialCompleted = mPreferences.getBoolean(
+				AppConfig.TUTORIAL_CAREER_FAVORATE, false);
+		return tutorialCompleted;
+	}
+
+	public void setTutorialRecruitFavorate() {
+		final Editor edit = mPreferences.edit();
+		edit.putBoolean(AppConfig.TUTORIAL_RECRUIT_FAVORATE, true);
+		edit.commit();
+	}
+
+	public boolean getTutorialRecruitFavorate() {
+		boolean tutorialCompleted = mPreferences.getBoolean(
+				AppConfig.TUTORIAL_RECRUIT_FAVORATE, false);
+		return tutorialCompleted;
+	}
+
+	public void setTutorialRecruitDetail() {
+		final Editor edit = mPreferences.edit();
+		edit.putBoolean(AppConfig.TUTORIAL_RECRUIT_DETAIL, true);
+		edit.commit();
+	}
+
+	public boolean getTutorialRecruitDetail() {
+		boolean tutorialCompleted = mPreferences.getBoolean(
+				AppConfig.TUTORIAL_RECRUIT_DETAIL, false);
+		return tutorialCompleted;
+	}
+
+	public void setClockAlarmTime(int hour) {
+		final Editor edit = mPreferences.edit();
+		edit.putInt(AppConfig.CLOCK_ALARM_TIME, hour);
+		edit.commit();
+	}
+
+	public int getClockAlarmTime() {
+		int alarmBeforeTime = mPreferences
+				.getInt(AppConfig.CLOCK_ALARM_TIME, 2);
+		return alarmBeforeTime;
 	}
 
 	/**
@@ -630,7 +770,11 @@ public class AppContext extends Application {
 	 * @return
 	 */
 	public boolean isInit() {
-		if (loginUser != null && loginUser.getUid() != null)
+		/*
+		 * if (loginUser != null && loginUser.getUid() != null) return true;
+		 * return false;
+		 */
+		if (loginUser != null && loginUser.getName() != null)
 			return true;
 		return false;
 	}
@@ -663,7 +807,19 @@ public class AppContext extends Application {
 		this.loginUser = null;
 	}
 
-	public void createDefaultUser(String userName) {
+	private void createDefaultPreference() throws AppException {
+		UserPreference prefer = new UserPreference();
+		prefer.setCompanyIndustry("0,1,2,3,4");
+		prefer.setCompanyType("0,1,2,3");
+		prefer.setSources("0,1,2,3,4");
+		prefer.setProvince("0");
+		this.loginUser.setPreference(prefer);
+		savePreference(prefer);
+		updatePreference(prefer);
+
+	}
+
+	public void createDefaultUser(String userName) throws AppException {
 		Log.i("user", "create complete");
 		if (loginUser != null) {
 			Log.i("user", "create set name" + userName);
@@ -671,94 +827,117 @@ public class AppContext extends Application {
 				this.loginUser.setUid(UUID.randomUUID().toString());
 			}
 			this.loginUser.setName(userName);
-			Log.i("user", "set complete");
 		} else {
 			User user = new User();
 			user.setUid(UUID.randomUUID().toString());
 			user.setName(userName);
 			this.loginUser = user;
-			Log.i("user", "create complete");
 		}
+		createDefaultPreference();
 	}
 
-	public void createDefaultUser() {
+	public void createDefaultUser() throws AppException {
 		User user = new User();
 		user.setUid(UUID.randomUUID().toString());
 		this.loginUser = user;
+		saveLoginInfo();
+		createDefaultPreference();
 	}
 
-	public void startAlarm(Context context, Schedules vSchedule) {
-		Log.i("alarm", "begin");
-		Log.i("alaram", "add alarm");
-		scheduleAdd(vSchedule);
-		Log.i("alaram", "start alarm");
+	public void updateAlarm(Schedules schedule) {
+		getScheduleManager().scheduleUpdate(schedule);
+	}
+
+	public void setAlarm(Context context, Schedules schedule) {
 		AlarmManager alarms = (AlarmManager) context
 				.getSystemService(Context.ALARM_SERVICE);
-		Log.i("alarm --", alarms.toString());
 		Intent intent = new Intent(context,
 				ScheduleAlarmBroadcastReceiver.class);
 		intent.setAction("com.campusRecruit.action.SCHEDULE");
 		Bundle bundle = new Bundle();
-		bundle.putSerializable("schedule", vSchedule);
+		bundle.putSerializable("schedule", schedule);
 		intent.putExtras(bundle);
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-				vSchedule.getScheduleID(), intent, PendingIntent.FLAG_ONE_SHOT);
-		// String dateString = vSchedule.getDate() + " ";
-		String dateString = vSchedule.getDate().substring(0,
-				vSchedule.getDate().indexOf(" "))
+				schedule.getScheduleID(), intent, PendingIntent.FLAG_ONE_SHOT);
+
+		Calendar cal = StringUtils.stringToCalendar(schedule.getAlarmTime());
+		if (cal != null) {
+			alarms.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
+					pendingIntent);
+		}
+	}
+
+	public void startAlarm(Context context, Schedules schedule) {
+		AlarmManager alarms = (AlarmManager) context
+				.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(context,
+				ScheduleAlarmBroadcastReceiver.class);
+		intent.setAction("com.campusRecruit.action.SCHEDULE");
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("schedule", schedule);
+		intent.putExtras(bundle);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+				schedule.getScheduleID(), intent, PendingIntent.FLAG_ONE_SHOT);
+		String dateString = schedule.getDate().substring(0,
+				schedule.getDate().indexOf(" "))
 				+ " ";
-		int index = vSchedule.getTime().indexOf("-");
+		int index = schedule.getTime().indexOf("-");
 		String startTime = null;
 		// expect the time is : 13:00-15:00
 		if (index != -1) {
-			startTime = vSchedule.getTime().substring(0, index);
+			startTime = schedule.getTime().substring(0, index);
 			if (startTime == null) {
 				// oops date format is wrong
 				Log.i("bug", "alarm error,data format is wrong");
 				return;
 			}
 		} else {
-			// may be the time is : 13:00~15:00
-			index = vSchedule.getTime().indexOf("~");
-			if (index != -1) {
-				startTime = vSchedule.getTime().substring(0, index);
-				if (startTime == null) {
-					// oops date format is wrong
-					Log.i("bug", "alarm error,data format is wrong");
-					return;
-				}
-			}
+			startTime = schedule.getTime();
 		}
 		dateString += startTime;
-		Log.i("time", dateString);
 		Calendar calendar = Calendar.getInstance();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		try {
 			calendar.setTime(sdf.parse(dateString));
 		} catch (ParseException e) {
-			e.printStackTrace();
+			return;
 		}
-		Log.i("time", calendar.YEAR + ":" + calendar.MONTH + ":"
-				+ calendar.DAY_OF_MONTH + " " + calendar.HOUR + ":"
-				+ calendar.MINUTE + ":" + calendar.SECOND);
-
-		Log.i("time", calendar.getTimeInMillis() + "");
-
+		Log.i("cal", schedule.getTime() + schedule.getCompanyName() + StringUtils.calendarToString(calendar));
+		switch (getClockAlarmTime()) {
+		case 1: // 提前1小时
+		case 2: // 提前2小时
+			calendar.set(Calendar.HOUR, calendar.get(Calendar.HOUR)
+					- getClockAlarmTime());
+			break;
+		case 3: // 提前10小时
+			if (calendar.get(Calendar.HOUR) > 10) {
+				calendar.set(Calendar.HOUR, calendar.get(Calendar.HOUR) - 10);
+			} else {
+				calendar.set(Calendar.HOUR,0);
+			}
+			break;
+		case 4: // 提前1天
+			calendar.set(Calendar.DAY_OF_WEEK,
+					calendar.get(Calendar.DAY_OF_WEEK) - 1);
+			break;
+		default:
+			break;
+		}
 		alarms.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
 				pendingIntent);
-		/*
-		 * alarms.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-		 * pendingIntent);
-		 */
+		String alarmTime = StringUtils.calendarToString(calendar);
+		schedule.setAlarmTime(alarmTime);
+		Log.i("cal", alarmTime);
+		scheduleAdd(schedule);
 		Log.i("alaram", "complete");
 	}
 
 	public void startAlarm(Context context, CareerTalk careerTalk) {
 		Log.i("alaram", "start");
-		Schedules vSchedule = new Schedules(careerTalk.getCareerTalkID(),
+		Schedules schedule = new Schedules(careerTalk.getCareerTalkID(),
 				careerTalk.getCompanyName(), careerTalk.getPlace(),
 				careerTalk.getDate(), careerTalk.getTime());
-		startAlarm(context, vSchedule);
+		startAlarm(context, schedule);
 	}
 
 	public void cancelAlarm(Context context, Schedules schedule) {
@@ -801,10 +980,8 @@ public class AppContext extends Application {
 		cleanLoginInfo();
 		User user = NetApiClient.login(this, name, pwd);
 		if (user == null) {
-			Log.i("test", "12345");
 			return false;
 		} else {
-			Log.i("test", "33444");
 			Log.i("user", user.getName());
 			Log.i("user", user.getUid());
 			this.loginUser = user;
@@ -845,7 +1022,7 @@ public class AppContext extends Application {
 		String key = "myinfo_" + getLoginUid();
 		if (isNetworkConnected() && (!isReadDataCache(key) || isRefresh)) {
 			try {
-				myinfo = NetApiClient.getUserInfo(this, getLoginUid(), false);
+				myinfo = NetApiClient.getUserInfo(this, getLoginUid());
 			} catch (AppException e) {
 				myinfo = (User) readObject(key);
 				if (myinfo == null)
@@ -873,7 +1050,7 @@ public class AppContext extends Application {
 		userInfoLoadFromDisk = false;
 		if (isNetworkConnected() && (!isReadDataCache(key))) {
 			try {
-				userInfo = NetApiClient.getUserInfo(this, uid, false);
+				userInfo = NetApiClient.getUserInfo(this, uid);
 			} catch (AppException e) {
 				userInfo = (User) readObject(key);
 				userInfoLoadFromDisk = true;
@@ -1031,13 +1208,55 @@ public class AppContext extends Application {
 		provinces.add(("西藏")); // 31
 		return provinces;
 	}
-	
+
 	public List<String> getCompanyTypeList() {
 		List<String> types = new ArrayList<String>();
 		types.add("全部");
 		types.add("国企");
 		types.add("私企");
 		types.add("外企");
+		return types;
+	}
+
+	public List<String> getSchoolList() {
+		List<String> schools = new ArrayList<String>();
+		schools.add("北京邮电大学");
+		schools.add("北京师范大学");
+		schools.add("北京大学");
+		schools.add("清华大学");
+		schools.add("北京航天航空大学");
+		schools.add("北京理工大学");
+		return schools;
+	}
+
+	public List<String> getSchoolMultipleList() {
+		List<String> schools = new ArrayList<String>();
+		schools.add("全部");
+		schools.add("北邮");
+		schools.add("北师");
+		schools.add("北大");
+		schools.add("清华");
+		schools.add("北航");
+		schools.add("北理");
+		return schools;
+	}
+
+	public List<String> getMajorList() {
+		List<String> majors = new ArrayList<String>();
+		majors.add("计算机");
+		majors.add("通信");
+		majors.add("电子");
+		majors.add("金融");
+		return majors;
+	}
+
+	public List<String> getSourceList() {
+		List<String> types = new ArrayList<String>();
+		types.add("全部");
+		types.add("大街");
+		types.add("北邮人");
+		types.add("水木");
+		types.add("海投");
 		return types;
 	}
 
@@ -1051,6 +1270,15 @@ public class AppContext extends Application {
 		return industries;
 	}
 
+	public List<String> getAlarmTimelList() {
+		List<String> time = new ArrayList<String>();
+		time.add("到时提醒");
+		time.add("提前 1 小时提醒");
+		time.add("提前 2 小时提醒");
+		time.add("提前 10 小时提醒");
+		time.add("提前 1 天提醒");
+		return time;
+	}
 
 	/**
 	 * 更新用户头像
@@ -1098,7 +1326,6 @@ public class AppContext extends Application {
 	 */
 	public void joinRecruit(int recruitID, boolean join) throws AppException {
 		getRecruitManager().updateJoin(recruitID, join);
-
 		if (isNetworkConnected()) {
 			NetApiClient.joinRecruit(this, getLoginUid(), recruitID, join);
 		}
@@ -1117,8 +1344,8 @@ public class AppContext extends Application {
 		NetApiClient.setPreference(this, getLoginUid(), notifyType);
 	}
 
-	public void setPreference(Map<String, ArrayList<Integer>> selected)
-			throws AppException {
+	public void setPreference(Map<String, ArrayList<Integer>> selected,
+			boolean isInit) throws AppException {
 		StringBuilder industryBuilder = new StringBuilder();
 		for (Integer industry : selected.get("industry")) {
 			industryBuilder.append(industry + ",");
@@ -1127,11 +1354,6 @@ public class AppContext extends Application {
 		for (Integer property : selected.get("property")) {
 			propertyBuilder.append(property + ",");
 		}
-		/*
-		 * StringBuilder notifyTypeBuilder = new StringBuilder(); for (Integer
-		 * type : selected.get("type")) { notifyTypeBuilder.append(type + ",");
-		 * }
-		 */
 		StringBuilder provinceBuilder = new StringBuilder();
 		for (Integer province : selected.get("province")) {
 			provinceBuilder.append(province + ",");
@@ -1142,19 +1364,27 @@ public class AppContext extends Application {
 				propertyBuilder.length() - 1);
 		String province = provinceBuilder.substring(0,
 				provinceBuilder.length() - 1);
-		/*
-		 * String notifyType = notifyTypeBuilder.substring(0,
-		 * notifyTypeBuilder.length() - 1);
-		 */
 
 		UserPreference preference = new UserPreference();
 		preference.setProvince(province);
 		preference.setCompanyType(property);
 		preference.setCompanyIndustry(industry);
+		if (isInit) {
+			preference.setSources("1,2,3,4");
+		} else {
+			preference.setSources(selectListToString(selected.get("source")));
+			preference.setNotifyType(selectListToString(selected.get("type")));
+		}
 		this.loginUser.setPreference(preference);
 		savePreference(preference);
-		NetApiClient.setPreference(this, getLoginUid(), industry, property,
-				province);
+		updatePreference(preference);
+	}
+
+	private void updatePreference(UserPreference preference)
+			throws AppException {
+		NetApiClient.setPreference(this, getLoginUid(),
+				preference.getCompanyIndustry(), preference.getCompanyType(),
+				preference.getSources(), preference.getProvince());
 	}
 
 	/**
@@ -1166,13 +1396,22 @@ public class AppContext extends Application {
 	 */
 	public void joinCareerTalk(int careerTalkID, boolean join)
 			throws AppException {
-		Log.i("test", "update_join");
 		getCareerTalkManager().updateJoin(careerTalkID, join);
 		if (isNetworkConnected()) {
 			NetApiClient
 					.joinCareerTalk(this, getLoginUid(), careerTalkID, join);
 		}
-		Log.i("test", "join complete");
+	}
+
+	/**
+	 * 取消加入讨论组
+	 * 
+	 * @param uid
+	 * @return
+	 * @throws AppException
+	 */
+	public void cancelBBSSection(int bbsSectionID) throws AppException {
+		NetApiClient.cancelBBSSection(this, getLoginUid(), bbsSectionID);
 	}
 
 	/**
@@ -1492,7 +1731,7 @@ public class AppContext extends Application {
 	 * @return
 	 * @throws AppException
 	 */
-	public String getRecruitProcessInfo(int recruitID) throws AppException {
+	public Recruit getRecruitProcessInfo(int recruitID) throws AppException {
 		return NetApiClient.getRecruitProcessInfo(this, recruitID);
 	}
 
@@ -1510,6 +1749,38 @@ public class AppContext extends Application {
 		if (isNetworkConnected()) {
 			try {
 				recruit = NetApiClient.getRecruitDetail(this, recruitID);
+				if (recruit != null) {
+					saveObject(recruit, key);
+				}
+			} catch (AppException e) {
+				recruit = (Recruit) readObject(key);
+				recruitLoadFromDisk = true;
+				if (recruit == null)
+					throw e;
+			}
+		} else {
+			recruit = (Recruit) readObject(key);
+			recruitLoadFromDisk = true;
+			if (recruit == null)
+				recruit = new Recruit();
+		}
+		return recruit;
+	}
+
+	/**
+	 * 获取招聘职位描述信息
+	 * 
+	 * @param recruitID
+	 * @return
+	 * @throws AppException
+	 */
+	public Recruit getRecruitSimpleDetail(int recruitID) throws AppException {
+		String key = "recruit_" + recruitID;
+		Recruit recruit;
+		recruitLoadFromDisk = false;
+		if (isNetworkConnected()) {
+			try {
+				recruit = NetApiClient.getRecruitSimpleDetail(this, recruitID);
 				if (recruit != null) {
 					saveObject(recruit, key);
 				}
@@ -1555,6 +1826,41 @@ public class AppContext extends Application {
 		return list;
 	}
 
+	private String selectListToString(List<Integer> list) {
+		if (list.size() == 0)
+			return "";
+		StringBuilder builder = new StringBuilder();
+		for (Integer industry : list) {
+			builder.append(industry + ",");
+		}
+		String result = builder.toString();
+		return result.substring(0, result.length() - 1);
+	}
+
+	/**
+	 * 获取招聘列表信息从服务器
+	 * 
+	 * @param pageIndex
+	 * @return
+	 * @throws AppException
+	 */
+	public List<Recruit> getRecruitListFromInternet(int pageIndex, int orderby,
+			boolean famous, List<Integer> selectProvinceList,
+			List<Integer> selectCompanyTypeList,
+			List<Integer> selectCompanyIndustryList,
+			List<Integer> selectSourceList) throws AppException {
+		String industry = selectListToString(selectCompanyIndustryList);
+		String property = selectListToString(selectCompanyTypeList);
+		String province = selectListToString(selectProvinceList);
+		String source = selectListToString(selectSourceList);
+		List<Recruit> list = NetApiClient.getRecruitList(this, getLoginUid(),
+				pageIndex, orderby, famous, province, industry, property,
+				source);
+		if (list == null)
+			return new ArrayList<Recruit>();
+		return list;
+	}
+
 	public List<Recruit> getRecruitListByCompanyName(String companyName)
 			throws AppException {
 		return NetApiClient.searchRecruitList(this, companyName);
@@ -1585,6 +1891,30 @@ public class AppContext extends Application {
 
 	public List<CareerTalk> getCareerTalkListFromDisk() {
 		return getCareerTalkManager().getAllData();
+	}
+
+	public List<CareerTalk> getCareerTalkListFromInternet(int pageIndex,
+			int orderby, boolean famous, List<Integer> selectProvinceList,
+			List<Integer> selectCompanyTypeList,
+			List<Integer> selectCompanyIndustryList,
+			List<Integer> selectSchoolList) throws AppException {
+
+		String industry = selectListToString(selectCompanyIndustryList);
+		String property = selectListToString(selectCompanyTypeList);
+		String province = selectListToString(selectProvinceList);
+		StringBuilder schoolBuilder = new StringBuilder();
+		for (Integer i : selectSchoolList) {
+			schoolBuilder.append(getSchoolMultipleList().get(i) + ",");
+		}
+		String school = schoolBuilder.substring(0, schoolBuilder.length() - 1)
+				.toString();
+
+		List<CareerTalk> list = NetApiClient.getCareerTalkList(this,
+				getLoginUid(), pageIndex, orderby, famous, province, industry,
+				property, school);
+		if (list == null)
+			return new ArrayList<CareerTalk>();
+		return list;
 	}
 
 	public List<CareerTalk> getCareerTalkListFromInternet(int pageIndex,
@@ -1747,20 +2077,26 @@ public class AppContext extends Application {
 	 * @param pwd
 	 */
 	public void saveLoginInfo() {
-		Log.i("user", "save user info");
-		Log.i("user", "schoolname is " + loginUser.getSchoolName());
+		/*
+		 * Log.i("user", "save user info"); Log.i("user", "schoolname is " +
+		 * loginUser.getSchoolName());
+		 */
+		Log.i("user", "save login info");
 		setProperties(new Properties() {
 			{
-				setProperty(
-						"user.uid",
-						CryptoUtils.encode(app_key,
-								String.valueOf(loginUser.getUid())));
+				if (loginUser.getUid() != null) {
+					setProperty(
+							"user.uid",
+							CryptoUtils.encode(app_key,
+									String.valueOf(loginUser.getUid())));
+				}
 				if (loginUser.getName() != null)
 					setProperty("user.name", loginUser.getName());
 				Log.i("test", "set gender");
-				if (loginUser.getGender() != 0)
+				if (loginUser.getGender() != 0) {
 					setProperty("user.gender", loginUser.getGender() + "");
-
+				}
+				Log.i("user", "save login info");
 				if (loginUser.getHasFace() != 0) {
 					setProperty("user.hasface",
 							FileUtils.getFileName(loginUser.getHasFace() + ""));// 用户头像-文件名
@@ -1773,6 +2109,7 @@ public class AppContext extends Application {
 					setProperty("user.major", loginUser.getMajorName());
 			}
 		});
+		Log.i("user", "save login info complete");
 	}
 
 	public void savePreferenceNotifyType(final String preference) {
@@ -1792,6 +2129,7 @@ public class AppContext extends Application {
 				setProperty("preference.companyIndustry",
 						preference.getCompanyIndustry());
 				setProperty("preference.province", preference.getProvince());
+				setProperty("preference.source", preference.getSources());
 				setProperty("preference.notifyType", preference.getNotifyType());
 			}
 		});
@@ -1799,8 +2137,8 @@ public class AppContext extends Application {
 
 	// if flag is true, truncate all , else not truncate my bbstopic
 	public void truncateSqlite(boolean flag) {
-		getRecruitManager().truncateObsolete();
-		getCareerTalkManager().truncateObsolete();
+		getRecruitManager().truncate();
+		getCareerTalkManager().truncate();
 		getMessageListManager().truncate();
 		if (flag) {
 			getScheduleManager().truncate();
@@ -1828,7 +2166,7 @@ public class AppContext extends Application {
 		removeProperty("user.uid", "user.name", "user.hasface", "user.email",
 				"user.school", "user.major", "user.gender",
 				"preference.companyType", "preference.companyIndustry",
-				"preference.province", "preference.position",
+				"preference.province", "preference.source",
 				"preference.notifyType");
 		cleanCookie();
 		truncateSqlite(true);
@@ -1867,7 +2205,7 @@ public class AppContext extends Application {
 				lu.setBackgroundNotice(Boolean
 						.parseBoolean(getProperty("user.background")));
 			} catch (Exception e) {
-				e.printStackTrace();
+
 				lu.setBackgroundNotice(true);
 			}
 		} else {
@@ -1878,7 +2216,7 @@ public class AppContext extends Application {
 				lu.setShowPicture(Boolean
 						.parseBoolean(getProperty("user.showpicture")));
 			} catch (Exception e) {
-				e.printStackTrace();
+
 				lu.setShowPicture(true);
 			}
 		} else {
@@ -1894,7 +2232,7 @@ public class AppContext extends Application {
 		preference
 				.setCompanyIndustry(getProperty("preference.companyIndustry"));
 		preference.setProvince(getProperty("preference.province"));
-		// preference.setPosition(getProperty("user.preference.position"));
+		preference.setSources(getProperty("preference.source"));
 		preference.setNotifyType(getProperty("preference.notifyType"));
 		lu.setPreference(preference);
 		return lu;
@@ -1908,8 +2246,8 @@ public class AppContext extends Application {
 	 */
 	/*
 	 * public void saveUserFace(String fileName,Bitmap bitmap) { try {
-	 * ImageUtils.saveImage(this, fileName, bitmap); } catch (IOException e) {
-	 * e.printStackTrace(); } }
+	 * ImageUtils.saveImage(this, fileName, bitmap); } catch (IOException e) { }
+	 * }
 	 */
 
 	/**
@@ -2154,7 +2492,7 @@ public class AppContext extends Application {
 					}
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+
 			}
 		}
 		return deletedFiles;
@@ -2240,7 +2578,7 @@ public class AppContext extends Application {
 			oos.flush();
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+
 			return false;
 		} finally {
 			try {
@@ -2272,7 +2610,7 @@ public class AppContext extends Application {
 			return (Serializable) ois.readObject();
 		} catch (FileNotFoundException e) {
 		} catch (Exception e) {
-			e.printStackTrace();
+
 			// 反序列化失败 - 删除缓存文件
 			if (e instanceof InvalidClassException) {
 				File data = getFileStreamPath(file);

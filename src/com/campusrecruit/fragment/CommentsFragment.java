@@ -35,7 +35,7 @@ import com.campusrecruit.bean.BBSReply;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 @SuppressLint("ValidFragment")
 public class CommentsFragment extends EmptyFragment {
@@ -52,7 +52,7 @@ public class CommentsFragment extends EmptyFragment {
 	private Handler lvReplyHandler;
 	private RecruitDetailActivity recruitDetailActivity;
 
-	private AppContext appContext;
+	
 	private int topicID;
 	private Recruit recruitDetail;
 
@@ -113,14 +113,18 @@ public class CommentsFragment extends EmptyFragment {
 		pvReply.addFooterView(pvFooter);
 		initLoadingView(commentsView);
 		setEmptyText(R.string.comment_list_empty);
-		Log.i("test", "init reply view complete");
 		initReplyView();
-		Log.i("test", "init reply view complete");
 		redrawView();
 		return commentsView;
 	}
 
 	public void redrawView() {
+		pvFooterProgressBar.setVisibility(View.GONE);
+		if (recruitDetailActivity.lvReplyData.size() < AppConfig.PAGE_SIZE) {
+			pvFooterTextView.setText(R.string.load_full);
+		} else {
+			pvFooterTextView.setText(R.string.load_more);
+		}
 		if (isloading) {
 			showLoadProgress(pvReply);
 		} else {
@@ -200,9 +204,7 @@ public class CommentsFragment extends EmptyFragment {
 				} catch (Exception e) {
 					scrollEnd = false;
 				}
-				Log.i("test","123");
 				if (scrollEnd && curLvDataState == UIHelper.LISTVIEW_DATA_MORE) {
-					Log.i("test","123");
 					mLvReply2.setTag(UIHelper.LISTVIEW_DATA_LOADING);
 					vFooterTextView.setText(R.string.load_ing);
 					vFooterProgressBar.setVisibility(View.VISIBLE);
@@ -268,26 +270,19 @@ public class CommentsFragment extends EmptyFragment {
 						}
 						if (msg.what < AppConfig.PAGE_SIZE) {
 							curLvDataState = UIHelper.LISTVIEW_DATA_FULL;
-							lvReplyAdapter.notifyDataSetChanged();
 							pvFooterTextView.setText(R.string.load_full);
+							lvReplyAdapter.notifyDataSetChanged();
 						} else if (msg.what == AppConfig.PAGE_SIZE) {
 							curLvDataState = UIHelper.LISTVIEW_DATA_MORE;
-							lvReplyAdapter.notifyDataSetChanged();
 							pvFooterTextView.setText(R.string.load_more);
+							lvReplyAdapter.notifyDataSetChanged();
 						}
-						/*
-						 * // 发送通知广播 if (notice != null) {
-						 * UIHelper.sendBroadCast(recruitDetailActivity.this,
-						 * notice); }
-						 */
 					} else if (msg.what == -1) {
 						// 有异常--显示加载出错 & 弹出错误消息
 						curLvDataState = UIHelper.LISTVIEW_DATA_MORE;
 						hideLoadProgressWithError(pvReply);
 						((AppException) msg.obj).makeToast(getActivity());
 					}
-					Log.i("bug", "test size is"
-							+ recruitDetailActivity.lvReplyData.size());
 					if (recruitDetailActivity.lvReplyData.size() == 0) {
 						Log.i("bug", "test size is 0");
 						curLvDataState = UIHelper.LISTVIEW_DATA_EMPTY;
@@ -355,7 +350,7 @@ public class CommentsFragment extends EmptyFragment {
 					msg.obj = replylist;
 					Log.i("bug", "reply list size is" + msg.what);
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}

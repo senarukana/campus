@@ -7,7 +7,7 @@ import com.campusrecruit.bean.Company;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -162,7 +162,7 @@ public class RecruitProcessFragment extends LoadingFragment {
 			public void run() {
 				Message msg = new Message();
 				try {
-					Recruit result = appContext.getRecruitDetail(recruit
+					Recruit result = appContext.getRecruitProcessInfo(recruit
 							.getRecruitID());
 					recruit.setContact(result.getContact());
 					recruit.setState(result.getState());
@@ -170,7 +170,7 @@ public class RecruitProcessFragment extends LoadingFragment {
 					msg.what = 1;
 					Log.i("process", "send msg");
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					Log.i("bug", "recruit process err");
 					msg.what = -1;
 					msg.obj = e;

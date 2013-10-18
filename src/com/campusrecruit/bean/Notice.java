@@ -29,6 +29,8 @@ public class Notice implements Serializable {
 	private int messageCount;
 	private int replyCount;
 	private int discussCount;
+	private int sum;
+
 	private CareerTalk careerTalk;
 	private Recruit recruit;
 	public UserMessage getMessage() {
@@ -129,9 +131,18 @@ public class Notice implements Serializable {
 	public void setTopic(BBSTopic topic) {
 		this.topic = topic;
 	}
+	
+	
+	public int getSum() {
+		return sum;
+	}
+
+
+	public void setSum(int sum) {
+		this.sum = sum;
+	}
 
 	public static Notice parse(JSONArray jsonArray) throws AppException {
-		Log.i("test","Notice Parse");
 		Notice notice = new Notice();
 		try {
 			notice.recruitCount =  jsonArray.getJSONObject(1).getInt("RecruitCount");
@@ -151,12 +162,11 @@ public class Notice implements Serializable {
 			if (notice.replyCount == 1 && sum == 1) {
 				notice.reply = BBSReply.parseNotice(jsonArray.getJSONObject(4));
 			}
-			Log.i("test","carrer count" + notice.careerTalkCount);
-			Log.i("notice","parse complete");
+			notice.sum = 0;
 			return notice;
 		
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		} 
 		

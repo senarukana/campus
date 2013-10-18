@@ -59,6 +59,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
+                android:maxLines="1"
                 android:text="百度"
                 android:textColor="#1E90FF"
                 android:textSize="20sp" />

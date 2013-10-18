@@ -131,9 +131,9 @@ public class ImageUtils {
 			fis = context.openFileInput(fileName);
 			bitmap = BitmapFactory.decodeStream(fis);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			
 		} catch (OutOfMemoryError e) {
-			e.printStackTrace();
+			
 		} finally {
 			try {
 				fis.close();
@@ -162,9 +162,9 @@ public class ImageUtils {
 			fis = new FileInputStream(file);
 			bitmap = BitmapFactory.decodeStream(fis, null, opts);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			
 		} catch (OutOfMemoryError e) {
-			e.printStackTrace();
+			
 		} finally {
 			try {
 				fis.close();
@@ -187,9 +187,9 @@ public class ImageUtils {
 			fis = new FileInputStream(file);
 			bitmap = BitmapFactory.decodeStream(fis);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			
 		} catch (OutOfMemoryError e) {
-			e.printStackTrace();
+			
 		} finally {
 			try {
 				fis.close();

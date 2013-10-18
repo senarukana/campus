@@ -1,0 +1,74 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/profile_scroll_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:layout_weight="1"
+    android:fadingEdge="none"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/tutorial_vertical_padding"
+        android:paddingLeft="@dimen/tutorial_horizontal_padding"
+        android:paddingRight="@dimen/tutorial_horizontal_padding"
+        android:paddingTop="@dimen/tutorial_vertical_padding" >
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tutorial_thanks_intro"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/tutorial_text_size" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tutorial_thanks_feedback"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="@dimen/tutorial_text_size" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center" >
+
+            <ImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/tutorial_thanks_sina" />
+
+        </LinearLayout>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tutorial_thanks_feedback_end"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="@dimen/tutorial_text_size" />
+
+        <Button
+            android:id="@+id/tutorial_complete_btn"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/button_background"
+            android:onClick="onFinishTutorialClicked"
+            android:text="进入系统"
+            android:textColor="#FFFFFF"
+            android:textSize="15dp" />
+    </LinearLayout>
+
+</ScrollView>

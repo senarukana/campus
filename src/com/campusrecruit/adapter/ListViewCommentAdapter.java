@@ -6,7 +6,7 @@ import com.krislq.bean.Comment;
 import com.krislq.bean.Comment.Refer;
 import com.krislq.bean.Comment.Reply;
 import com.krislq.layout.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 import com.krislq.util.BitmapManager;
 import com.krislq.util.StringUtils;
 import com.krislq.util.UIHelper;

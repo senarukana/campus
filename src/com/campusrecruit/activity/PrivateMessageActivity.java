@@ -32,10 +32,10 @@ import com.campusrecruit.bean.BBSReply;
 import com.campusrecruit.bean.UserMessage;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class PrivateMessageActivity extends EmptyActivity {
-	private AppContext appContext;
+	
 
 	private PullToRefreshListView pvMessage;
 	private List<UserMessage> messageList = new ArrayList<UserMessage>();
@@ -44,11 +44,10 @@ public class PrivateMessageActivity extends EmptyActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		Log.i("bug", "oncreate privatemessage activity");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.private_message);
 		if (appContext == null) {
-			appContext = (AppContext) getApplication();
+			
 		}
 		initView();
 		if (messageList.isEmpty()) {
@@ -69,7 +68,6 @@ public class PrivateMessageActivity extends EmptyActivity {
 		pvMessageAdapter = new ListViewUserMessageAdapter(this, appContext,
 				R.layout.private_message_item);
 		pvMessage.setAdapter(pvMessageAdapter);
-		Log.i("test", "pa adapter complete");
 		pvMessage.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
@@ -150,7 +148,6 @@ public class PrivateMessageActivity extends EmptyActivity {
 				pvMessageAdapter.setData(messageList);
 				pvMessageAdapter.notifyDataSetChanged();
 			}
-			Log.i("test", "load disk complete");
 			new PrivateMessageAsyncTask().execute();
 
 		}
@@ -225,7 +222,6 @@ public class PrivateMessageActivity extends EmptyActivity {
 			if (messageList.isEmpty()) {
 				showEmptyView(pvMessage);
 			}
-			Log.i("bug", "post complete");
 		}
 	}
 }

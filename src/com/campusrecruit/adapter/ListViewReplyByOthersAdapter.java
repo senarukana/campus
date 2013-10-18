@@ -29,7 +29,7 @@ import com.campusrecruit.common.SmileyParser;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class ListViewReplyByOthersAdapter extends BaseAdapter {
 	private Context context;

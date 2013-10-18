@@ -1,6 +1,6 @@
 package com.campusrecruit.activity;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.os.Bundle;
 import android.util.Log;

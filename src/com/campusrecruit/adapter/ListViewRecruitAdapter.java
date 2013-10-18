@@ -6,12 +6,13 @@ import java.util.List;
 import com.campusrecruit.activity.MainActivity;
 import com.campusrecruit.app.AppContext;
 import com.campusrecruit.app.AppException;
+import com.campusrecruit.bean.CareerTalk;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.bean.Result;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.fragment.RecruitFragment;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.R.integer;
 import android.app.Activity;
@@ -34,11 +35,11 @@ import android.widget.ToggleButton;
 public class ListViewRecruitAdapter extends BaseAdapter {
 
 	private Context context;
-	private List<Recruit> listItem;
 	private AppContext appContext;
+	private List<Recruit> listItem;
+	
 	private LayoutInflater listContainer;
 	private int itemViewResource;
-	private String beforeDate;
 
 	static class ListItemView {
 		LinearLayout clickLayout;
@@ -60,7 +61,6 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 		LinearLayout joinsLayout;
 		TextView joins;
 		ToggleButton joinsImageButton;
-		
 
 	}
 
@@ -91,10 +91,9 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return 0;
 	}
-
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		Log.i("info", "start");
 		ListItemView holder = null;
 		if (convertView == null) {
 			holder = new ListItemView();
@@ -122,8 +121,8 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 					.findViewById(R.id.recruit_new_flag);
 			holder.famousFlag = (ImageView) convertView
 					.findViewById(R.id.recruit_famous_flag);
-			holder.sourceFrom = (TextView) convertView.findViewById(R.id.recruit_source_from);
-			
+			holder.sourceFrom = (TextView) convertView
+					.findViewById(R.id.recruit_source_from);
 
 			// footer
 			holder.detailLayout = (LinearLayout) convertView
@@ -147,37 +146,35 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 		} else {
 			holder = (ListItemView) convertView.getTag();
 		}
-
 		Recruit recruit = this.listItem.get(position);
-
+		
 		// date header
 		String friendlyTime = null;
 		try {
 			friendlyTime = StringUtils.friendly_created_time(recruit
 					.getCreatedTime());
 		} catch (Exception e) {
-			Log.i("bug", "time format is wrong recruit adapter");
 			friendlyTime = recruit.getCreatedTime();
 		}
-
 		String trimmedDate = StringUtils.trimed_time(recruit.getCreatedTime());
-		// 0 for init, 1 for header, 2 for others
-		if (position == 0 || ((recruit.getFlag() == 0 || recruit.getFlag() == 1)
-				&& (beforeDate == null || !beforeDate.equals(trimmedDate)))) {
-			beforeDate = trimmedDate;
+		String trimmedPreviousDate = null;
+		if (position != 0) {
+			trimmedPreviousDate = StringUtils.trimed_time(listItem.get(position - 1).getCreatedTime());
+		}
+		// 0 for init, 1 for header, 2 for othersreplysLayout
+		if (position == 0 ||
+					(!trimmedDate.equals(trimmedPreviousDate))) {
 			holder.dateLayout.setVisibility(View.VISIBLE);
 			holder.createdTime.setText(friendlyTime);
-			recruit.setFlag(1);
 		} else {
 			holder.dateLayout.setVisibility(View.GONE);
-			recruit.setFlag(2);
 		}
-
-		/*if (recruit.getStatus() == 1)
-			holder.newFlag.setVisibility(View.VISIBLE);
-		else
-			holder.newFlag.setVisibility(View.INVISIBLE);*/
-		if(StringUtils.isToday(recruit.getCreatedTime()))
+		/*
+		 * if (recruit.getStatus() == 1)
+		 * holder.newFlag.setVisibility(View.VISIBLE); else
+		 * holder.newFlag.setVisibility(View.INVISIBLE);
+		 */
+		if (StringUtils.isToday(recruit.getCreatedTime()))
 			holder.newFlag.setVisibility(View.VISIBLE);
 		else
 			holder.newFlag.setVisibility(View.INVISIBLE);
@@ -186,7 +183,6 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 			holder.famousFlag.setVisibility(View.VISIBLE);
 		else
 			holder.famousFlag.setVisibility(View.INVISIBLE);
-
 		holder.clicks.setText(recruit.getClicks() + "");
 		holder.replies.setText(recruit.getReplies() + "");
 		holder.joins.setText(recruit.getJoins() + "");
@@ -200,14 +196,11 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 		/*
 		 * holder.joins.setText(recruit.getJoins()+"");
 		 */
-		Log.i("info", "set replys");
 		// holder.replies.setText(recruit.getReplies()+"");
-		Log.i("info", "set image button");
 		if (recruit.getIsJoined() == 1)
 			holder.joinsImageButton.setChecked(true);
 		else
 			holder.joinsImageButton.setChecked(false);
-		Log.i("info", "set click");
 		holder.detailLayout.setOnClickListener(new DetailListener(recruit));
 		holder.clickLayout.setOnClickListener(new DetailListener(recruit));
 		holder.joinsLayout.setOnClickListener(new JoinsListener(recruit,
@@ -215,24 +208,7 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 		holder.joinsImageButton.setOnClickListener(new JoinsListener(recruit,
 				holder.joinsImageButton, holder.joins));
 		holder.replysLayout.setOnClickListener(new RepliesListener(recruit));
-		Log.i("info", "recruit complete");
 		return convertView;
-	}
-
-	private class ShareListener implements OnClickListener {
-		public ShareListener(Recruit recruit) {
-			this.recruit = recruit;
-		}
-
-		private Recruit recruit;
-
-		@Override
-		public void onClick(View v) {
-			// 分享招聘信息
-			UIHelper.showShareRecruitDialog((Activity) context, recruit);
-
-		}
-
 	}
 
 	private class DetailListener implements OnClickListener {
@@ -244,10 +220,13 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			Log.i("recruit", recruit.getPosition());
-			Log.i("recruit", recruit.getCompany().getCompanyID() + "");
+			Log.i("recruit", recruit.getSourceFrom() + "");
 			// 跳转到招聘详情
-			UIHelper.showRecruitDetail(context, recruit, true);
+			if (recruit.getSourceFrom().equals("大街网")) {
+				UIHelper.showRecruitDetail(context, recruit, true);
+			} else {
+				UIHelper.showRecruitSimpleDetail(context, recruit, true);
+			}
 		}
 
 	}
@@ -266,11 +245,17 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
+			Log.i("test","onclick");
 			if (!appContext.isInit()) {
 				UIHelper.showLoginDialog((Activity) context);
 				vJoinsImage.setChecked(false);
 				return;
 			}
+			if (!appContext.getTutorialRecruitFavorate()) {
+				UIHelper.showRecruitFavorateTutorial((Activity)context);
+				appContext.setTutorialRecruitFavorate();
+			}
+			Log.i("onclick","1");
 			int joins = 0;
 			try {
 				joins = Integer.parseInt(vJoinsText.getText().toString());
@@ -278,19 +263,26 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 				Log.i("bug", "tansfrom error");
 				vJoinsText.setText("0");
 			}
+			Log.i("onclick","2");
 			if (recruit.getIsJoined() == 1) {
 				UIHelper.ToastMessage(context, "取消收藏");
+				vJoinsImage.setChecked(false);
 				joins--;
 				recruit.setIsJoined(0);
-
+				Log.i("onclick","3");
 				appContext.recruitJoin(recruit, false);
 			} else {
 				UIHelper.ToastMessage(context, "收藏成功");
+				vJoinsImage.setChecked(true);
 				recruit.setIsJoined(1);
 				joins++;
 				appContext.recruitJoin(recruit, true);
 			}
+			Log.i("onclick","4");
 			vJoinsText.setText(joins + "");
+			Log.i("onclick",joins+"!!!!!");
+			recruit.setJoins(joins);
+			notifyDataSetChanged();
 			new Thread() {
 				public void run() {
 					try {
@@ -302,12 +294,10 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 									false);
 						}
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 					}
 				}
 			}.start();
-			recruit.setJoins(joins);
-			notifyDataSetChanged();
 		}
 
 	}
@@ -322,7 +312,11 @@ public class ListViewRecruitAdapter extends BaseAdapter {
 		@Override
 		public void onClick(View v) {
 			// 跳转到招聘详情
-			UIHelper.showRecruitDetail(context, recruit, false);
+			if (recruit.getSourceFrom().equals("大街网")) {
+				UIHelper.showRecruitDetail(context, recruit, false);
+			} else {
+				UIHelper.showRecruitSimpleDetail(context, recruit, false);
+			}
 		}
 
 	}

@@ -3,6 +3,7 @@ package com.campusrecruit.common;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,19 +12,27 @@ import com.campusrecruit.activity.CareerTalkDetailActivity;
 import com.campusrecruit.activity.CommentPubActivity;
 import com.campusrecruit.activity.CompanyIndustryActivity;
 import com.campusrecruit.activity.CompanyTypeActivity;
+import com.campusrecruit.activity.DataSourcesActivity;
 import com.campusrecruit.activity.LoginActivity;
 import com.campusrecruit.activity.LoginDialogActivity;
 import com.campusrecruit.activity.MainActivity;
+import com.campusrecruit.activity.MajorActivity;
 import com.campusrecruit.activity.PrivateMessageActivity;
 import com.campusrecruit.activity.PrivateMessageListActivity;
 import com.campusrecruit.activity.ProvinceActivity;
+import com.campusrecruit.activity.RadioAlarmSelectActivity;
 import com.campusrecruit.activity.RecommendActivity;
 import com.campusrecruit.activity.RecruitDetailActivity;
+import com.campusrecruit.activity.RecruitDetailTabActivity;
+import com.campusrecruit.activity.RecruitSimpleDetailActivity;
 import com.campusrecruit.activity.RegisterActivity;
 import com.campusrecruit.activity.ScheduleActivity;
+import com.campusrecruit.activity.SchoolActivity;
+import com.campusrecruit.activity.SchoolMultipleActivity;
 import com.campusrecruit.activity.StartActivity;
 import com.campusrecruit.activity.TopicDetailActivity;
 import com.campusrecruit.activity.TopicPubActivity;
+import com.campusrecruit.activity.TutorialHintActivity;
 import com.campusrecruit.activity.UserCenterActivity;
 import com.campusrecruit.activity.UserFavroateActivity;
 import com.campusrecruit.activity.UserInfoActivity;
@@ -43,11 +52,13 @@ import com.campusrecruit.bean.Notice;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.bean.URLs;
 import com.campusrecruit.net.NetApiClient;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -101,11 +112,12 @@ public class UIHelper {
 	public final static int LISTVIEW_DATATYPE_ACTIVE = 0x05;
 	public final static int LISTVIEW_DATATYPE_MESSAGE = 0x06;
 	public final static int LISTVIEW_DATATYPE_COMMENT = 0x07;
-
+	
 	public final static int REQUEST_CODE_FOR_RESULT = 0x01;
 	public final static int REQUEST_CODE_FOR_REPLY = 0x02;
 	public final static int REQUEST_CODE_FOR_REPLYBY = 0x03;
 	public final static int REQUEST_CODE_FOR_REPLYTO = 0x04;
+	public final static int REQUEST_CODE_FOR_FAVORATE = 0x04;
 	public final static int REQUEST_CODE_FOR_RECOMMEND = 0x05;
 	public final static int REQUEST_CODE_FOR_SCHEDULE = 0x06;
 	public final static int REQUEST_CODE_FOR_SETTINGS = 0x07;
@@ -113,6 +125,18 @@ public class UIHelper {
 	public final static int REQUEST_PROVINCE_FOR_RESULT = 0x08;
 	public final static int REQUEST_COMPANY_TYPE_FOR_RESULT = 0x09;
 	public final static int REQUEST_COMPANY_INDUSTRY_RESULT = 0x10;
+	public final static int REQUEST_DATA_SOURCE_RESULT = 0x11;
+	
+	public final static int REQUEST_SCHOOL_RESULT = 0x12;
+	public final static int REQUEST_MAJOR_RESULT = 0x13;
+	public final static int REQUEST_SET_ALARM_TIME_RESULT = 0x13;
+	
+	public final static int REQUEST_CODE_FOR_TUTORIAL_MAIN_1 = 0x14;
+	public final static int REQUEST_CODE_FOR_TUTORIAL_MAIN_2 = 0x15;
+	public final static int REQUEST_CODE_FOR_TUTORIAL_RECRUIT_DETAIL = 0x16;
+	public final static int REQUEST_CODE_FOR_TUTORIAL_CAREER_FAVORATE = 0x17;
+	public final static int REQUEST_CODE_FOR_TUTORIAL_RECRUIT_FAVORATE = 0x18;
+	
 	public final static int RESPONCE_SELECTION = 0x01;
 	
 	public final static int RESULT_CODE_FOR_LOGOUT = 0x01;
@@ -136,6 +160,45 @@ public class UIHelper {
 		Intent intent = new Intent(activity, MainActivity.class);
 		activity.startActivity(intent);
 		activity.finish();
+	}
+	
+	public static void showHomeFromRecommend(Activity activity) {
+		Intent intent = new Intent(activity, MainActivity.class);
+		intent.putExtra("needRefresh", true);
+		activity.startActivity(intent);
+		activity.finish();
+	}
+	
+	public static void showHomeTutorial1(Activity activity) {
+		Intent intent = new Intent(activity, TutorialHintActivity.class);
+		intent.putExtra("image", R.drawable.tutorial_main_1);
+		activity.startActivityForResult(intent, REQUEST_CODE_FOR_TUTORIAL_MAIN_1);
+	}
+	
+	public static void showHomeTutorial2(Activity activity) {
+		Intent intent = new Intent(activity, TutorialHintActivity.class);
+		intent.putExtra("image", R.drawable.tutorial_main_2);
+		activity.startActivityForResult(intent, REQUEST_CODE_FOR_TUTORIAL_MAIN_2);
+	}
+	
+	public static void showRecruitDetailTutorial(Activity activity) {
+		Intent intent = new Intent(activity, TutorialHintActivity.class);
+		intent.putExtra("image", R.drawable.tutorial_recruit_detail);
+		activity.startActivityForResult(intent, REQUEST_CODE_FOR_TUTORIAL_MAIN_1);
+	}
+	
+	public static void showCareerFavorateTutorial(Activity activity) {
+		Intent intent = new Intent(activity, TutorialHintActivity.class);
+		intent.putExtra("image", R.drawable.tutorial_3);
+		activity.startActivityForResult(intent, REQUEST_CODE_FOR_TUTORIAL_CAREER_FAVORATE);
+		
+	}
+	
+	public static void showRecruitFavorateTutorial(Activity activity) {
+		Intent intent = new Intent(activity, TutorialHintActivity.class);
+		intent.putExtra("image", R.drawable.tutorial_4);
+		activity.startActivityForResult(intent, REQUEST_CODE_FOR_TUTORIAL_RECRUIT_FAVORATE);
+		
 	}
 	
 	/**
@@ -285,6 +348,61 @@ public class UIHelper {
 		intent.putIntegerArrayListExtra("selectedList", selectedList);
 		fragment.startActivityForResult(intent, REQUEST_COMPANY_TYPE_FOR_RESULT);
 	}
+	
+	/**
+	 * 选择公司性质
+	 * 
+	 * @param activity
+	 */
+	public static void showDataSources(Fragment fragment,
+			ArrayList<Integer> selectedList) {
+		Intent intent = new Intent(fragment.getActivity(), DataSourcesActivity.class);
+		intent.putIntegerArrayListExtra("selectedList", selectedList);
+		fragment.startActivityForResult(intent, REQUEST_DATA_SOURCE_RESULT);
+	}
+	
+	/**
+	 * 选择学校
+	 * 
+	 * @param activity
+	 */
+	public static void showSchoolMultiple(Fragment fragment,
+			ArrayList<Integer> selectedList) {
+		Intent intent = new Intent(fragment.getActivity(), SchoolMultipleActivity.class);
+		intent.putExtra("selectedList", selectedList);
+		fragment.startActivityForResult(intent, REQUEST_SCHOOL_RESULT);
+	}
+	
+	/**
+	 * 选择学校
+	 * 
+	 * @param activity
+	 */
+	public static void showSchool(Activity activity,
+			String selectStr) {
+		Intent intent = new Intent(activity, SchoolActivity.class);
+		intent.putExtra("selectStr", selectStr);
+		activity.startActivityForResult(intent, REQUEST_SCHOOL_RESULT);
+	}
+	
+	/**
+	 * 选择专业
+	 * 
+	 * @param activity
+	 */
+	public static void showMajor(Activity activity,
+			String selectStr) {
+		Intent intent = new Intent(activity, MajorActivity.class);
+		intent.putExtra("selectStr", selectStr);
+		activity.startActivityForResult(intent, REQUEST_MAJOR_RESULT);
+	}
+	
+	public static void showAlarmTime(Activity activity,
+			String selectStr) {
+		Intent intent = new Intent(activity, RadioAlarmSelectActivity.class);
+		intent.putExtra("selectStr", selectStr);
+		activity.startActivityForResult(intent, REQUEST_SET_ALARM_TIME_RESULT);
+	}
 /*	*//**
 	 * 选择公司性质
 	 * 
@@ -298,7 +416,7 @@ public class UIHelper {
 	}*/
 
 	/**
-	 * 省份选择完毕
+	 * Checkbox选择完毕
 	 * 
 	 * @param activity
 	 * @param selection 选择列表
@@ -311,6 +429,21 @@ public class UIHelper {
 		intent.putIntegerArrayListExtra("selection", selection);
 		if (text != null)
 			intent.putExtra("text", text);
+		activity.setResult(Activity.RESULT_OK, intent);
+		activity.finish();
+	}
+	
+	/**
+	 * RadioButton选择完毕
+	 * 
+	 * @param activity
+	 * @param selection 选择列表
+	 * @param text 当仅仅选择一个时，其值
+	 */
+	public static void closeRadio(Activity activity,
+			String selection) {
+		Intent intent = new Intent();
+		intent.putExtra("selectStr", selection);
 		activity.setResult(Activity.RESULT_OK, intent);
 		activity.finish();
 	}
@@ -365,8 +498,7 @@ public class UIHelper {
 	 */
 	public static void showUserFavroate(Activity activity) {
 		Intent intent = new Intent(activity, UserFavroateActivity.class);
-		Log.i("test", "show user favorate");
-		activity.startActivity(intent);
+		activity.startActivityForResult(intent, UIHelper.REQUEST_CODE_FOR_FAVORATE);
 	}
 
 	/**
@@ -376,7 +508,7 @@ public class UIHelper {
 	 */
 	public static void showSchedule(Activity activity) {
 		Intent intent = new Intent(activity, ScheduleActivity.class);
-		activity.startActivity(intent);
+		activity.startActivityForResult(intent, UIHelper.REQUEST_CODE_FOR_SCHEDULE);
 	}
 
 	/**
@@ -409,7 +541,6 @@ public class UIHelper {
 		Intent intent = new Intent(context, TopicPubActivity.class);
 		intent.putExtra("sectionID", sectionID);
 		intent.putExtra("companyID", companyID);
-		Log.i("ui", sectionID + "");
 		context.startActivityForResult(intent, REQUEST_CODE_FOR_RESULT);
 	}
 
@@ -438,10 +569,26 @@ public class UIHelper {
 	 */
 	public static void showRecruitDetail(Context context, Recruit recruit,
 			boolean flag) {
-		Intent intent = new Intent(context, RecruitDetailActivity.class);
+		Intent intent = new Intent(context, RecruitDetailTabActivity.class);
 		intent.putExtra("recruit", recruit);
 		intent.putExtra("flag", flag);
-		Log.i("ui", "showDetail");
+		context.startActivity(intent);
+	}
+	
+	/**
+	 * 显示校招详情
+	 * 
+	 * @param context
+	 * @param recruit
+	 *            招聘基础信息
+	 * @param flag
+	 *            若为true则显示招聘信息，若为false显示评论信息
+	 */
+	public static void showRecruitSimpleDetail(Context context, Recruit recruit,
+			boolean flag) {
+		Intent intent = new Intent(context, RecruitSimpleDetailActivity.class);
+		intent.putExtra("recruit", recruit);
+		intent.putExtra("flag", flag);
 		context.startActivity(intent);
 	}
 
@@ -629,6 +776,7 @@ public class UIHelper {
 				});
 		builder.create().show();
 	}
+	
 
 	/**
 	 * 分享到'新浪微博'或'腾讯微博'的对话框
@@ -700,8 +848,8 @@ public class UIHelper {
 	 */
 	public static void showShareRecruitDialog(final Activity context,
 			final Recruit recruit) {
-		String shareContent = String.format("%s公司,校园招聘信息-来自校园招聘",
-				recruit.getCompanyName());
+		String shareContent = String.format("%s公司2014最新校园招聘 \n %s \n来自一职有你",
+				recruit.getCompanyName(), recruit.getUrl());
 		showShareDialog(context, shareContent);
 	}
 
@@ -714,9 +862,12 @@ public class UIHelper {
 	 *            分享的标题
 	 */
 	public static void showShareCareerTalkDialog(final Activity context,
-			final CareerTalk recruit) {
-		String shareContent = String.format("%s公司,宣讲会信息-来自校园招聘",
-				recruit.getCompanyName());
+			final CareerTalk careerTalk) {
+		String shareContent = String.format("%s公司 %s %s-%s,2014最新宣讲会信息 \n %s \n   来自一职有你",
+				careerTalk.getCompanyName(), 
+				StringUtils.forammtedTime(careerTalk.getCreatedTime()),
+				careerTalk.getSchoolName(), careerTalk.getPlace(),
+				careerTalk.getUrl());
 		showShareDialog(context, shareContent);
 	}
 
@@ -1065,7 +1216,7 @@ public class UIHelper {
 						ImageUtils.saveImage(imgView.getContext(), filename,
 								(Bitmap) msg.obj);
 					} catch (IOException e) {
-						e.printStackTrace();
+						
 					}
 				} else {
 					ToastMessage(imgView.getContext(), ErrMsg);
@@ -1080,7 +1231,7 @@ public class UIHelper {
 					msg.what = 1;
 					msg.obj = bmp;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -1103,7 +1254,7 @@ public class UIHelper {
 			Intent it = new Intent(Intent.ACTION_VIEW, uri);
 			context.startActivity(it);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 			ToastMessage(context, "无法浏览此网页", 500);
 		}
 	}
@@ -1572,7 +1723,7 @@ public class UIHelper {
 	 * ToastMessage(ac, "缓存清除成功"); } else { ToastMessage(ac, "缓存清除失败"); } } };
 	 * new Thread() { public void run() { Message msg = new Message(); try {
 	 * ac.clearAppCache(); msg.what = 1; } catch (Exception e) {
-	 * e.printStackTrace(); msg.what = -1; } handler.sendMessage(msg); }
+	 *  msg.what = -1; } handler.sendMessage(msg); }
 	 * }.start(); }
 	 *//**
 	 * 发送App异常崩溃报告

@@ -6,13 +6,15 @@ import com.campusrecruit.bean.User;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.net.NetApiClient;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,8 +22,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class RegisterActivity extends Activity {
-	AppContext appcontext;
+public class RegisterActivity extends BaseActivity {
 	private ProgressDialog mProgress;
 	private EditText eUserName;
 	private EditText ePwd;
@@ -36,8 +37,6 @@ public class RegisterActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.register);
 		isInit = getIntent().getBooleanExtra("isInit", false);
-		
-		appcontext = (AppContext) getApplication();
 
 		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 		eUserName = (EditText) findViewById(R.id.register_user_name);
@@ -51,8 +50,9 @@ public class RegisterActivity extends Activity {
 				imm.showSoftInputFromInputMethod(v.getWindowToken(), 0);
 				String userName = eUserName.getText().toString();
 				String pwd = ePwd.getText().toString();
-				
-				if (!ePwd.getText().toString().equals(ePwdAgain.getText().toString())) {
+
+				if (!ePwd.getText().toString()
+						.equals(ePwdAgain.getText().toString())) {
 					UIHelper.ToastMessage(v.getContext(),
 							getString(R.string.msg_login_pwd_again));
 					return;
@@ -75,14 +75,14 @@ public class RegisterActivity extends Activity {
 			}
 		});
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// TODO Auto-generated method stub
 		getMenuInflater().inflate(R.menu.menu_login, menu);
 		return true;
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
@@ -94,12 +94,12 @@ public class RegisterActivity extends Activity {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
-		if(this.isInit)
+		if (this.isInit)
 			UIHelper.showStart(this);
 	}
 
@@ -108,15 +108,17 @@ public class RegisterActivity extends Activity {
 			public void handleMessage(Message msg) {
 				mProgress.dismiss();
 				if (msg.what == 1) {
+					Log.i("test", "register ok");
 					// 清空原先cookie
 					NetApiClient.cleanCookie();
 					// 保存用户信息
-					appcontext.saveLoginInfo();
+					Log.i("test", "save info");
+					appContext.saveLoginInfo();
 					// 提示登陆成功
 					UIHelper.ToastMessage(RegisterActivity.this,
 							R.string.msg_register_success);
 					if (isInit) {
-						UIHelper.showRecommends(RegisterActivity.this);
+						UIHelper.showHome(RegisterActivity.this);
 					} else {
 						finish();
 					}
@@ -136,7 +138,7 @@ public class RegisterActivity extends Activity {
 					int result = ac.registerUser(userName, pwd);
 					msg.what = result;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}

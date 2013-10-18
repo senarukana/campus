@@ -6,7 +6,7 @@ import com.campusrecruit.bean.BBSTopic;
 import com.campusrecruit.bean.CareerTalk;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.bean.UserMessage;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -23,94 +23,54 @@ import android.util.Log;
 public class BroadCast extends BroadcastReceiver {
 
 	private final static int NOTIFICATION_ID = R.layout.frame_context_v;
-
-	private static int lastNoticeCount;
-	private static int lastCareerCount;
-	private static int lastRecruitCount;
-	private static int lastMessageCount;
-	private static int lastReplyCount;
-
+	private Recruit _recruit;
+	private CareerTalk _career;
+	private UserMessage _message;
+	private BBSReply _reply;
+	
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.i("notice", "recevei!!!!!");
 		String ACTION_NAME = intent.getAction();
-		Log.i("notice", ACTION_NAME);
 		if ("com.campusRecruit.action.NOTICE".equals(ACTION_NAME)) {
 			int carrerTalkCount = intent.getIntExtra("careerTalkCount", 0); // 宣讲会
 			int recruitCount = intent.getIntExtra("recruitCount", 0);// 校园招聘
 			int messageCount = intent.getIntExtra("messageCount", 0);// 留言
 			int replyCount = intent.getIntExtra("replyCount", 0);
 
-			Log.i("notice",
-					String.format(
-							"carrerTalkCount %d, recruitCount %d, messageCount %d, replyCount %d",
-							carrerTalkCount, recruitCount, messageCount,
-							replyCount));
-
 			Bundle bundle = intent.getExtras();
-
 			// 宣讲会
 			if (MainActivity.bvCareerTalk != null) {
-				if (carrerTalkCount > 0) {
-					MainActivity.bvCareerTalk.setText(carrerTalkCount + "");
+				MainActivity.CarrerTalkCount += carrerTalkCount;
+				if (MainActivity.CarrerTalkCount > 0) {
+					MainActivity.bvCareerTalk.setText(MainActivity.CarrerTalkCount + "");
 					MainActivity.bvCareerTalk.show();
 				} else {
 					MainActivity.bvCareerTalk.setText("");
 					MainActivity.bvCareerTalk.hide();
 				}
-				MainActivity.CarrerTalkCount = carrerTalkCount;
 			}
 			// 校园招聘
 			if (MainActivity.bvRecruit != null) {
-				if (recruitCount > 0) {
-					Log.i("notice", "show bv recruit");
-					MainActivity.bvRecruit.setText(recruitCount + "");
+				MainActivity.RecruitCount += recruitCount;
+				if (MainActivity.RecruitCount > 0) {
+					MainActivity.bvRecruit.setText(MainActivity.RecruitCount + "");
 					MainActivity.bvRecruit.show();
 				} else {
 					MainActivity.bvRecruit.setText("");
 					MainActivity.bvRecruit.hide();
 				}
-				MainActivity.RecruitCount = recruitCount;
 			}
 			
 			// 校园招聘
 			if (replyCount > 0) {
-				Log.i("life","reply:"+replyCount);
-				MainActivity.ReplyCount = replyCount;
+				MainActivity.ReplyCount += replyCount;
 			}
 			
 			if (messageCount > 0) {
-				Log.i("life","message:"+messageCount);
-				MainActivity.MessageCount = messageCount;
+				MainActivity.MessageCount += messageCount;
 			}
 
-			/*
-			 * // 私信 if (MainActivity.bvRecruit != null) { if (recruitCount > 0)
-			 * { Log.i("notice", "show bv recruit");
-			 * MainActivity.bvRecruit.setText(recruitCount + "");
-			 * MainActivity.bvRecruit.show(); } else {
-			 * MainActivity.bvRecruit.setText("");
-			 * MainActivity.bvRecruit.hide(); } MainActivity.RecruitCount =
-			 * recruitCount; }
-			 * 
-			 * // 其他人回复我 if (MainActivity.bvRecruit != null) { if (recruitCount
-			 * > 0) { Log.i("notice", "show bv recruit");
-			 * MainActivity.bvRecruit.setText(recruitCount + "");
-			 * MainActivity.bvRecruit.show(); } else {
-			 * MainActivity.bvRecruit.setText("");
-			 * MainActivity.bvRecruit.hide(); } MainActivity.RecruitCount =
-			 * recruitCount; }
-			 */
-
-			// 私信
-			/*
-			 * if (MainActivity.bvBBSSection != null) { if (discussCount > 0) {
-			 * MainActivity.bvBBSSection.setText(discussCount + "");
-			 * MainActivity.bvBBSSection.show(); } else {
-			 * MainActivity.bvBBSSection.setText("");
-			 * MainActivity.bvBBSSection.hide(); } MainActivity.DiscussCount =
-			 * discussCount; }
-			 */
 
 			// 通知栏显示
 			this.notification(context, carrerTalkCount, recruitCount,
@@ -122,60 +82,36 @@ public class BroadCast extends BroadcastReceiver {
 			int recruitCount, int messageCount, int replyCount, Bundle bundle) {
 		int noticeCount = carrerTalkCount + recruitCount + messageCount
 				+ replyCount;
-		Log.i("notice", String.format("%d %d %d %d", carrerTalkCount,
-				recruitCount, messageCount, replyCount));
 		// 创建 NotificationManager
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		String contentTitle = "";
 		String contentText = "";
-
-		int _lastNoticeCount, _lastMessageCount, _lastReplyCount, _lastRecuitCount, _lastCareerCount;
-
 		// 判断是否发出通知信息
-		if (noticeCount == 0) {
-			notificationManager.cancelAll();
-			lastNoticeCount = 0;
-			return;
-		} else if (noticeCount == lastNoticeCount) {
-			return;
-		} else {
-			_lastNoticeCount = lastNoticeCount;
-			_lastMessageCount = lastMessageCount;
-			_lastReplyCount = lastReplyCount;
-			_lastRecuitCount = lastRecruitCount;
-			_lastCareerCount = lastCareerCount;
-			lastNoticeCount = noticeCount;
-			lastMessageCount = messageCount;
-			lastReplyCount = replyCount;
-			lastRecruitCount = recruitCount;
-			lastCareerCount = carrerTalkCount;
-		}
-		Log.i("notice", "notify");
 		// 创建通知 Notification
 		NotificationCompat.Builder mNotifyBuilder = new NotificationCompat.Builder(
 				context);
-		if (_lastNoticeCount == 0 && noticeCount == 1) {
-			if (recruitCount > _lastRecuitCount) {
+		
+		//清除过去提醒
+		notificationManager.cancelAll();
+		
+		MainActivity.NotifyCount += noticeCount;
+		if (MainActivity.NotifyCount == 1) {
+			if (MainActivity.RecruitCount == 1) {
 				Recruit recruit = (Recruit) bundle.getSerializable("recruit");
 				contentTitle = "您有一条新的校园招聘信息";
-				Log.i("notice", "new recruit");
 				contentText = String.format("%s %s", recruit.getCompanyName(),
 						recruit.getPosition());
-				Log.i("notice", "new recruit content is");
 			}
-			if (carrerTalkCount > _lastCareerCount) {
+			if (MainActivity.CarrerTalkCount == 1) {
 				CareerTalk careerTalk = (CareerTalk) bundle
 						.getSerializable("careertalk");
-				if (careerTalk == null) {
-					Log.i("oops", "!!!!!!!!!!!!!!!!!!!");
-				}
 				contentTitle = "您有一条新的宣讲会信息";
 				contentText = String.format("%s %s %s",
 						careerTalk.getCompanyName(),
 						careerTalk.getSchoolName(), careerTalk.getDate());
 			}
-			if (messageCount > _lastMessageCount) {
+			if (MainActivity.MessageCount == 1) {
 				UserMessage message = (UserMessage) bundle
 						.getSerializable("message");
 				contentTitle = message.getUserName() + " 给你发来了私信";
@@ -184,31 +120,26 @@ public class BroadCast extends BroadcastReceiver {
 				else
 					contentText = message.getContent().substring(0, 10);
 			}
-			if (lastReplyCount > _lastReplyCount) {
+			if (MainActivity.ReplyCount == 1) {
 				BBSReply reply = (BBSReply) bundle.getSerializable("reply");
-				if (reply == null) {
-					Log.i("oops", "!!!!!!!!!reply!!!!!!!!!!");
-					return;
-				}
 				contentTitle = reply.getUserName() + "回复了你";
 				contentText = reply.getContent();
 			}
 		} else {
-			contentTitle = "您有 " + noticeCount + " 条新信息";
-			if (recruitCount > 0) {
-				contentText += String.format("%d条招聘信息 ", recruitCount);
+			contentTitle = "您有 " + MainActivity.NotifyCount + " 条新信息";
+			if (MainActivity.RecruitCount > 0) {
+				contentText += String.format("%d条招聘信息 ", MainActivity.RecruitCount);
 			}
-			if (carrerTalkCount > 0) {
-				contentText += String.format("%d条宣讲会信息 ", carrerTalkCount);
+			if (MainActivity.CarrerTalkCount > 0) {
+				contentText += String.format("%d条宣讲会信息 ", MainActivity.CarrerTalkCount);
 			}
-			if (messageCount > 0) {
-				contentText += String.format("%d条私信 ", messageCount);
+			if (MainActivity.MessageCount > 0) {
+				contentText += String.format("%d条私信 ", MainActivity.MessageCount);
 			}
-			if (replyCount > 0) {
-				contentText += String.format("%d个人回复了你 ", replyCount);
+			if (MainActivity.ReplyCount > 0) {
+				contentText += String.format("%d个人回复了你 ", MainActivity.ReplyCount);
 			}
 		}
-		Log.i("notice", "set content");
 		mNotifyBuilder.setContentTitle(contentTitle)
 				.setContentText(contentText).setSmallIcon(R.drawable.icon);
 
@@ -223,7 +154,7 @@ public class BroadCast extends BroadcastReceiver {
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		mNotifyBuilder.setContentIntent(resultPendingIntent);
 		// 设置点击清除通知
-		/* mNotifyBuilder.setAutoCancel(true); */
+		mNotifyBuilder.setAutoCancel(true); 
 
 		/*
 		 * if(noticeCount > _lastNoticeCount) { //设置通知方式 notification.defaults
@@ -239,7 +170,6 @@ public class BroadCast extends BroadcastReceiver {
 		 */
 
 		// 发出通知
-		Log.i("notice", "notice content is " + contentText);
 		Uri alarmSound = RingtoneManager
 				.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 		if (alarmSound == null) {
@@ -253,6 +183,7 @@ public class BroadCast extends BroadcastReceiver {
 
 		// Add as notification
 		mNotifyBuilder.setSound(alarmSound);
+		mNotifyBuilder.setVibrate(new long[]{100, 250, 100, 500});
 		notificationManager.notify(NOTIFICATION_ID, mNotifyBuilder.build());
 	}
 

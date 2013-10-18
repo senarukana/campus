@@ -37,10 +37,10 @@ import com.campusrecruit.bean.BBSReply;
 import com.campusrecruit.bean.BBSTopic;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class ReplyByOtherUserFragment extends EmptyFragment {
-	private AppContext appContext;
+	
 	private PullToRefreshListView pvReplyByOthers;
 	private List<BBSReply> replyByOtherList = new ArrayList<BBSReply>();
 	private ListViewReplyByOthersAdapter pvReplyByOthersAdapter;

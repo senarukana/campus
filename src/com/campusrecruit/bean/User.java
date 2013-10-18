@@ -12,6 +12,7 @@ import com.campusrecruit.app.AppException;
 
 import android.R.integer;
 import android.net.ParseException;
+import android.util.Log;
 import android.util.Xml;
 
 public class User {
@@ -222,13 +223,6 @@ public class User {
 		this.face = face;
 	}
 
-	// public String getAccount() {
-	// return account;
-	// }
-	// public void setAccount(String account) {
-	// this.account = account;
-	// }
-
 	public static User parse(JSONObject userJsonObject) throws AppException {
 		try {
 			User user = new User();
@@ -241,16 +235,16 @@ public class User {
 			user.introduction = userJsonObject.getString("introduction");
 			return user;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
 
-	public static User parseDetail(JSONObject userJsonObject, boolean login)
+	public static User parseDetail(JSONObject userJsonObject)
 			throws AppException {
 		try {
 			User user = new User();
-			if (login) {
+			if (userJsonObject.has("id")) {
 				user.uid = userJsonObject.getString("id");
 			}
 			user.hasFace = userJsonObject.getInt("face");
@@ -263,7 +257,7 @@ public class User {
 			user.preference = UserPreference.parse(userJsonObject);
 			return user;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}

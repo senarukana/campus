@@ -6,11 +6,12 @@ import java.util.List;
 import com.campusrecruit.app.AppContext;
 import com.campusrecruit.app.AppException;
 import com.campusrecruit.bean.BBSReply;
+import com.campusrecruit.bean.BBSSection;
 import com.campusrecruit.bean.Company;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.annotation.SuppressLint;
 
@@ -33,9 +34,10 @@ public class CompanyDetailFragment extends LoadingFragment {
 	private TextView vCompanyName;
 	private TextView vCompanyPlace;
 	private TextView vCompanyIndustry;
+	private TextView vCompanyGoToSection;
 	private LinkView vCompanyIntroduction;
 
-	private AppContext appContext;
+	
 
 	private Handler companyHandler;
 
@@ -72,27 +74,20 @@ public class CompanyDetailFragment extends LoadingFragment {
 				if (msg.what == 1)
 					fillView();
 				else {
-					Log.i("bug", "error");
 					hideLoadProgressWithError(scrollView);
-					// ((AppException) msg.obj).makeToast(getActivity());
 				}
 			}
 		};
 	}
 
 	public void initData(AppContext context) {
-		Log.i("test", "companydetail init data");
 		if (context != null)
 			appContext = context;
 		if (company == null)
 			getArgs();
-		if (appContext == null) {
-			Log.i("bug", "company detail appcontext is null");
-		}
 		if (companyHandler == null) {
 			initHandler();
 		}
-		Log.i("test", "init company data");
 		if (isloading)
 			return;
 		isloading = true;
@@ -104,11 +99,11 @@ public class CompanyDetailFragment extends LoadingFragment {
 					Company newCompany = appContext.getCompanyDetail(company
 							.getCompanyID());
 					company.setIntroduction(newCompany.getIntroduction());
-					company.setPlace(company.getPlace());
+					company.setPlace(newCompany.getPlace());
 					msg.what = 1;
 					Log.i("company", "send msg");
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -142,11 +137,10 @@ public class CompanyDetailFragment extends LoadingFragment {
 			Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
 		// inflater the layout
-		Log.i("rd", "create Company View");
 		View view = inflater.inflate(R.layout.company_info, null);
 		initLoadingView(view);
 		scrollView = (ScrollView) view.findViewById(R.id.company_info_layout);
-
+		vCompanyGoToSection = (TextView) view.findViewById(R.id.company_goto_section);
 		vCompanyName = (TextView) view.findViewById(R.id.company_detail_name);
 		vCompanyPlace = (TextView) view
 				.findViewById(R.id.company_detail_address);
@@ -156,6 +150,15 @@ public class CompanyDetailFragment extends LoadingFragment {
 				.findViewById(R.id.company_detail_info);
 		vCompanyName.setText(company.getCompanyName());
 		vCompanyIndustry.setText(company.getIndustry());
+		vCompanyGoToSection.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+				BBSSection section = new BBSSection();
+				section.setCompanyID(company.getCompanyID());
+				section.setSectionName(company.getCompanyName());
+				UIHelper.showTopicList(getActivity(), section);
+			}
+		});
 		if (isloading) {
 			showLoadProgress(scrollView);
 		} else {

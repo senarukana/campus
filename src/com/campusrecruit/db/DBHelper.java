@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 
 import android.content.Context;
@@ -56,7 +56,7 @@ public class DBHelper extends SQLiteOpenHelper{
 			this.initDatabase();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
         
 	}

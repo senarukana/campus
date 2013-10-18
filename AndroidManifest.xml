@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.krislq.sliding"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    package="com.pcncad.campusRecruit"
+    android:versionCode="3"
+    android:versionName="0.1" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -14,10 +14,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name="com.campusrecruit.app.AppContext"
         android:allowBackup="true"
+        android:debuggable="false"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -29,6 +32,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.TutorialActivity"
+            android:icon="@drawable/ic_main"
+            android:label="@string/title_activity" >
         </activity>
         <activity
             android:name="com.campusrecruit.activity.MainActivity"
@@ -75,17 +83,42 @@
         <activity
             android:name="com.campusrecruit.activity.ProvinceActivity"
             android:icon="@drawable/ic_main"
-            android:label="@string/title_activity" >
+            android:label="@string/title_province" >
         </activity>
-         <activity
+        <activity
             android:name="com.campusrecruit.activity.CompanyTypeActivity"
             android:icon="@drawable/ic_main"
-            android:label="@string/title_activity" >
+            android:label="@string/title_company_property" >
         </activity>
-         <activity
+        <activity
+            android:name="com.campusrecruit.activity.DataSourcesActivity"
+            android:icon="@drawable/ic_main"
+            android:label="@string/title_data_source" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.SchoolMultipleActivity"
+            android:icon="@drawable/ic_main"
+            android:label="@string/title_school" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.SchoolActivity"
+            android:icon="@drawable/ic_main"
+            android:label="@string/title_school" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.MajorActivity"
+            android:icon="@drawable/ic_main"
+            android:label="@string/title_major" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.RadioAlarmSelectActivity"
+            android:icon="@drawable/ic_main"
+            android:label="@string/title_alarm_time" >
+        </activity>
+        <activity
             android:name="com.campusrecruit.activity.CompanyIndustryActivity"
             android:icon="@drawable/ic_main"
-            android:label="@string/title_activity" >
+            android:label="@string/title_company_industry" >
         </activity>
         <activity
             android:name="com.campusrecruit.activity.BBSTopicListActivity"
@@ -103,7 +136,12 @@
             android:label="@string/title_activity" >
         </activity>
         <activity
-            android:name="com.campusrecruit.activity.RecruitDetailActivity"
+            android:name="com.campusrecruit.activity.RecruitDetailTabActivity"
+            android:icon="@drawable/ic_main"
+            android:label="@string/title_activity" >
+        </activity>
+        <activity
+            android:name="com.campusrecruit.activity.RecruitSimpleDetailActivity"
             android:icon="@drawable/ic_main"
             android:label="@string/title_activity" >
         </activity>
@@ -152,6 +190,12 @@
             android:icon="@drawable/ic_main"
             android:label="@string/title_activity_test" >
         </activity>
+        <activity
+            android:name="com.campusrecruit.activity.TutorialHintActivity"
+            android:icon="@drawable/ic_main"
+            android:label="@string/title_activity_test"
+            android:theme="@style/Theme.HalfTranslucent" >
+        </activity>
 
         <receiver android:name="com.campusrecruit.common.BroadCast" >
             <intent-filter>
@@ -163,11 +207,21 @@
                 <action android:name="com.campusRecruit.action.SCHEDULE" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.campusrecruit.common.ShutDownReceiver" >
+        <receiver
+            android:name="com.campusrecruit.common.AlarmSetter"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <!--
+             <receiver android:name="com.campusrecruit.common.ShutDownReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
             </intent-filter>
         </receiver>
+        -->
     </application>
 
 </manifest>

@@ -17,7 +17,7 @@ import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.R.bool;
 import android.annotation.SuppressLint;
@@ -55,10 +55,10 @@ public class CareerTalkFragment extends ListFragment implements
 	// private Handler lvCareerTalkSortHandler = null;
 	private Handler lvCareerTalkSearchHandler = null;
 
-	// private int lvCareerTalkSum = 0;
-	private AppContext appContext;
+	private int lvCareerTalkSum = 0;
 
 	private String saveFooterText = null;
+	private boolean isSearch = false;
 
 	private SearchView mSearchView = null;
 	private String _searchStr;
@@ -68,7 +68,6 @@ public class CareerTalkFragment extends ListFragment implements
 	private boolean famousFlag = false;
 
 	private MenuItem sortItem = null;
-	private MenuItem famousItem = null;
 	int icon_resources[] = { R.drawable.ic_menu_insert_time,
 			R.drawable.ic_action_sort, R.drawable.ic_menu_join,
 			R.drawable.ic_menu_reply, R.drawable.ic_menu_click };
@@ -108,7 +107,7 @@ public class CareerTalkFragment extends ListFragment implements
 					appContext.getLvCareerTalkList());
 			appContext.getLvCareerTalkListAdapter().notifyDataSetChanged();
 		}
-		initListHeaderView(inflater, pvCareerTalks);
+		initListHeaderView(inflater, pvCareerTalks, false);
 		Log.i("main", "career fragment init");
 		return careerView;
 	}
@@ -162,11 +161,6 @@ public class CareerTalkFragment extends ListFragment implements
 		if (sortItem != null) {
 			sortItem.setIcon(icon_resources[sortby]);
 		}
-		Log.i("test", "set famous");
-		if (famousItem != null) {
-			Log.i("test", "set famous");
-			famousItem.setIcon(icon_famous_res);
-		}
 	}
 
 	@Override
@@ -177,8 +171,11 @@ public class CareerTalkFragment extends ListFragment implements
 		 * if(sortItem == null){ Log.i("menu", "null"); } if(sortItem != null){
 		 * sortItem.setIcon(icon_res); famousItem.setIcon(icon_famous_res); }
 		 */
-
-		sortby = AppConfig.SORT_BY_INSERT_TIME_CT;
+		if (MainActivity.CarrerTalkCount != 0) {
+			sortby = AppConfig.SORT_BY_INSERT_TIME_CT;
+		} else {
+			sortby = AppConfig.SORT_BY_CREATED_TIME_CT;
+		}
 		if (sortItem != null)
 			sortItem.setIcon(icon_resources[sortby]);
 		View menuItemView = getActivity().findViewById(R.id.menu_sort);
@@ -193,21 +190,17 @@ public class CareerTalkFragment extends ListFragment implements
 			}
 		}
 
-		famousFlag = false;
-		if (famousItem != null)
-			famousItem.setIcon(icon_famous_res);
-		View memuItemView1 = getActivity().findViewById(R.id.menu_famous);
-		if (memuItemView1 != null) {
-			PopupMenu popup1 = new PopupMenu(getActivity(), memuItemView1);
-			if (popup1 != null) {
-				MenuInflater inflater1 = popup1.getMenuInflater();
-				if (inflater1 != null) {
-					inflater1.inflate(R.menu.sub_menu_famous, popup1.getMenu());
-					popup1.getMenu().getItem(famousFlag == true ? 0 : 1)
-							.setChecked(true);
-				}
-			}
-		}
+		/*
+		 * famousFlag = false; if (famousItem != null)
+		 * famousItem.setIcon(icon_famous_res); View memuItemView1 =
+		 * getActivity().findViewById(R.id.menu_famous); if (memuItemView1 !=
+		 * null) { PopupMenu popup1 = new PopupMenu(getActivity(),
+		 * memuItemView1); if (popup1 != null) { MenuInflater inflater1 =
+		 * popup1.getMenuInflater(); if (inflater1 != null) {
+		 * inflater1.inflate(R.menu.sub_menu_famous, popup1.getMenu());
+		 * popup1.getMenu().getItem(famousFlag == true ? 0 : 1)
+		 * .setChecked(true); } } }
+		 */
 	}
 
 	protected boolean isAlwaysExpanded() {
@@ -220,7 +213,7 @@ public class CareerTalkFragment extends ListFragment implements
 		inflater.inflate(R.menu.menu_search_sort, menu);
 		MenuItem searchItem = menu.findItem(R.id.action_search);
 		sortItem = menu.findItem(R.id.menu_sort);
-		famousItem = menu.findItem(R.id.menu_famous);
+		// famousItem = menu.findItem(R.id.menu_famous);
 		mSearchView = (SearchView) searchItem.getActionView();
 		setupSearchView(searchItem);
 	}
@@ -238,21 +231,26 @@ public class CareerTalkFragment extends ListFragment implements
 			popup.setOnMenuItemClickListener(menuItemClickListener);
 			popup.show();
 			break;
-		case R.id.menu_famous:
-			View memuItemView1 = getActivity().findViewById(R.id.menu_famous);
-			PopupMenu popup1 = new PopupMenu(getActivity(), memuItemView1);
-			MenuInflater inflater1 = popup1.getMenuInflater();
-			inflater1.inflate(R.menu.sub_menu_famous, popup1.getMenu());
-			popup1.getMenu().getItem(famousFlag == true ? 0 : 1)
-					.setChecked(true);
-			popup1.setOnMenuItemClickListener(menuItemClickListener1);
-			popup1.show();
+		/*
+		 * case R.id.menu_famous: View memuItemView1 =
+		 * getActivity().findViewById(R.id.menu_famous); PopupMenu popup1 = new
+		 * PopupMenu(getActivity(), memuItemView1); MenuInflater inflater1 =
+		 * popup1.getMenuInflater(); inflater1.inflate(R.menu.sub_menu_famous,
+		 * popup1.getMenu()); popup1.getMenu().getItem(famousFlag == true ? 0 :
+		 * 1) .setChecked(true);
+		 * popup1.setOnMenuItemClickListener(menuItemClickListener1);
+		 * popup1.show();
+		 */
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	public void ThreadSearch(final int pageIndex, final int action) {
+		isSearch = false;
 		hideSearchView();
+		if (lvCareerTalkSum < (pageIndex + 1) * AppConfig.PAGE_SIZE) {
+			lvCareerTalkSum = (pageIndex + 1) * AppConfig.PAGE_SIZE;
+		}
 		if (action == UIHelper.LISTVIEW_ACTION_SORT) {
 			showLoadProgress(pvCareerTalks);
 		} else if (action == UIHelper.LISTVIEW_ACTION_SCROLL) {
@@ -264,7 +262,10 @@ public class CareerTalkFragment extends ListFragment implements
 				try {
 					List<CareerTalk> list = appContext
 							.getCareerTalkListFromInternet(pageIndex, sortby,
-									famousFlag);
+									isFamous, selectProvinceList,
+									selectCompanyTypeList,
+									selectCompanyIndustryList,
+									selectSchoolList);
 					msg.obj = list;
 					msg.what = list.size();
 					msg.arg1 = action;
@@ -344,43 +345,27 @@ public class CareerTalkFragment extends ListFragment implements
 
 	};
 
-	private OnMenuItemClickListener menuItemClickListener1 = new OnMenuItemClickListener() {
-
-		@Override
-		public boolean onMenuItemClick(MenuItem item) {
-			switch (item.getItemId()) {
-			case R.id.sort_by_famous:
-				if (famousFlag) {
-					UIHelper.ToastMessage(getActivity(),
-							getString(R.string.sort_same), Toast.LENGTH_SHORT);
-					return true;
-				}
-				Log.i("famous", "famous");
-				icon_famous_res = R.drawable.header_famous;
-				famousItem.setIcon(R.drawable.header_famous);
-				famousFlag = true;
-				manualRefresh = true;
-				pvCareerTalks.clickRefresh();
-				return true;
-			case R.id.sort_by_common:
-				if (!famousFlag) {
-					UIHelper.ToastMessage(getActivity(),
-							getString(R.string.sort_same), Toast.LENGTH_SHORT);
-					return true;
-				}
-				Log.i("famous", "common");
-				icon_famous_res = R.drawable.header_all;
-				famousItem.setIcon(R.drawable.header_all);
-				manualRefresh = true;
-				famousFlag = false;
-				pvCareerTalks.clickRefresh();
-				return true;
-			default:
-				return false;
-			}
-		}
-
-	};
+	/*
+	 * private OnMenuItemClickListener menuItemClickListener1 = new
+	 * OnMenuItemClickListener() {
+	 * 
+	 * @Override public boolean onMenuItemClick(MenuItem item) { switch
+	 * (item.getItemId()) { case R.id.sort_by_famous: if (famousFlag) {
+	 * UIHelper.ToastMessage(getActivity(), getString(R.string.sort_same),
+	 * Toast.LENGTH_SHORT); return true; } Log.i("famous", "famous");
+	 * icon_famous_res = R.drawable.header_famous;
+	 * famousItem.setIcon(R.drawable.header_famous); famousFlag = true;
+	 * manualRefresh = true; pvCareerTalks.clickRefresh(); return true; case
+	 * R.id.sort_by_common: if (!famousFlag) {
+	 * UIHelper.ToastMessage(getActivity(), getString(R.string.sort_same),
+	 * Toast.LENGTH_SHORT); return true; } Log.i("famous", "common");
+	 * icon_famous_res = R.drawable.header_all;
+	 * famousItem.setIcon(R.drawable.header_all); manualRefresh = true;
+	 * famousFlag = false; pvCareerTalks.clickRefresh(); return true; default:
+	 * return false; } }
+	 * 
+	 * };
+	 */
 
 	private void setupSearchView(MenuItem searchItem) {
 
@@ -429,15 +414,13 @@ public class CareerTalkFragment extends ListFragment implements
 					pvFooterTextView.setText(R.string.load_ing);
 					pvFooterProgressBar.setVisibility(View.VISIBLE);
 
-					int pageIndex = appContext.getLvCareerTalkList().size()
-							/ AppConfig.PAGE_SIZE;
+					int pageIndex = lvCareerTalkSum / AppConfig.PAGE_SIZE;
 					ThreadSearch(pageIndex, UIHelper.LISTVIEW_ACTION_SCROLL);
 				}
 			}
 		});
 
 		if (!appContext.getLvCareerTalkList().isEmpty()) {
-			Log.i("bug", appContext.getLvCareerTalkList().size() + "");
 			pvFooterProgressBar.setVisibility(View.GONE);
 			if (saveFooterText != null)
 				pvFooterTextView.setText(saveFooterText);
@@ -450,7 +433,6 @@ public class CareerTalkFragment extends ListFragment implements
 			appContext.getLvCareerTalkListAdapter().notifyDataSetChanged();
 		}
 
-		Log.i("main", "career view complete");
 	}
 
 	private class refreshListener implements
@@ -461,6 +443,7 @@ public class CareerTalkFragment extends ListFragment implements
 			if (manualRefresh) {
 				ThreadSearch(0, UIHelper.LISTVIEW_ACTION_SORT);
 				manualRefresh = false;
+				lvCareerTalkSum = AppConfig.PAGE_SIZE;
 			} else {
 				ThreadSearch(0, UIHelper.LISTVIEW_ACTION_REFRESH);
 			}
@@ -518,7 +501,6 @@ public class CareerTalkFragment extends ListFragment implements
 			@Override
 			public void handleMessage(Message msg) {
 				pvFooter.setVisibility(View.VISIBLE);
-				Log.i("ddd", "handle  careertalk data what" + msg.what);
 				if (msg.what >= 0) {
 					handleLvData((List<CareerTalk>) msg.obj, msg.arg1, false);
 					if (msg.what < AppConfig.PAGE_SIZE) {
@@ -557,8 +539,11 @@ public class CareerTalkFragment extends ListFragment implements
 		lvCareerTalkSearchHandler = new Handler() {
 			public void handleMessage(Message msg) {
 				pvFooter.setVisibility(View.GONE);
-				savedList.clear();
-				savedList.addAll(appContext.getLvCareerTalkList());
+				if (!isSearch) {
+					savedList.clear();
+					savedList.addAll(appContext.getLvCareerTalkList());
+				}
+				isSearch = true;
 				if (msg.what == 0) {
 					completeSearchWithEmpty(pvCareerTalks, _searchStr);
 					return;
@@ -595,6 +580,7 @@ public class CareerTalkFragment extends ListFragment implements
 			boolean isDisk) {
 		if (list == null)
 			return;
+		hideLoadProgress(pvCareerTalks);
 		// 如果是读取磁盘数据则证明需要初始化数据
 		// 如果是排序也需要清空数据
 		if (isDisk || actionType == UIHelper.LISTVIEW_ACTION_SORT) {
@@ -608,7 +594,6 @@ public class CareerTalkFragment extends ListFragment implements
 						getString(R.string.load_complete, "宣讲会"),
 						Toast.LENGTH_SHORT).show();
 			}
-			hideLoadProgress(pvCareerTalks);
 		} else {
 			List<CareerTalk> newList = new ArrayList<CareerTalk>();
 			int count = 0;
@@ -639,8 +624,9 @@ public class CareerTalkFragment extends ListFragment implements
 			if (MainActivity.CarrerTalkCount != 0) {
 				Toast.makeText(
 						getActivity(),
-						getString(R.string.new_data_str_toast_message,
-								"宣讲会", MainActivity.CarrerTalkCount), Toast.LENGTH_SHORT).show();
+						getString(R.string.new_data_str_toast_message, "宣讲会",
+								MainActivity.CarrerTalkCount),
+						Toast.LENGTH_SHORT).show();
 			} else {
 
 				if (count > 0) {
@@ -663,7 +649,9 @@ public class CareerTalkFragment extends ListFragment implements
 			// lvCareerTalkSum += count;
 
 			appContext.getLvCareerTalkList().addAll(newList);
-			Collections.sort(appContext.getLvCareerTalkList());
+			if (sortby == AppConfig.SORT_BY_CREATED_TIME_CT) {
+				Collections.sort(appContext.getLvCareerTalkList());
+			}
 			appContext.getLvCareerTalkListAdapter().setData(
 					appContext.getLvCareerTalkList());
 			appContext.getLvCareerTalkListAdapter().notifyDataSetChanged();
@@ -694,7 +682,7 @@ public class CareerTalkFragment extends ListFragment implements
 					msg.obj = list;
 					msg.what = list.size();
 				} catch (AppException e) {
-					e.printStackTrace();
+
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -704,6 +692,7 @@ public class CareerTalkFragment extends ListFragment implements
 		mSearchView.clearFocus();
 		return true;
 	}
+
 	/*
 	 * public void handleLvData(int what, Object object, int objectType, int
 	 * actionType) { Log.i("ct", "handle data"); List<CareerTalk> newList = new

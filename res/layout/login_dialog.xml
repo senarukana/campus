@@ -16,7 +16,7 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:background="@drawable/login_bg"
             android:paddingBottom="20.0dip"
             android:paddingTop="20.0dip" >

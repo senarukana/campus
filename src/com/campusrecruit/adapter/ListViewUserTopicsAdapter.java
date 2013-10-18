@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.campusrecruit.bean.BBSTopic;
 import com.campusrecruit.common.StringUtils;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 
 
@@ -83,6 +83,8 @@ public class ListViewUserTopicsAdapter extends BaseAdapter {
 		BBSTopic topic = listItems.get(position);
 		if (topic.getStatus() == 1) {
 			listItemView.flag.setVisibility(View.VISIBLE);
+		} else {
+			listItemView.flag.setVisibility(View.INVISIBLE);
 		}
 		listItemView.title.setText(topic.getTitle());
 		listItemView.title.setTag(topic.getTopicID());//设置隐藏参数(实体类)

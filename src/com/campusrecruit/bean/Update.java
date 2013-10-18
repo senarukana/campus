@@ -47,7 +47,7 @@ public class Update implements Serializable{
 			update.updateLog = updateObject.getString("updateLog");
 			return update;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}

@@ -18,19 +18,35 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             >
+            
+           <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
 
             <TextView
-                android:id="@+id/TextView11"
-                android:layout_width="wrap_content"
+                android:id="@+id/recruit_content_header_text"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
-                android:text="职位信息描述"
                 android:textColor="#1E90FF"
                 android:textSize="16sp" />
+            <TextView
+                 android:gravity="center"
+                android:id="@+id/recruit_goto_section"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:visibility="gone"
+                android:text="去讨论组看看 >>"
+                android:textColor="@color/lightorange"
+                android:textSize="12sp" />
+            
+            </LinearLayout>
 
             <ImageView
-                android:id="@+id/imageView8"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/activity_vertical_margin"
@@ -45,7 +61,7 @@
                 android:background="@color/lightwhite" />
 
             <com.campusrecruit.widget.LinkView
-                android:id="@+id/recruit_description_info"
+                android:id="@+id/recruit_content_info"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:autoLink="web|email"

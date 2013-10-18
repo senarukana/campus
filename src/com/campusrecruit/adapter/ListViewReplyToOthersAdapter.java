@@ -27,11 +27,12 @@ import com.campusrecruit.common.SmileyParser;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class ListViewReplyToOthersAdapter extends BaseAdapter {
 	private Context context;
 	private AppContext appContext;
+	
 	private List<BBSReply> listItems;// 数据集合
 	private LayoutInflater listContainer;// 视图容器
 	private int itemViewResource;// 自定义项视图源

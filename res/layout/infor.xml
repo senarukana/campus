@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -40,7 +42,6 @@
                 android:layout_margin="5dp"
                 android:gravity="center"
                 android:textSize="18sp" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -90,13 +91,22 @@
                     android:text="性别 "
                     android:textSize="15sp" />
 
-                <ImageView
-                    android:id="@+id/user_infor_gender_text"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_weight="2"
-                    android:gravity="center"
-                    android:src="@drawable/widget_gender_man" />
+                    android:gravity="center" >
+
+                    <ToggleButton
+                        android:id="@+id/user_infor_gender_text"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:background="@drawable/user_gender"
+                        android:gravity="center"
+                        android:textOff=""
+                        android:textOn="" />
+                </LinearLayout>
             </TableRow>
 
             <TableRow
@@ -128,7 +138,7 @@
                 <TextView
                     android:id="@+id/user_infor_school_text"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="2"
                     android:gravity="center"
                     android:text=""
@@ -201,153 +211,6 @@
                     android:gravity="center"
                     android:text=""
                     android:textSize="15sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp" >
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0.5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/line_bluegray" />
-            </TableRow>
-        </TableLayout>
-
-        <TableLayout
-            android:id="@+id/infor_edit_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="5dp"
-            android:visibility="gone" >
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp" >
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="性别 "
-                    android:textSize="15sp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center" >
-
-                    <ToggleButton
-                        android:id="@+id/user_infor_gender"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:background="@drawable/user_gender"
-                        android:gravity="center"
-                        android:textOff=""
-                        android:textOn="" />
-                </LinearLayout>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp" >
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0.5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/line_bluegray" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp" >
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="32dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="学校 "
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/user_infor_school"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text=""
-                    android:textSize="15sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp" >
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0.5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/line_bluegray" />
-            </TableRow>
-
-            <TableRow
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp" >
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="32dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="专业类别 :"
-                    android:textSize="15sp" />
-
-                <EditText
-                    android:id="@+id/user_infor_major"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:text=""
-                    android:textSize="15sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp" >
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="0.5dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/line_bluegray" />
-            </TableRow>
-
-            <TableRow
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp" >
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="32dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="邮箱"
-                    android:textSize="15sp" />
 
                 <EditText
                     android:id="@+id/user_infor_email"
@@ -357,7 +220,8 @@
                     android:gravity="center"
                     android:inputType="textEmailAddress"
                     android:text=""
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:visibility="gone" />
             </TableRow>
 
             <TableRow
@@ -373,15 +237,6 @@
             </TableRow>
         </TableLayout>
 
-       <!--  <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <include layout="@layout/recommend_user_header" />
-
-            <include layout="@layout/recommend_body" />
-        </LinearLayout> -->
     </LinearLayout>
 
 </ScrollView>

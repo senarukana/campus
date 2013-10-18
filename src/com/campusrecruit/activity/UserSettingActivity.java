@@ -7,11 +7,12 @@ import java.util.Map;
 
 import com.campusrecruit.app.AppContext;
 import com.campusrecruit.app.AppException;
+import com.campusrecruit.app.AppManager;
 import com.campusrecruit.bean.User;
 import com.campusrecruit.common.FileUtils;
 import com.campusrecruit.common.MethodsCompat;
 import com.campusrecruit.common.UIHelper;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -35,23 +36,22 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
-public class UserSettingActivity extends Activity {
+public class UserSettingActivity extends BaseActivity {
 	private Switch vBackgroundNotice;
 	private Switch vShowPicture;
 	private View vBackgroundLayout;
 	private View vShowPictureLayout;
 	private View vCleanLayout;
 	private TextView vCurrentCache;
+	private TextView vAlarmText;
 	private Button vLogout;
-	private AppContext appContext;
+	private Button vClean;
+	private Button vAlarmModify;
+	
+	private String alarmStr = null;
+	
+	
 	private User user;
-
-	private ToggleButton typeCarrertalk = null;
-	private ToggleButton typeRecruit = null;
-	private ToggleButton typeMessage = null;
-	private ToggleButton typeReply = null;
-	private Map<String, ArrayList<Integer>> map = new HashMap<String, ArrayList<Integer>>();
-
 	private boolean background;
 	private boolean showPicture;
 	
@@ -64,18 +64,18 @@ public class UserSettingActivity extends Activity {
 		Log.i("user", "init user view action bar");
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle("系统设置");
-		appContext = (AppContext) getApplication();
+		
 		user = appContext.getLoginUser();
 		initView();
 		fillView();
 
 	}
-
+/*
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_finish, menu);
 		return true;
-	}
+	}*/
 	
 	
 	
@@ -88,15 +88,16 @@ public class UserSettingActivity extends Activity {
 		vShowPicture = (Switch) findViewById(R.id.settings_pic_mode);
 		vCleanLayout = findViewById(R.id.settings_clean_layout);
 		vCurrentCache = (TextView) findViewById(R.id.settings_clean_text);
+		vAlarmText = (TextView) findViewById(R.id.settings_alarm_time);
 		vLogout = (Button) findViewById(R.id.settings_logout);
+		vAlarmModify = (Button) findViewById(R.id.settings_alarm_modify);
+		vClean = (Button) findViewById(R.id.settings_clean_btn);
 		vBackgroundLayout = findViewById(R.id.settings_background_layout);
 		vShowPictureLayout = findViewById(R.id.settings_pic_mode_layout);
 
-		typeCarrertalk = (ToggleButton) findViewById(R.id.recommend_type_careertalk_toggle);
-		typeRecruit = (ToggleButton) findViewById(R.id.recommend_type_recruit_toggle);
-		typeMessage = (ToggleButton) findViewById(R.id.recommend_type_message_toggle);
-		typeReply = (ToggleButton) findViewById(R.id.recommend_type_reply_toggle);
-		Log.i("user", "init view complete");
+		alarmStr = appContext.getAlarmTimelList().get(appContext.getClockAlarmTime());
+		vAlarmText.setText(alarmStr);
+		
 		vBackgroundNotice.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -189,6 +190,7 @@ public class UserSettingActivity extends Activity {
 						appContext.initAppList();
 						UIHelper.showStart(UserSettingActivity.this);
 						setResult(RESULT_FIRST_USER);
+						AppManager.getAppManager().finishAllActivity();
 						finish();
 					}
 				});
@@ -196,7 +198,7 @@ public class UserSettingActivity extends Activity {
 			}
 		});
 
-		vCleanLayout.setOnClickListener(new View.OnClickListener() {
+		vClean.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -208,36 +210,31 @@ public class UserSettingActivity extends Activity {
 				// appContext.cleanLoginInfo();
 			}
 		});
-
-		typeCarrertalk.setOnCheckedChangeListener(toggleListener);
-		typeRecruit.setOnCheckedChangeListener(toggleListener);
-		typeReply.setOnCheckedChangeListener(toggleListener);
-		typeMessage.setOnCheckedChangeListener(toggleListener);
-
-	}
-
-	private void savePreference() {
-		final Handler h = new Handler() {
+		
+		vAlarmModify.setOnClickListener(new View.OnClickListener() {
+			
 			@Override
-			public void handleMessage(Message msg) {
-				UIHelper.ToastMessage(UserSettingActivity.this, "更新成功",
-						Toast.LENGTH_SHORT);
-				finish();
+			public void onClick(View arg0) {
+				UIHelper.showAlarmTime(UserSettingActivity.this, alarmStr);
 			}
-		};
-		new Thread() {
-			public void run() {
-				try {
-					appContext.setNotifyType(map);
-					h.sendEmptyMessage(1);
-				} catch (AppException e) {
-					e.makeToast(UserSettingActivity.this);
-				}
+		});
+
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+		if (requestCode == UIHelper.REQUEST_SET_ALARM_TIME_RESULT && responseCode == RESULT_OK) {
+			alarmStr = intent.getStringExtra("selectStr");
+			int pos = appContext.getAlarmTimelList().indexOf(alarmStr);
+			if (pos!= -1) {
+				appContext.setClockAlarmTime(pos);
 			}
-		}.start();
+			vAlarmText.setText(alarmStr);
+			UIHelper.ToastMessage(UserSettingActivity.this, "修改成功");
+		}
 	}
 
-	@Override
+/*	@Override
 	public void onBackPressed() {
 		if (isChanged) {
 			AlertDialog.Builder adb = new AlertDialog.Builder(
@@ -254,7 +251,7 @@ public class UserSettingActivity extends Activity {
 			adb.show();
 		}
 		super.onBackPressed();
-	}
+	}*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -262,9 +259,9 @@ public class UserSettingActivity extends Activity {
 		case android.R.id.home:
 			onBackPressed();
 			return true;
-		case R.id.menu_finish_id:
+/*		case R.id.menu_finish_id:
 			savePreference();
-			return true;
+			return true;*/
 		default:
 			return false;
 		}
@@ -300,45 +297,9 @@ public class UserSettingActivity extends Activity {
 		}
 		if (fileSize > 0)
 			cacheSize = FileUtils.formatFileSize(fileSize);
-		vCurrentCache.setText("当前缓存大小" + cacheSize);
-
-		String[] notifyTypes = user.getPreference().getNotifyType().split(",");
-		for (int i = 0; i < notifyTypes.length; i++) {
-			if (notifyTypes[i].equals("1"))
-				typeCarrertalk.setChecked(true);
-			if (notifyTypes[i].equals("2"))
-				typeRecruit.setChecked(true);
-			if (notifyTypes[i].equals("3"))
-				typeMessage.setChecked(true);
-			if (notifyTypes[i].equals("4"))
-				typeReply.setChecked(true);
-		}
+		vCurrentCache.setText("当前缓存大小\n" + cacheSize);
 
 		Log.i("user", "fill view ok");
 	}
 
-	private OnCheckedChangeListener toggleListener = new OnCheckedChangeListener() {
-
-		@Override
-		public void onCheckedChanged(CompoundButton buttonView,
-				boolean isChecked) {
-			String tag = (String) buttonView.getTag();
-			String[] tags = tag.split("_");
-			String tag_pre = tags[0];
-			Integer tag_last = Integer.parseInt(tags[1]);
-			if (isChecked) {
-				if (map.containsKey(tag_pre)) {
-					map.get(tag_pre).add(tag_last);
-				} else {
-					ArrayList<Integer> list = new ArrayList<Integer>();
-					list.add(tag_last);
-					map.put(tag_pre, list);
-				}
-			} else {
-				map.get(tag_pre).remove(tag_last);
-			}
-
-			Log.i("map", map.toString());
-		}
-	};
 }

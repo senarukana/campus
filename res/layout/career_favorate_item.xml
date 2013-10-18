@@ -19,7 +19,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:paddingTop="10dp"
-            android:text="8月30日 "
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -58,7 +57,7 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
-                android:text="百度"
+                android:maxLines="1"
                 android:textColor="#1E90FF"
                 android:textSize="18sp" />
 
@@ -84,7 +83,6 @@
                 android:id="@+id/career_favorate_school"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="北京邮电大学"
                 android:textSize="15sp" />
 
             <TextView
@@ -102,7 +100,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
                 android:maxLines="1"
-                android:text="新科研楼9楼913"
                 android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
@@ -118,7 +115,6 @@
             android:id="@+id/career_favorate_simple_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="8月30日 "
             android:textSize="15sp" />
 
         <TextView
@@ -126,7 +122,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"
-            android:text="15:00 - 16:30"
             android:textSize="15sp" />
     </LinearLayout>
 

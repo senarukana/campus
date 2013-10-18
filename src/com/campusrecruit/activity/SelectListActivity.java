@@ -7,7 +7,7 @@ import com.campusrecruit.adapter.ListViewSelectListAdapter;
 import com.campusrecruit.adapter.ListViewSelectListAdapter.ListItemView;
 import com.campusrecruit.app.AppContext;
 import com.campusrecruit.common.UIHelper;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -31,7 +31,6 @@ public abstract class SelectListActivity extends BaseActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.i("test","init select list");
 		setContentView(R.layout.list_base);
 
 		Intent intent = getIntent();
@@ -109,7 +108,6 @@ public abstract class SelectListActivity extends BaseActivity {
 						selectedList.clear();
 					}
 				} else {
-					Log.i("selection","onitem click event");
 					if (selectedList.contains(0)) {
 						selectedList.remove(0);
 						for (int i = 1; i < listView.getCount(); i++) {
@@ -118,21 +116,16 @@ public abstract class SelectListActivity extends BaseActivity {
 						ListViewSelectListAdapter.getIsSelected().put(0, false);
 						selectAdapter.notifyDataSetChanged();
 					}
-					Log.i("selection","onitem click set status");
 					ListItemView holder = (ListItemView) view.getTag();
-					Log.i("selection","onitem click set status 2");
 					// 改变checkbox的状态
 					holder.checkBox.toggle();
-					Log.i("selection","onitem click set status 3");
 					ListViewSelectListAdapter.getIsSelected().put(pos,
 							holder.checkBox.isChecked());
-					Log.i("selection","onitem click set status 4");
 					if (holder.checkBox.isChecked()) {
 						selectedList.add(pos);
 					} else {
 						selectedList.remove((Integer) pos);
 					}
-					Log.i("selection","onitem click set status 5");
 				}
 
 			}

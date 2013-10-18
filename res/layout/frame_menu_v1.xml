@@ -27,7 +27,7 @@
 
     <ListView
         android:id="@+id/menu_listview"
-        style="@style/widget_listview"
+        style="@style/widget_listview_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>

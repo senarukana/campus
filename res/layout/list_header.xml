@@ -1,17 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/list_header" 
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="35dp"
         android:orientation="horizontal" >
 
         <TextView
+            android:background="@color/white"
+            android:id="@+id/list_header_place"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:src="@drawable/bg_text_click"
+            android:text="城市"
+            android:textColor="@color/listitem_gray"
+            android:textSize="15dp" />
+        
+        <View
+            android:layout_width="0.5dp"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom = "5dp"
+            android:background="@drawable/line_bluegray" />
+
+        <TextView
             android:id="@+id/list_header_industry"
+            android:background="@color/white"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
@@ -23,47 +45,81 @@
             android:text="行业"
             android:textColor="@color/listitem_gray"
             android:textSize="15dp" />
-
-        <TextView
-            android:id="@+id/list_header_place"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:gravity="center"
-            android:text="地区"
-            android:textColor="@color/listitem_gray"
-            android:src="@drawable/bg_text_click"
-            android:textSize="15dp" />
+        
+        <View
+            android:layout_width="0.5dp"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom = "5dp"
+            android:background="@drawable/line_bluegray" />
 
         <TextView
             android:id="@+id/list_header_type"
-             android:layout_marginLeft="5dp"
-            android:layout_marginRight="10dp"
+            android:background="@color/white"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="性质"
             android:src="@drawable/bg_text_click"
+            android:text="性质"
+            android:textColor="@color/listitem_gray"
+            android:textSize="15dp" />
+        
+        <View
+            android:layout_width="0.5dp"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom = "5dp"
+            android:background="@drawable/line_bluegray" />
+
+        <TextView
+            android:id="@+id/list_header_source"
+            android:background="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:src="@drawable/bg_text_click"
+            android:text="来源"
+            android:textColor="@color/listitem_gray"
+            android:textSize="15dp" />
+        
+        <TextView
+            android:id="@+id/list_header_school"
+            android:background="@color/white"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:gravity="center"
+            android:src="@drawable/bg_text_click"
+            android:text="学校"
             android:textColor="@color/listitem_gray"
             android:textSize="15dp" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/listitem_gray" />
+        android:layout_height="0.2dp"
+        android:background="@drawable/listview_divider_line" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="35dp"
         android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/list_header_all"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
             android:layout_width="0dp"
+            android:background="@color/white"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -71,8 +127,18 @@
             android:textColor="@color/listitem_gray"
             android:textSize="15dp" />
 
+        <View
+            android:layout_width="0.5dp"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom = "5dp"
+            android:background="@drawable/line_bluegray" />
+
         <TextView
             android:id="@+id/list_header_famous"
+            android:layout_marginLeft="10dp"
+            android:background="@color/white"
+            android:layout_marginRight="20dp"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -80,11 +146,11 @@
             android:text="名企"
             android:textColor="@color/listitem_gray"
             android:textSize="15dp" />
-
     </LinearLayout>
-    <View
+
+   <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/listitem_gray" />
+        android:layout_height="0.2dp"
+        android:background="@drawable/listview_divider_line" />
 
 </LinearLayout>

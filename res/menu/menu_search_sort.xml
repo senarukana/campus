@@ -11,11 +11,11 @@
         android:icon="@drawable/ic_action_sort"
         android:showAsAction="always"
         android:title="@string/action_sort"/>
-    <item 
+<!--     <item 
         android:id="@+id/menu_famous"
         android:icon="@drawable/header_all"
         android:showAsAction="always"
-        android:title="Famous"/>
+        android:title="Famous"/> -->
     
 
 </menu>

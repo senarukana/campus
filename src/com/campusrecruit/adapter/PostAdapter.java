@@ -2,7 +2,7 @@ package com.campusrecruit.adapter;
 
 import java.util.ArrayList;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 
 import android.content.Context;

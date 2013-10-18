@@ -19,7 +19,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.text.Spannable;
@@ -66,11 +65,15 @@ import com.campusrecruit.fragment.RecruitFragment;
 import com.campusrecruit.fragment.RecruitProcessFragment;
 import com.campusrecruit.widget.BadgeView;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
-public class RecruitDetailActivity extends FragmentActivity {
+public abstract class RecruitDetailActivity extends BaseActivity {
 
-	private ViewPager viewPager = null;
+	protected List<BaseFragment> fragmentList;
+	protected ViewPager viewPager = null;
+	
+	private ActionBar actionBar;
+
 	// footer
 	private ToggleButton vJoined;
 	private BadgeView bv_comment;
@@ -91,151 +94,64 @@ public class RecruitDetailActivity extends FragmentActivity {
 	private InputMethodManager imm;
 	private String tempCommentKey = AppConfig.TEMP_COMMENT;
 
-	private Recruit recruitDetail;
+	protected Recruit recruitDetail;
 	public ArrayList<BBSReply> lvReplyData = new ArrayList<BBSReply>();
 
-	public static CommentsFragment commentsFragment;
-	public static CompanyDetailFragment companyDetailFragment;
-	public static RecruitDetailFragment recruitDetailFragment;
-	public static RecruitProcessFragment recruitProcessFragment;
-
-	private final int CATALOG_DESCRIPTION = 0;
-	private final int CATALOG_PROCESS = 1;
-	private final int CATALOG_COMPANY = 2;
-	private final int CATALOG_COMMENTS = 3;
-
-	private boolean descriptionDatInited = false;
-	private boolean processDatInited = false;
-	private boolean companyDatInited = false;
-	private boolean commentsDatInited = false;
-
-	private AppContext appContext;
-
-	private boolean flag;
-
 	private String _content;
+	boolean flag;
 
 	private GestureDetector gd;
 	private boolean isFullScreen;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.i("test","oncreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.recruit_detail_info);
+		
+		if (!appContext.getTutorialRecruitDetail()) {
+			UIHelper.showRecruitDetailTutorial(this);
+			appContext.setTutorialRecruitDetail();
+		}
+		
 
 		recruitDetail = (Recruit) getIntent().getSerializableExtra("recruit");
-
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle(recruitDetail.getCompany().getCompanyName());
-
-		Log.i("rd", recruitDetail.getCompany().getCompanyID() + "");
-		flag = getIntent().getBooleanExtra("flag", true);
-
-		appContext = (AppContext) getApplication();
-		if (appContext == null)
-			Log.i("bug", "detail activity context null");
+		Log.i("test","fra");
 		initFragment();
+		Log.i("test","vp");
+		initViewPager();
+		Log.i("test","tab");
+		initTab();
+		Log.i("test","view");
 		initView();
-		if (flag) {
-			initFragmentData(CATALOG_DESCRIPTION);
-			viewPager.setCurrentItem(0);
-		} else {
-			initFragmentData(CATALOG_COMMENTS);
-			viewPager.setCurrentItem(3);
-		}
 
 		// 初始化表情视图
-		this.initGridView();
+		initGridView();
 		// initFragmentData(CATALOG_DESCRIPTION);
 		// 注册双击全屏事件
 		regOnDoubleEvent();
+
+		flag = getIntent().getBooleanExtra("flag", true);
+
+		if (flag) {
+			initFragmentData(0);
+			viewPager.setCurrentItem(0);
+		} else {
+			initFragmentData(getCommentFragmentPosition());
+			viewPager.setCurrentItem(getCommentFragmentPosition());
+		}
+		
+		Log.i("test","init complete");
 	}
+	
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_refresh, menu);
 		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			onBackPressed();
-			return true;
-		case R.id.menu_refresh_id:
-			Log.i("refresh", "touched");
-			// refresh event
-			switch (viewPager.getCurrentItem()) {
-			case CATALOG_DESCRIPTION:
-				descriptionDatInited = false;
-				break;
-			case CATALOG_PROCESS:
-				processDatInited = false;
-				break;
-			case CATALOG_COMPANY:
-				companyDatInited = false;
-				break;
-			case CATALOG_COMMENTS:
-				commentsDatInited = false;
-				break;
-			default:
-				break;
-			}
-			Log.i("bug","refresh fragment");
-			initFragmentData(viewPager.getCurrentItem());
-			return true;
-		}
-		return false;
-	}
-
-	private void initFragment() {
-		commentsFragment = CommentsFragment.newInstance(
-				recruitDetail.getTopicID(), recruitDetail);
-		companyDetailFragment = CompanyDetailFragment.newInstance(recruitDetail
-				.getCompany());
-		recruitProcessFragment = RecruitProcessFragment
-				.newInstance(recruitDetail);
-		recruitDetailFragment = RecruitDetailFragment
-				.newInstance(recruitDetail);
-		Log.i("ac", "init rdview");
-	}
-
-	private void initFragmentData(int type) {
-		Log.i("ac", "init fragment data");
-		switch (type) {
-		case CATALOG_DESCRIPTION:
-			if (!descriptionDatInited) {
-				recruitDetailFragment.initData(appContext);
-				descriptionDatInited = true;
-			}
-			break;
-		case CATALOG_PROCESS:
-			Log.i("ac", "process");
-			if (!processDatInited) {
-				recruitProcessFragment.initData(appContext);
-				processDatInited = true;
-			}
-			break;
-		case CATALOG_COMPANY:
-			if (!companyDatInited) {
-				companyDetailFragment.initData(appContext);
-				companyDatInited = true;
-			}
-			break;
-		case CATALOG_COMMENTS:
-			if (!commentsDatInited) {
-				commentsFragment.setAppContext(appContext);
-				commentsFragment.loadLvReplyData(0,
-						UIHelper.LISTVIEW_ACTION_INIT);
-				commentsDatInited = true;
-			}
-			break;
-		default:
-			break;
-		}
-		Log.i("ac", "load fragment data complete");
 	}
 
 	private void initCommentFooter() {
@@ -287,16 +203,69 @@ public class RecruitDetailActivity extends FragmentActivity {
 		UIHelper.showTempEditContent(this, mFootEditer, tempCommentKey);
 	}
 
-	private void initView() {
-		Log.i("ac", "rd init View");
-
+	private void initViewPager() {
 		viewPager = (ViewPager) findViewById(R.id.detail_viewPager);
 		ViewPagerRecruitDetailAdapter adapter = new ViewPagerRecruitDetailAdapter(
-				getSupportFragmentManager());
+				getSupportFragmentManager(), fragmentList);
 		viewPager.setAdapter(adapter);
 		adapter.notifyDataSetChanged();
 		viewPager.setOnPageChangeListener(onPageChangeListener);
+	}
 
+	private SimpleOnPageChangeListener onPageChangeListener = new SimpleOnPageChangeListener() {
+		@Override
+		public void onPageSelected(int position) {
+			initFragmentData(position);
+			getActionBar().setSelectedNavigationItem(position);
+		}
+
+	};
+	
+	protected void addTab(String text) {
+		actionBar.addTab(actionBar.newTab().setText(text)
+				.setTabListener(tabListener));
+	}
+	
+	private TabListener tabListener = new TabListener() {
+
+		@Override
+		public void onTabReselected(Tab tab, android.app.FragmentTransaction ft) {
+
+		}
+
+		@Override
+		public void onTabSelected(Tab tab, android.app.FragmentTransaction ft) {
+			if (viewPager.getCurrentItem() != tab.getPosition())
+				viewPager.setCurrentItem(tab.getPosition());
+		}
+
+		@Override
+		public void onTabUnselected(Tab tab, android.app.FragmentTransaction ft) {
+
+		}
+
+	};
+	
+	
+
+	private void initTab() {
+		actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.removeAllTabs();
+		initTabData();
+	}
+	
+	protected abstract void initTabData();
+
+	protected abstract void initFragment();
+
+	protected abstract int getCommentFragmentPosition();
+
+	protected abstract CommentsFragment getCommentsFragment();
+
+	protected abstract void initFragmentData(int type);
+
+	protected void initView() {
 		vDetail = (ImageView) findViewById(R.id.detail_footbar_detail);
 		vReplyList = (ImageView) findViewById(R.id.detail_footbar_commentlist);
 		vShare = (ImageView) findViewById(R.id.detail_footbar_share);
@@ -306,8 +275,8 @@ public class RecruitDetailActivity extends FragmentActivity {
 		vShare.setOnClickListener(shareClickListener);
 		vDetail.setOnClickListener(detailClickListener);
 		vReplyList.setOnClickListener(commentlistClickListener);
-		
-		if (recruitDetail.getIsJoined() == 1) 
+
+		if (recruitDetail.getIsJoined() == 1)
 			vJoined.setChecked(true);
 
 		bv_comment = new BadgeView(this, vReplyList);
@@ -318,12 +287,11 @@ public class RecruitDetailActivity extends FragmentActivity {
 		bv_comment.setTextColor(Color.WHITE);
 
 		initCommentFooter();
-/*		// 是否参与
-		if (recruitDetail.getIsJoined() == 1)
-			vJoined.setImageResource(R.drawable.widget_bar_favorite_y);
-		else
-			vJoined.setImageResource(R.drawable.widget_bar_favorite_n);
-*/
+		/*
+		 * // 是否参与 if (recruitDetail.getIsJoined() == 1)
+		 * vJoined.setImageResource(R.drawable.widget_bar_favorite_y); else
+		 * vJoined.setImageResource(R.drawable.widget_bar_favorite_n);
+		 */
 		// 显示评论数
 		if (recruitDetail.getReplies() > 0) {
 			bv_comment.setText(recruitDetail.getReplies() + "");
@@ -332,7 +300,6 @@ public class RecruitDetailActivity extends FragmentActivity {
 			bv_comment.setText("");
 			bv_comment.hide();
 		}
-		initTab();
 
 		Log.i("ac", "rd init view complete");
 
@@ -340,20 +307,6 @@ public class RecruitDetailActivity extends FragmentActivity {
 		 * lvReplyAdapter = new ListViewReplyAdapter(this, lvReplyData,
 		 * R.layout.comment_listitem);
 		 */
-	}
-
-	private void initTab() {
-		ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		actionBar.removeAllTabs();
-		actionBar.addTab(actionBar.newTab().setText("职位描述")
-				.setTabListener(tabListener));
-		actionBar.addTab(actionBar.newTab().setText("招聘流程")
-				.setTabListener(tabListener));
-		actionBar.addTab(actionBar.newTab().setText("公司简介")
-				.setTabListener(tabListener));
-		actionBar.addTab(actionBar.newTab().setText("评论信息")
-				.setTabListener(tabListener));
 	}
 
 	private void saveUserReplyTopic() {
@@ -378,6 +331,10 @@ public class RecruitDetailActivity extends FragmentActivity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.i("rd", "comments pub handler");
+		if (requestCode == UIHelper.REQUEST_CODE_FOR_TUTORIAL_RECRUIT_DETAIL) {
+			appContext.setTutorialRecruitDetail();
+			return;
+		}
 		if (resultCode != RESULT_OK)
 			return;
 		if (data == null)
@@ -443,8 +400,8 @@ public class RecruitDetailActivity extends FragmentActivity {
 
 						// 更新评论列表
 						lvReplyData.add(reply);
-						if (commentsFragment.isVisible()) {
-							commentsFragment.redrawView();
+						if (getCommentsFragment().isVisible()) {
+							getCommentsFragment().redrawView();
 						}
 						Log.i("ac", "test");
 						// 显示评论数
@@ -454,7 +411,7 @@ public class RecruitDetailActivity extends FragmentActivity {
 						bv_comment.show();
 						// 清除之前保存的编辑内容
 						appContext.removeProperty(tempCommentKey);
-						viewPager.setCurrentItem(3);
+						viewPager.setCurrentItem(getCommentFragmentPosition());
 						saveUserReplyTopic();
 					} else {
 						((AppException) msg.obj)
@@ -472,7 +429,7 @@ public class RecruitDetailActivity extends FragmentActivity {
 						msg.what = 1;
 						msg.obj = reply;
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 						msg.what = -1;
 						msg.obj = e;
 					}
@@ -618,13 +575,13 @@ public class RecruitDetailActivity extends FragmentActivity {
 			Log.i("test", "click");
 			if (recruitDetail.getIsJoined() == 1) {
 				recruitDetail.setIsJoined(0);
-//				vJoined.setImageResource(R.drawable.widget_bar_favorite_n);
+				// vJoined.setImageResource(R.drawable.widget_bar_favorite_n);
 				// vJoined.setImageDrawable(getResources().getDrawable(
 				// R.drawable.widget_bar_favorite_y));
 				UIHelper.ToastMessage(RecruitDetailActivity.this, "取消收藏");
 				appContext.recruitDetailJoin(recruitDetail, false);
 			} else {
-//				vJoined.setImageResource(R.drawable.widget_bar_favorite_y);
+				// vJoined.setImageResource(R.drawable.widget_bar_favorite_y);
 				// vJoined.setImageDrawable(getResources().getDrawable(
 				// R.drawable.widget_bar_favorite_n));
 				recruitDetail.setIsJoined(1);
@@ -637,16 +594,16 @@ public class RecruitDetailActivity extends FragmentActivity {
 						if (recruitDetail.getIsJoined() == 1) {
 							appContext.joinRecruit(
 									recruitDetail.getRecruitID(), true);
-//							vJoined.setImageResource(R.drawable.widget_bar_favorite2);
+							// vJoined.setImageResource(R.drawable.widget_bar_favorite2);
 							Log.i("test", "click");
 						} else {
 							appContext.joinRecruit(
 									recruitDetail.getRecruitID(), false);
-//							vJoined.setImageResource(R.drawable.widget_bar_favorite);
+							// vJoined.setImageResource(R.drawable.widget_bar_favorite);
 							Log.i("test", "click2");
 						}
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 					}
 
 				}
@@ -661,35 +618,5 @@ public class RecruitDetailActivity extends FragmentActivity {
 	 * 
 	 * gd.onTouchEvent(event); return super.dispatchTouchEvent(event); }
 	 */
-
-	private SimpleOnPageChangeListener onPageChangeListener = new SimpleOnPageChangeListener() {
-
-		@Override
-		public void onPageSelected(int position) {
-			initFragmentData(position);
-			getActionBar().setSelectedNavigationItem(position);
-		}
-
-	};
-
-	private TabListener tabListener = new TabListener() {
-
-		@Override
-		public void onTabReselected(Tab tab, android.app.FragmentTransaction ft) {
-
-		}
-
-		@Override
-		public void onTabSelected(Tab tab, android.app.FragmentTransaction ft) {
-			if (viewPager.getCurrentItem() != tab.getPosition())
-				viewPager.setCurrentItem(tab.getPosition());
-		}
-
-		@Override
-		public void onTabUnselected(Tab tab, android.app.FragmentTransaction ft) {
-
-		}
-
-	};
 
 }

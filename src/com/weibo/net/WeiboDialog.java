@@ -8,7 +8,7 @@ import java.net.Proxy;
 import java.net.SocketAddress;
 import java.net.URL;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -235,7 +235,7 @@ public class WeiboDialog extends Dialog {
 
         } catch (Exception e) {
 
-            e.printStackTrace();
+            
 
             return null;
 

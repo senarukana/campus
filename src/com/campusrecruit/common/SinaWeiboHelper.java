@@ -8,7 +8,7 @@ import android.os.Message;
 import android.widget.Toast;
 
 import com.campusrecruit.app.AppConfig;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 import com.weibo.net.AccessToken;
 import com.weibo.net.DialogError;
 import com.weibo.net.Weibo;
@@ -17,9 +17,9 @@ import com.weibo.net.WeiboException;
 
 public class SinaWeiboHelper {
 
-	private static final String CONSUMER_KEY = "1615466571";
-	private static final String CONSUMER_SECRET = "4c4305307b90fd11f4cc8d150a83dcaa";
-	private static final String REDIRECT_URL = "123.com";
+	private static final String CONSUMER_KEY = "470554632";
+	private static final String CONSUMER_SECRET = "fd61aca78ca402e5f5089c7d9cf45a5e";
+	private static final String REDIRECT_URL = "http://xyzp.haitou.cc/";
 	
 	public static final int OAUTH_ERROR = 0;
 	public static final int OAUTH_RequestToken_ACCESS = 1;
@@ -145,7 +145,7 @@ public class SinaWeiboHelper {
 	    		} 
 	    		catch (Exception e) 
 	    		{
-	    			e.printStackTrace();
+	    			
 	    		}
 			}
 			@Override
@@ -189,7 +189,7 @@ public class SinaWeiboHelper {
 	    		} 
 	    		catch (Exception e) 
 	    		{
-	    			e.printStackTrace();
+	    			
 	    		}
 			}
 			@Override
@@ -286,11 +286,11 @@ public class SinaWeiboHelper {
         	int statusCode = e.getStatusCode();
         	if(statusCode == 20019 || e.getMessage().contains("repeat"))
         		msg.what = Weibo_Share_Repeat;
-        	e.printStackTrace();
+        	
         }
         catch (Exception e) 
         {
-        	e.printStackTrace();
+        	
 		}
         
         handler.sendMessage(msg);

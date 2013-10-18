@@ -41,7 +41,7 @@ import com.campusrecruit.bean.UserMessage;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class PrivateMessageListActivity extends EmptyActivity {
 
@@ -51,7 +51,6 @@ public class PrivateMessageListActivity extends EmptyActivity {
 	private boolean periodicFlag = true;
 	private boolean isInit = true;
 
-	private AppContext appContext = null;
 	private PullToRefreshListView pvMessage;
 	private List<UserMessage> messageList = new ArrayList<UserMessage>();
 	private ListViewPrivateMessageListAdapter pvMessageAdapter = null;
@@ -77,7 +76,7 @@ public class PrivateMessageListActivity extends EmptyActivity {
 		initLoadingView();
 		setEmptyText(R.string.private_message_list_empty);
 
-		appContext = (AppContext) getApplication();
+		
 		Intent intent = getIntent();
 		userId = intent.getStringExtra("userID");
 		userName = intent.getStringExtra("userName");
@@ -298,6 +297,7 @@ public class PrivateMessageListActivity extends EmptyActivity {
 						}
 						// 更新评论列表
 						messageList.add(message);
+						lastCreatedTime = message.getCreatedTime();
 						pvMessage.setSelection(messageList.size() - 1);
 						pvMessageAdapter.setData(messageList);
 						pvMessageAdapter.notifyDataSetChanged();
@@ -327,7 +327,7 @@ public class PrivateMessageListActivity extends EmptyActivity {
 						msg.what = 1;
 						msg.obj = message;
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 						msg.what = -1;
 						msg.obj = e;
 					}
@@ -360,10 +360,10 @@ public class PrivateMessageListActivity extends EmptyActivity {
 					msg.what = list.size();
 					msg.obj = list;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 				} catch (Exception e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 				}
 				handler.sendMessage(msg);
@@ -433,13 +433,27 @@ public class PrivateMessageListActivity extends EmptyActivity {
 			message.setStatus(0);
 		if (list.isEmpty())
 			return;
-		messageList.addAll(list);
+		Log.i("test!!","size is "+ messageList.size());
+		//去重
+		for (UserMessage msg : list) {
+			boolean flag = false;
+			for (UserMessage o : messageList) {
+				if (o.getContent().equals(msg.getContent())) {
+					flag = true;
+					break;
+				}
+			}
+			if (!flag) {
+				Log.i("test!!", msg.getContent() + msg.getMessageID());
+				messageList.add(msg);
+			}
+		}
+		Log.i("test!!","size is "+ messageList.size());
 		// 检查是否是新来的数据
 		if (lastCreatedTime != null) {
 			for (UserMessage message : messageList) {
 				if (message.getCreatedTime().compareTo(lastCreatedTime) > 0) {
 					message.setStatus(1);
-
 				}
 			}
 		}

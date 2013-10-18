@@ -18,27 +18,37 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 
 public class AppConfig {
-	public static final int PAGE_SIZE = 20;//默认分页大小
-	public static final int CACHE_TIME = 60*60000;//缓存失效时间
+	public static final int PAGE_SIZE = 20;// 默认分页大小
+	public static final int CACHE_TIME = 60 * 60000;// 缓存失效时间
 	public static final int SQLITE_MAX_ROW = 30;
 	public static final String JSON_IDENTIFIER = "campusRecruit";
+
+	public static final String VERSION = "0.1";
+	public static final int SHARED_PREFERENCES_VERSION = 1;
+	public static final String TUTORIAL_COMPLETED = "tutorial_completed_v1";
+	public static final String TUTORIAL_MAIN_PAGE = "tutorial_main_page_v1";
+	public static final String TUTORIAL_RECRUIT_DETAIL = "tutorial_recruit_detail_v1";
+	public static final String TUTORIAL_CAREER_FAVORATE = "tutorial_career_favorate_v1";
+	public static final String TUTORIAL_RECRUIT_FAVORATE = "tutorial_recruit_favorate_v1";
 	
+	public static final String CLOCK_ALARM_TIME = "clock_alarm";
+
 	public static final int SORT_BY_CREATED_TIME = 0;
 	public static final int SORT_BY_JOINS = 1;
 	public static final int SORT_BY_REPLYS = 2;
 	public static final int SORT_BY_CLICKS = 3;
-	
+
 	public static final int SORT_BY_CREATED_TIME_CT = 0;
 	public static final int SORT_BY_INSERT_TIME_CT = 1;
 	public static final int SORT_BY_JOINS_CT = 2;
 	public static final int SORT_BY_REPLYS_CT = 3;
 	public static final int SORT_BY_CLICKS_CT = 4;
-	
+
 	public static final int SORT_BY_JOINS_BS = 0;
 	public static final int SORT_BY_REPLYS_BS = 1;
 
 	private final static String APP_CONFIG = "config";
-	
+
 	public final static String NODATA = "暂无数据";
 
 	public final static String TEMP_TWEET = "temp_tweet";
@@ -62,8 +72,12 @@ public class AppConfig {
 
 	public final static String SAVE_IMAGE_PATH = "save_image_path";
 	@SuppressLint("NewApi")
-	public final static String DEFAULT_SAVE_IMAGE_PATH = Environment.getExternalStorageDirectory()+ File.separator+ "CampusRecruit"+ File.separator;
-			
+	public final static String DEFAULT_SAVE_IMAGE_PATH = Environment
+			.getExternalStorageDirectory()
+			+ File.separator
+			+ "CampusRecruit"
+			+ File.separator;
+
 	private Context mContext;
 	private AccessInfo accessInfo = null;
 	private static AppConfig appConfig;
@@ -184,7 +198,7 @@ public class AppConfig {
 			p.store(fos, null);
 			fos.flush();
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		} finally {
 			try {
 				fos.close();

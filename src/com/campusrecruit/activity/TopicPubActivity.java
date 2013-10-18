@@ -9,7 +9,7 @@ import com.campusrecruit.bean.Result;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -29,7 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 
-public class TopicPubActivity extends Activity{
+public class TopicPubActivity extends BaseActivity{
 	
 //	private ImageView vBack;
 	private EditText eTitle;
@@ -138,7 +138,7 @@ public class TopicPubActivity extends Activity{
 						msg.obj = ac.addTopicByCompanyID(companyID, title, content);
 					}
 	            } catch (AppException e) {
-	            	e.printStackTrace();
+	            	
 					msg.what = -1;
 					msg.obj = e;
 	            }
@@ -191,7 +191,7 @@ public class TopicPubActivity extends Activity{
 							msg.obj = ac.addTopicByCompanyID(companyID, title, content);
 						}
 		            } catch (AppException e) {
-		            	e.printStackTrace();
+		            	
 						msg.what = -1;
 						msg.obj = e;
 		            }

@@ -12,7 +12,7 @@ import com.campusrecruit.bean.Result;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.fragment.RecruitFragment;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.R.integer;
 import android.app.Activity;
@@ -193,11 +193,11 @@ public class ListViewCareerTalkFavorateAdapter extends BaseAdapter {
 					new Thread() {
 						public void run() {
 							try {
-								appContext.cancelAlarm(context, careerTalk);
+//								appContext.cancelAlarm(context, careerTalk);
 								appContext.joinCareerTalk(
 										careerTalk.getCareerTalkID(), false);
 							} catch (AppException e) {
-								e.printStackTrace();
+								
 								e.makeToast(context);
 							}
 

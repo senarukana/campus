@@ -39,7 +39,7 @@ public class FileUtils {
 
 			fos.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 	}
 
@@ -55,7 +55,7 @@ public class FileUtils {
 			FileInputStream in = context.openFileInput(fileName);
 			return readInStream(in);
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 		return "";
 	}
@@ -121,12 +121,12 @@ public class FileUtils {
 			out.write(buffer);
 			writeSucc = true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		} finally {
 			try {
 				out.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				
 			}
 		}
 
@@ -330,7 +330,7 @@ public class FileUtils {
 				long availableBlocks = stat.getAvailableBlocks();
 				freeSpace = availableBlocks * blockSize / 1024;
 			} catch (Exception e) {
-				e.printStackTrace();
+				
 			}
 		} else {
 			return -1;
@@ -400,7 +400,7 @@ public class FileUtils {
 					Log.i("DirectoryManager deleteDirectory", fileName);
 					status = true;
 				} catch (Exception e) {
-					e.printStackTrace();
+					
 					status = false;
 				}
 
@@ -432,7 +432,6 @@ public class FileUtils {
 					newPath.delete();
 					status = true;
 				} catch (SecurityException se) {
-					se.printStackTrace();
 					status = false;
 				}
 			} else

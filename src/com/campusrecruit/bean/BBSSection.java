@@ -112,7 +112,7 @@ public class BBSSection implements Serializable{
 			section.famous = object.getInt("famous");
 			return section;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 		

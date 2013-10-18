@@ -62,7 +62,7 @@ public class Company implements Serializable{
 			company.introduction = object.getString("introduction");
 			return company;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}

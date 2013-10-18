@@ -28,13 +28,14 @@ import com.campusrecruit.adapter.ListViewRecruitFavorateAdapter;
 import com.campusrecruit.app.AppContext;
 import com.campusrecruit.bean.CareerTalk;
 import com.campusrecruit.bean.Recruit;
-import com.krislq.sliding.R;
+import com.campusrecruit.common.UIHelper;
+import com.pcncad.campusRecruit.R;
 
 @SuppressLint("ValidFragment")
 public class RecruitFavoratesFragment extends EmptyFragment {
 
 	private ListView lvRecruitView;
-	private AppContext appContext;
+	
 
 
 	@Override
@@ -46,6 +47,15 @@ public class RecruitFavoratesFragment extends EmptyFragment {
 				null);
 		initLoadingView(recruitView);
 		setEmptyText(R.string.recruit_favorate_empty);
+		emptyText.setTextColor(getResources().getColor(R.color.myblue));
+		emptyLayout.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				getActivity().setResult(Activity.RESULT_OK);
+				getActivity().finish();
+			}
+		});
 		
 		lvRecruitView = (ListView) recruitView
 				.findViewById(R.id.recruit_favorate_list);

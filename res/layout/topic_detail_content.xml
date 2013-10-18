@@ -35,7 +35,6 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:text="lichuan"
                     android:textColor="@color/listitem_blue"
                     android:textSize="@dimen/text_size_15" />
 

@@ -1,6 +1,8 @@
 package com.campusrecruit.adapter;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.campusrecruit.activity.MainActivity;
@@ -12,16 +14,25 @@ import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.bean.Result;
 import com.campusrecruit.bean.Schedule;
 import com.campusrecruit.bean.Schedules;
+import com.campusrecruit.common.ScheduleAlarmBroadcastReceiver;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.fragment.RecruitFragment;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.R.integer;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -31,19 +42,31 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 public class ListViewScheduleAdapter extends BaseAdapter {
 
 	private List<Schedules> listItem;
-	private AppContext appContext;
+
 	private Context context;
+	private AppContext appContext;
 	private LayoutInflater listContainer;
 	private int itemViewResource;
 	private String beforeDate;
+	private Calendar calSet;
+	private Calendar calAlarm;
+	private String newAlarmTime;
+
+	private int _pos = -1;
+
+	private TimePickerDialog timePickerDialog;
+	private DatePickerDialog datePickerDialog;
+	final static int RQS_1 = 1;
 
 	static class ListItemView {
 		LinearLayout itemMainLayout;
@@ -51,9 +74,10 @@ public class ListViewScheduleAdapter extends BaseAdapter {
 		TextView flagDate;
 		TextView time;
 		TextView companyName;
+		Button buttonstartSetDialog;
 		TextView place;
 		Button cancel;
-
+		TextView textAlarmPrompt;
 	}
 
 	public void setData(List<Schedules> data) {
@@ -108,12 +132,16 @@ public class ListViewScheduleAdapter extends BaseAdapter {
 					.findViewById(R.id.schedule_day_item_place);
 			holder.cancel = (Button) convertView
 					.findViewById(R.id.schedule_day_item_cancel);
+			holder.textAlarmPrompt = (TextView) convertView
+					.findViewById(R.id.schedule_day_item_alarm_time);
+			holder.buttonstartSetDialog = (Button) convertView
+					.findViewById(R.id.schedule_day_item_set_alarm_date);
 			convertView.setTag(holder);
 		} else {
 			holder = (ListItemView) convertView.getTag();
 		}
 
-		Schedules schedule = this.listItem.get(position);
+		final Schedules schedule = this.listItem.get(position);
 
 		String friendlyTime = null;
 		try {
@@ -139,9 +167,103 @@ public class ListViewScheduleAdapter extends BaseAdapter {
 		holder.time.setText(schedule.getTime());
 		holder.itemMainLayout.setOnClickListener(new DetailListener(schedule
 				.getScheduleID()));
+		Log.i("alarmTime", schedule.getAlarmTime());
+		if (_pos == position) {
+			holder.textAlarmPrompt.setTextColor(context.getResources()
+					.getColor(R.color.red));
+			holder.textAlarmPrompt.setText(newAlarmTime);
+		} else {
+			holder.textAlarmPrompt.setTextColor(context.getResources()
+					.getColor(R.color.black));
+			holder.textAlarmPrompt.setText(schedule.getAlarmTime());
+		}
 		holder.cancel.setOnClickListener(new CancelListener(schedule));
+		holder.buttonstartSetDialog.setOnClickListener(new DatePickListener(
+				position));
 		Log.i("bug", "schudle complete");
 		return convertView;
+	}
+
+	private class DatePickListener implements OnClickListener {
+		public DatePickListener(int pos) {
+			this.pos = pos;
+		}
+
+		int pos;
+
+		@Override
+		public void onClick(View v) {
+			_pos = pos;
+			openDatePickerDialog(listItem.get(_pos).getAlarmTime());
+		}
+
+	}
+
+	private void openDatePickerDialog(String time) {
+		Date alarmDate = StringUtils.toAlarmDate(time);
+		calAlarm = Calendar.getInstance();
+		calAlarm.setTime(alarmDate);
+		datePickerDialog = new DatePickerDialog(context, onDateSetListener,
+				calAlarm.get(Calendar.YEAR), calAlarm.get(Calendar.MONTH),
+				calAlarm.get(Calendar.DAY_OF_MONTH));
+		datePickerDialog.setTitle("设置日期");
+		datePickerDialog.show();
+
+	}
+
+	private void openTimePickerDialog(boolean is24r) {
+
+		timePickerDialog = new TimePickerDialog(context, onTimeSetListener,
+				calAlarm.get(Calendar.HOUR_OF_DAY),
+				calAlarm.get(Calendar.MINUTE), is24r);
+		timePickerDialog.setTitle("设置时间");
+		timePickerDialog.show();
+
+	}
+
+	OnDateSetListener onDateSetListener = new OnDateSetListener() {
+
+		@Override
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
+			Calendar calNow = Calendar.getInstance();
+			calSet = (Calendar) calNow.clone();
+
+			calSet.set(Calendar.YEAR, year);
+			calSet.set(Calendar.MONTH, monthOfYear);
+			calSet.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+			openTimePickerDialog(false);
+		}
+	};
+
+	OnTimeSetListener onTimeSetListener = new OnTimeSetListener() {
+
+		@Override
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+			Calendar calNow = Calendar.getInstance();
+
+			calSet.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			calSet.set(Calendar.MINUTE, minute);
+			calSet.set(Calendar.SECOND, 0);
+			calSet.set(Calendar.MILLISECOND, 0);
+
+			if (calSet.compareTo(calNow) <= 0) {
+				// Today Set time passed, count to tomorrow
+				calSet.add(Calendar.DATE, 1);
+			}
+			setAlarm(calSet);
+		}
+	};
+
+	private void setAlarm(Calendar targetCal) {
+		newAlarmTime = StringUtils.calendarToString(targetCal);
+		listItem.get(_pos).setAlarmTime(newAlarmTime);
+		appContext.updateAlarm(listItem.get(_pos));
+		appContext.setAlarm(appContext, listItem.get(_pos));
+		UIHelper.ToastMessage(context, "设定成功!");
+		notifyDataSetChanged();
+
 	}
 
 	private class DetailListener implements OnClickListener {
@@ -153,13 +275,12 @@ public class ListViewScheduleAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View v) {
-			Log.i("schudle", "click");
 			// 跳转到宣讲会详情
 			UIHelper.showCareerTalkDetailByCalendar(context, careerTalkID);
 		}
 
 	}
-	
+
 	private class CancelListener implements OnClickListener {
 		public CancelListener(Schedules schedules) {
 			this.schedule = schedules;
@@ -186,19 +307,17 @@ public class ListViewScheduleAdapter extends BaseAdapter {
 					appContext.caeerTalkDetailJoin(careerTalk, false);
 					new Thread() {
 						public void run() {
-							try {
-								appContext.cancelAlarm(context, schedule);
-								appContext.joinCareerTalk(
-										careerTalk.getCareerTalkID(), false);
-								for (Schedules s : ScheduleActivity.scheduleList) {
-									if (s.getScheduleID() == schedule.getScheduleID()) {
-										ScheduleActivity.scheduleList.remove(s);
-										break;
-									}
+							appContext.cancelAlarm(context, schedule);
+							/*
+							 * appContext.joinCareerTalk(
+							 * careerTalk.getCareerTalkID(), false);
+							 */
+							for (Schedules s : ScheduleActivity.scheduleList) {
+								if (s.getScheduleID() == schedule
+										.getScheduleID()) {
+									ScheduleActivity.scheduleList.remove(s);
+									break;
 								}
-							} catch (AppException e) {
-								e.printStackTrace();
-								e.makeToast(context);
 							}
 
 						}

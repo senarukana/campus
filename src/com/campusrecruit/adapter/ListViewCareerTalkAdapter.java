@@ -13,7 +13,7 @@ import com.campusrecruit.bean.Schedules;
 import com.campusrecruit.common.ScheduleAlarmBroadcastReceiver;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -43,7 +43,6 @@ public class ListViewCareerTalkAdapter extends BaseAdapter {
 	private List<CareerTalk> listItem;
 	private LayoutInflater listContainer;
 	private int itemViewResource;
-	private String beforeDate;
 
 	static class ListItemView {
 		LinearLayout mainLayout;
@@ -97,7 +96,6 @@ public class ListViewCareerTalkAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		return 0;
 	}
-
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ListItemView holder = null;
@@ -159,28 +157,25 @@ public class ListViewCareerTalkAdapter extends BaseAdapter {
 			holder.date.setText(StringUtils
 					.friendly_happen_simple_time(careerTalk.getDate()));
 		} catch (Exception e) {
-			Log.i("bug", "time format is wrong careertalk adapter");
 			friendlyTime = careerTalk.getDate();
 			holder.date.setText(careerTalk.getDate());
 		}
 
 		String trimmedDate = StringUtils.trimed_time(careerTalk.getDate());
-
+		String trimmedPreviousDate = null;
+		if (position != 0) {
+			trimmedPreviousDate = StringUtils.trimed_time(listItem.get(position - 1).getDate());
+		}
 		// 0 for init, 1 for header, 2 for others
-		if (position == 0 || ((careerTalk.getFlag() == 0 || careerTalk.getFlag() == 1)
-				&& (beforeDate == null || !beforeDate.equals(trimmedDate)))) {
-			beforeDate = trimmedDate;
+		if (position == 0 || !trimmedDate.equals(trimmedPreviousDate)) {
 			holder.dateLayout.setVisibility(View.VISIBLE);
 			holder.flagDate.setText(friendlyTime);
-			careerTalk.setFlag(1);
 		} else {
 			holder.dateLayout.setVisibility(View.GONE);
-			careerTalk.setFlag(2);
 		}
 		
 		if(StringUtils.isToday(careerTalk.getDate())) {
 			holder.newFlag.setVisibility(View.VISIBLE);
-			Log.i("test","new flag!!!!!!!!!!!!!!!!!!!!");
 		}
 		else
 			holder.newFlag.setVisibility(View.INVISIBLE);
@@ -207,7 +202,6 @@ public class ListViewCareerTalkAdapter extends BaseAdapter {
 			holder.joinsImageButton.setChecked(true);
 		else
 			holder.joinsImageButton.setChecked(false);
-		Log.i("info", " career set image button");
 		holder.detailLayout.setOnClickListener(new DetailListener(careerTalk));
 		holder.clickLayout.setOnClickListener(new DetailListener(careerTalk));
 		holder.joinsLayout.setOnClickListener(new JoinsListener(careerTalk,
@@ -241,7 +235,7 @@ public class ListViewCareerTalkAdapter extends BaseAdapter {
 			this.vJoinsImage = vJoinsImage;
 			this.vJoinsText = vJoinsText;
 			this.vSchedule = new Schedules(careerTalk.getCareerTalkID(),
-					careerTalk.getCompanyName(), careerTalk.getPlace(),
+					careerTalk.getCompanyName(), careerTalk.getSchoolName() + " "+ careerTalk.getPlace(),
 					careerTalk.getDate(), careerTalk.getTime());
 		}
 
@@ -256,6 +250,10 @@ public class ListViewCareerTalkAdapter extends BaseAdapter {
 				UIHelper.showLoginDialog((Activity) context);
 				vJoinsImage.setChecked(false);
 				return;
+			}
+			if (!appContext.getTutorialCareerFavorate()) {
+				UIHelper.showCareerFavorateTutorial((Activity)context);
+				appContext.setTutorialCareerFavorate();
 			}
 			int joins = 0;
 			try {
@@ -282,16 +280,16 @@ public class ListViewCareerTalkAdapter extends BaseAdapter {
 				public void run() {
 					try {
 						if (careerTalk.getIsJoined() == 1) {
-							appContext.startAlarm(context, careerTalk);
+							appContext.startAlarm(context, vSchedule);
 							appContext.joinCareerTalk(
 									careerTalk.getCareerTalkID(), true);
 						} else {
 							appContext.joinCareerTalk(
 									careerTalk.getCareerTalkID(), false);
-							appContext.cancelAlarm(context, careerTalk);
+							appContext.cancelAlarm(context, vSchedule);
 						}
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 					}
 				}
 			}.start();

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.campusrecruit.bean.BBSTopic;
 import com.campusrecruit.common.UIHelper;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ToggleButton;
 
-public class RecommendsActivity extends Activity{
+public class RecommendsActivity extends BaseActivity{
 	private Button vProvinceButton;
 	private ToggleButton vCareerNotifyToggle;
 	private ToggleButton vRecruitNotifyToggle;

@@ -16,7 +16,7 @@ import com.campusrecruit.app.AppContext;
 import com.campusrecruit.common.UIHelper;
 import com.krislq.sliding.R;
 
-public class StartActivity extends Activity {
+public class StartActivity extends BaseActivity {
 
 	private int count = 0;
 	private int pic_type = 0;
@@ -32,7 +32,7 @@ public class StartActivity extends Activity {
 		FrameLayout layout = (FrameLayout) view.findViewById(R.id.mainLayout);
 		FrameLayout buttonGroup = (FrameLayout) view
 				.findViewById(R.id.start_button_group);
-		appContext = (AppContext) getApplication();
+		
 		appContext.cleanLoginInfo();
 		appContext.initLoginInfo();
 		if (appContext.isLogin()) {

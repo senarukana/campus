@@ -7,6 +7,6 @@
 
     <include layout="@layout/career_basic"/>
 
-    <include layout="@layout/item_footer" />
+    <include layout="@layout/career_item_footer" />
 
 </LinearLayout>

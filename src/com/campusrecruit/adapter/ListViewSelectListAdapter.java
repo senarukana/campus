@@ -13,7 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class ListViewSelectListAdapter extends BaseAdapter{
 	private Context 					context;//运行上下文

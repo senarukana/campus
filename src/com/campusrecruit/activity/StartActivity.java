@@ -2,9 +2,13 @@ package com.campusrecruit.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
@@ -15,15 +19,22 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.campusrecruit.app.AppContext;
+import com.campusrecruit.app.AppException;
+import com.campusrecruit.app.AppManager;
 import com.campusrecruit.common.UIHelper;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
-public class StartActivity extends Activity {
+public class StartActivity extends BaseActivity {
 
+	public AppContext getApp() {
+		return (AppContext) getApplication();
+	}
 
+	private Handler preferenceHandler;
+	private ProgressDialog vProgress;
 	private int count = 0;
 	private int pic_type = 0;
-	private AppContext appContext = null;
+	private boolean isAboutQuit = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -35,17 +46,28 @@ public class StartActivity extends Activity {
 		FrameLayout layout = (FrameLayout) view.findViewById(R.id.mainLayout);
 		FrameLayout buttonGroup = (FrameLayout) view
 				.findViewById(R.id.start_button_group);
-		appContext = (AppContext) getApplication();
-//		appContext.cleanLoginInfo();
-		appContext.initLoginInfo();
-		if (appContext.isInit()) {
+		getApp().initLoginInfo();
+		if (getApp().isInit()) {
 			buttonGroup.setVisibility(View.GONE);
 			setContentView(view);
 			layout.setAnimation(getRedirectAnimation(view));
 		} else {
+			if (!getApp().getTutorialCompleted()) {
+				Intent intent = new Intent(getApplicationContext(),
+						TutorialActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+				overridePendingTransition(0, 0);
+				startActivity(intent);
+			}
 			setContentView(view);
 			layout.setAnimation(getLoginAnimation(view));
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		isAboutQuit = false;
 	}
 
 	public void loginStart(View view) {
@@ -57,26 +79,48 @@ public class StartActivity extends Activity {
 	}
 
 	public void justSeeStart(View view) {
-		((AppContext) getApplication()).createDefaultUser();
-		((AppContext) getApplication()).saveLoginInfo();
-		UIHelper.showRecommends(StartActivity.this);
+		vProgress = ProgressDialog
+				.show(this, null, "稍等片刻，准备数据中···", true, true);
+		preferenceHandler = new Handler() {
+			@Override
+			public void handleMessage(Message msg) {
+				vProgress.dismiss();
+				if (msg.what == 1) {
+					UIHelper.showHome(StartActivity.this);
+					finish();
+				} else {
+					((AppException) (msg.obj)).makeToast(StartActivity.this);
+				}
+			}
+
+		};
+		new Thread() {
+			Message msg = new Message();
+
+			@Override
+			public void run() {
+				try {
+					((AppContext) getApplication()).createDefaultUser();
+					msg.what = 1;
+				} catch (AppException e) {
+					
+					msg.what = -1;
+					msg.obj = e;
+				}
+				preferenceHandler.sendMessage(msg);
+			}
+		}.start();
 	}
-	
+
 	@Override
 	public void onBackPressed() {
-		AlertDialog.Builder adb = new AlertDialog.Builder(
-				StartActivity.this);
-		adb.setTitle("退出 一职有你？");
-		adb.setMessage("确定退出吗?");
-		adb.setNegativeButton("取消", null);
-		adb.setPositiveButton("确定", new AlertDialog.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				MainActivity.isLogout = true;
-				finish();
-			}
-		});
-		adb.show();
+
+		if (!isAboutQuit) {
+			UIHelper.ToastMessage(this, "再按一次退出程序");
+			isAboutQuit = true;
+		} else {
+			AppManager.getAppManager().AppExitQuickly(this);
+		}
 	}
 
 	public Animation getLoginAnimation(final View view) {
@@ -87,7 +131,6 @@ public class StartActivity extends Activity {
 		aa.setAnimationListener(new AnimationListener() {
 			@Override
 			public void onAnimationEnd(Animation arg0) {
-				// redirectTo();
 			}
 
 			@Override
@@ -130,7 +173,7 @@ public class StartActivity extends Activity {
 		aa.setAnimationListener(new AnimationListener() {
 			@Override
 			public void onAnimationEnd(Animation arg0) {
-				 redirectTo();
+				redirectTo();
 			}
 
 			@Override
@@ -150,7 +193,7 @@ public class StartActivity extends Activity {
 	 */
 	private void redirectTo() {
 		Intent intent;
-		if (appContext.isSetUserPreference())
+		if (getApp().isSetUserPreference())
 			intent = new Intent(this, MainActivity.class);
 		else
 			intent = new Intent(this, RecommendActivity.class);

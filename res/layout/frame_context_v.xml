@@ -12,7 +12,6 @@
     	>
         
     </LinearLayout>
-    
     <TabHost 
         android:id="@+id/tab_host"
         style="@style/layout_full">

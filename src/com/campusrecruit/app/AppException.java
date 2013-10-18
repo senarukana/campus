@@ -14,12 +14,13 @@ import java.util.Date;
 import org.apache.commons.httpclient.HttpException;
 
 import com.campusrecruit.common.UIHelper;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.os.Environment;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 public class AppException extends Exception implements UncaughtExceptionHandler{
@@ -127,7 +128,7 @@ public class AppException extends Exception implements UncaughtExceptionHandler{
 			pw.close();
 			fw.close();
 		} catch (Exception e) {
-			e.printStackTrace();		
+					
 		}finally{ 
 			if(pw != null){ pw.close(); } 
 			if(fw != null){ try { fw.close(); } catch (IOException e) { }}
@@ -212,6 +213,7 @@ public class AppException extends Exception implements UncaughtExceptionHandler{
 		}
 		
 		final String crashReport = getCrashReport(context, ex);
+		Log.i("bug",crashReport);
 		//显示异常信息&发送报告
 		new Thread() {
 			public void run() {

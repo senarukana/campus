@@ -120,7 +120,7 @@ public class CareerTalkManager implements TruncatableManager {
 	}
 	
 	private void deleteObsoleteData() {
-		String beforeDate = StringUtils.getBeforeTimeStamp();
+		String beforeDate = StringUtils.getYesterdayTimeStamp();
 		String whereClause = String.format("delete from %s where isjoined=0 and date <= '%s'", TABLE_NAME, beforeDate);
 		db.execSQL(whereClause);
 	}
@@ -170,7 +170,7 @@ public class CareerTalkManager implements TruncatableManager {
 				list.add(careerTalk);
 			}
 		} catch (SQLiteException e) {
-			e.printStackTrace();
+			
 			return null;
 		} finally {
 			if (c != null)

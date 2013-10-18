@@ -30,10 +30,10 @@ import com.campusrecruit.bean.BBSReply;
 import com.campusrecruit.bean.UserMessage;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class PrivateMessageFragment extends EmptyFragment {
-	private AppContext appContext;
+	
 
 	private PullToRefreshListView pvMessage;
 	private List<UserMessage> messageList = new ArrayList<UserMessage>();

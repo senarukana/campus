@@ -27,7 +27,7 @@ public class QQWeiboHelper {
 		try {
 			URL += "&title=" + URLEncoder.encode(title, HTTP.UTF_8) + "&url=" + URLEncoder.encode(url, HTTP.UTF_8) + "&appkey=" + Share_AppKey + "&source=" + Share_Source + "&site=" + Share_Site;	
 		} catch (Exception e) {
-			e.printStackTrace();
+			
 		}
 		Uri uri = Uri.parse(URL);
 		activity.startActivity(new Intent(Intent.ACTION_VIEW, uri));	

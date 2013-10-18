@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.campusrecruit.adapter.ListViewUserTopicsAdapter.ListItemView;
 import com.campusrecruit.bean.BBSReply;
 import com.campusrecruit.bean.BBSTopic;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class CopyOfListViewReplyToOthersAdapter extends BaseAdapter{
 	private List<BBSReply> 				listItems;//数据集合

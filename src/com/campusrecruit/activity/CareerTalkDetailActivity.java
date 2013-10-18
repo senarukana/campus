@@ -47,6 +47,7 @@ import com.campusrecruit.app.AppException;
 import com.campusrecruit.adapter.GridViewFaceAdapter;
 import com.campusrecruit.adapter.ListViewReplyAdapter;
 import com.campusrecruit.bean.BBSReply;
+import com.campusrecruit.bean.BBSSection;
 import com.campusrecruit.bean.BBSTopic;
 import com.campusrecruit.bean.CareerTalk;
 import com.campusrecruit.bean.Company;
@@ -57,7 +58,7 @@ import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.BadgeView;
 import com.campusrecruit.widget.LinkView;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class CareerTalkDetailActivity extends LoadingActivity {
 
@@ -105,6 +106,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 	private TextView vCompanyPlace;
 	private TextView vCompanyIndustry;
 	private LinkView vCompanyIntroduction;
+	private TextView vCompanyGoToSection;
 
 	private Handler careerDetailHandler;
 	private Handler recruitReplyHandler;
@@ -131,7 +133,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 	private int topicID;
 	private boolean flag;
 
-	private AppContext appContext;
+	
 	private String _content;
 
 	private GestureDetector gd;
@@ -146,7 +148,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 		careerTalkDetail = (CareerTalk) getIntent().getSerializableExtra(
 				"careerTalk");
 		flag = getIntent().getBooleanExtra("flag", true);
-		appContext = (AppContext) getApplication();
+		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		// getActionBar().setHomeButtonEnabled(true);
 		initView();
@@ -154,6 +156,8 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 		initReplyView();
 		if (careerTalkDetail == null) {
 			careerTalkID = getIntent().getIntExtra("careerTalkID", 0);
+			vJoined.setChecked(true);
+			vJoined.setClickable(false);
 			initCareerTalkData();
 		} else {
 			fillView();
@@ -181,7 +185,6 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_refresh, menu);
-		initCompanyData();
 		return true;
 	}
 
@@ -221,7 +224,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 					msg.what = 1;
 					msg.obj = careerTalk;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -238,6 +241,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 		vCompanyPlace = (TextView) findViewById(R.id.company_detail_address);
 		vCompanyIndustry = (TextView) findViewById(R.id.company_detail_industry);
 		vCompanyIntroduction = (LinkView) findViewById(R.id.company_detail_info);
+		vCompanyGoToSection = (TextView) findViewById(R.id.company_goto_section);
 		initLoadingView(companyMainView);
 		Log.i("test", "init companyView complete");
 	}
@@ -250,7 +254,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 				if (msg.what == 1) {
 					Log.i("test", "handle company data");
 					hideLoadProgress(companyInfoView);
-					Company newCompany = (Company) msg.obj;
+					final Company newCompany = (Company) msg.obj;
 					
 					if (appContext.companyLoadFromDisk) {
 						UIHelper.ToastMessage(CareerTalkDetailActivity.this,
@@ -274,6 +278,15 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 					else {
 						vCompanyIntroduction.setText(R.string.nodata);
 					}
+					vCompanyGoToSection.setOnClickListener(new View.OnClickListener() {
+						@Override
+						public void onClick(View arg0) {
+							BBSSection section = new BBSSection();
+							section.setCompanyID(careerTalkDetail.getCompanyID());
+							section.setSectionName(newCompany.getCompanyName());
+							UIHelper.showTopicList(CareerTalkDetailActivity.this, section);
+						}
+					});
 					/*
 					 * recruit.getCompany().setPlace(newCompany.getPlace() +
 					 * " "); recruit.getCompany().setIntroduction(newCompany.
@@ -304,12 +317,11 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 				try {
 					Company newCompany = appContext
 							.getCompanyDetail(careerTalkDetail.getCompanyID());
-					
 					appContext.clickCareerTalk(careerTalkID);
 					message.what = 1;
 					message.obj = newCompany;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					message.what = -1;
 					message.obj = e;
 				}
@@ -576,7 +588,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 									careerTalkDetail.getCareerTalkID(), false);
 						}
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 					}
 				}
 			}.start();
@@ -785,7 +797,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 					msg.what = replylist.size();
 					msg.obj = replylist;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -913,7 +925,7 @@ public class CareerTalkDetailActivity extends LoadingActivity {
 						msg.what = 1;
 						msg.obj = reply;
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 						msg.what = -1;
 						msg.obj = e;
 					}

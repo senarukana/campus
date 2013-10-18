@@ -23,7 +23,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:text="8月30日 "
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -31,10 +30,10 @@
                 android:id="@+id/career_original_url_layout"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:paddingTop="2dp"
                 android:gravity="right"
-                android:visibility="gone"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                android:paddingTop="2dp"
+                android:visibility="gone" >
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -47,9 +46,9 @@
                     android:id="@+id/career_source_from"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:textColor="@color/listitem_gray"
                     android:textSize="12sp" />
-
             </LinearLayout>
         </LinearLayout>
 
@@ -86,7 +85,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="百度"
                 android:textColor="#1E90FF"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -109,13 +107,20 @@
                 android:id="@+id/career_school"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="北京邮电大学"
                 android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp" >
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="5dp"
                 android:text="地点："
                 android:textSize="15sp" />
 
@@ -124,7 +129,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="新科研楼9楼913"
                 android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
@@ -147,7 +151,6 @@
             android:id="@+id/career_simple_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="8月30日 "
             android:textSize="15sp" />
 
         <TextView
@@ -155,7 +158,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-            android:text="15:00 - 16:30"
             android:textSize="15sp" />
     </LinearLayout>
 

@@ -9,23 +9,22 @@ import com.campusrecruit.bean.Schedules;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.fragment.ScheduleFragment;
 import com.campusrecruit.fragment.ScheduleListFragment;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
 import android.view.MenuItem;
 
-public class ScheduleActivity extends FragmentActivity {
+public class ScheduleActivity extends BaseActivity {
 
 	private ViewPager viewPager = null;
-	private AppContext appContext;
+	
 
 	public static ScheduleFragment mScheduleFragment = null;
 	public static ScheduleListFragment mScheduleListFragment = null;
@@ -34,7 +33,6 @@ public class ScheduleActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle arg0) {
-		// TODO Auto-generated method stub
 		super.onCreate(arg0);
 		setContentView(R.layout.schedule_main_layout);
 		initFragment();
@@ -63,7 +61,7 @@ public class ScheduleActivity extends FragmentActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle("日程安排");
 
-		appContext = (AppContext) getApplication();
+		
 		viewPager = (ViewPager) findViewById(R.id.schedule_viewPager);
 
 		ViewPagerScheduleAdapter adapter = new ViewPagerScheduleAdapter(

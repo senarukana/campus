@@ -30,7 +30,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:includeFontPadding="false"
-                android:text="Lizhe"
                 android:textColor="@color/listitem_blue"
                 android:textSize="15sp" />
 
@@ -47,7 +46,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:text="2012-9-23 3:00"
                 android:textColor="@color/listitem_gray"
                 android:textSize="10sp" />
         </LinearLayout>
@@ -55,17 +53,17 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_marginTop="3dp"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_marginRight="3dp"
-            android:gravity="center"
+            android:layout_gravity="center"
             android:background="@drawable/review_bg_gray"
             android:orientation="vertical" >
 
             <com.campusrecruit.widget.LinkView
                 android:id="@+id/private_message_content"
-                android:gravity="center"
+                android:layout_marginLeft="5dp"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:maxLines="1"
                 android:autoLink="web|email"
                 android:textColor="@color/listitem_black"

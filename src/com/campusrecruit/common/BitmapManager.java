@@ -145,7 +145,7 @@ public class BitmapManager {
                         	//向SD卡中写入图片缓存
 							ImageUtils.saveImage(imageView.getContext(), FileUtils.getFileName(url), (Bitmap) msg.obj);
 						} catch (IOException e) {
-							e.printStackTrace();
+							
 						}
                     } 
                 }  
@@ -179,7 +179,7 @@ public class BitmapManager {
 			//放入缓存
 			cache.put(uid, new SoftReference<Bitmap>(bitmap));
 		} catch (AppException e) {
-			e.printStackTrace();
+			
 		}
         return bitmap;  
     }  

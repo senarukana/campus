@@ -18,7 +18,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,11 +43,11 @@ import com.campusrecruit.common.BitmapManager;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.BadgeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 import com.tencent.weibo.api.PrivateAPI;
 
 @SuppressLint("ResourceAsColor")
-public class MenuFragment extends Fragment {
+public class MenuFragment extends BaseFragment {
 
 	private String[] items = { "首页", "日程", "收藏", "消息", "帖子", "偏好", "设置" };
 	private int[] item_pic_res = { R.drawable.home, R.drawable.schedule,
@@ -57,24 +56,20 @@ public class MenuFragment extends Fragment {
 
 	private int index = -1;
 	private MainActivity mActivity = null;
-	private LinearLayout mLinearLayout = null;
-	private TabHost tabHost = null;
 	private BitmapManager bmpManager;
-
 	private ImageView vUserImage;
 	private TextView vUserName;
+	private int oldIndex = 0;
 
-	private AppContext appContext;
+	
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		if (appContext.isLogin()) {
-			Log.i("life","resume face " + appContext.getLoginUser().getHasFace());
 			vUserName.setText(appContext.getLoginUser().getName());
 			if (appContext.getLoginUser().isShowPicture()
 					&& appContext.getLoginUser().getHasFace() == 1) {
-//				UIHelper.showUserFace(vUserImage, appContext.getLoginUid());
 				bmpManager.loadBitmap(appContext.getLoginUid(), vUserImage);
 			}
 		}
@@ -84,13 +79,9 @@ public class MenuFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
-		appContext = (AppContext) getActivity().getApplication();
 		bmpManager = new BitmapManager(BitmapFactory.decodeResource(
 				getActivity().getResources(), R.drawable.user_face));
-		Log.i("main", "onCreate fragment");
 		mActivity = (MainActivity) getActivity();
-		mLinearLayout = (LinearLayout) getActivity().findViewById(R.id.content);
-		tabHost = (TabHost) getActivity().findViewById(R.id.tab_host);
 	}
 
 	@Override
@@ -106,14 +97,9 @@ public class MenuFragment extends Fragment {
 			item.put("image", item_pic_res[i]);
 			listItems.add(item);
 		}
-		Log.i("main", "onCreateView fragment");
 		SimpleAdapter adapter = new SimpleAdapter(getActivity(), listItems,
 				R.layout.frame_menu_v1_item, new String[] { "item", "image" },
 				new int[] { R.id.menu_item, R.id.menu_img });
-		Log.i("main", "create fragment");
-
-		// initFragmentData();
-
 		MainActivity.menuListView.setAdapter(adapter);
 		MainActivity.menuListView
 				.setOnItemClickListener(new onItemClickListener());
@@ -123,8 +109,6 @@ public class MenuFragment extends Fragment {
 		if (appContext.isLogin()) {
 			vUserName.setText(appContext.getLoginUser().getName());
 			if (appContext.getLoginUser().getHasFace() == 1) {
-				Log.i("life", "show user imsage !!! begin!!");
-//				UIHelper.showUserFace(vUserImage, appContext.getLoginUid());
 				bmpManager.loadBitmap(appContext.getLoginUid(), vUserImage);
 			}
 		} else {
@@ -133,7 +117,6 @@ public class MenuFragment extends Fragment {
 		vUserImage.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("user", "click");
 				if (!appContext.isLogin()) {
 					UIHelper.showLoginDialog(getActivity());
 					return;
@@ -141,8 +124,6 @@ public class MenuFragment extends Fragment {
 				UIHelper.showUserInfo(getActivity(), appContext.getLoginUid());
 			}
 		});
-
-		Log.i("main", "return fragment");
 		return view;
 	}
 
@@ -160,9 +141,9 @@ public class MenuFragment extends Fragment {
 				UIHelper.showLoginDialog(getActivity());
 				return;
 			}
-			Log.i("click", parent.getChildCount() + "");
 			getSlidingMenu()
 					.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+			oldIndex = index;
 			switch (position) {
 			case 0:
 				if (index == 0) {
@@ -183,7 +164,7 @@ public class MenuFragment extends Fragment {
 				getActivity().getActionBar().setNavigationMode(
 						ActionBar.NAVIGATION_MODE_STANDARD);
 				UIHelper.showSchedule(getActivity());
-				index = -1;
+				index = oldIndex;
 				break;
 			case 2:
 				if (index == 2) {
@@ -194,7 +175,7 @@ public class MenuFragment extends Fragment {
 				getActivity().getActionBar().setNavigationMode(
 						ActionBar.NAVIGATION_MODE_STANDARD);
 				UIHelper.showUserFavroate(getActivity());
-				index = -1;
+				index = oldIndex;
 				break;
 			case 3:
 				if (index == 3) {
@@ -206,7 +187,7 @@ public class MenuFragment extends Fragment {
 				getActivity().getActionBar().setNavigationMode(
 						ActionBar.NAVIGATION_MODE_STANDARD);
 				UIHelper.showPrivateMessage(getActivity());
-				index = -1;
+				index = oldIndex;
 				break;
 			case 4:
 				if (index == 4) {
@@ -218,7 +199,7 @@ public class MenuFragment extends Fragment {
 				getActivity().getActionBar().setNavigationMode(
 						ActionBar.NAVIGATION_MODE_STANDARD);
 				UIHelper.showUserReply(getActivity());
-				index = -1;
+				index = oldIndex;
 				/*
 				 * index = 4; mLinearLayout.setVisibility(View.VISIBLE);
 				 * tabHost.setVisibility(View.GONE); getSlidingMenu().toggle();
@@ -245,7 +226,7 @@ public class MenuFragment extends Fragment {
 				Intent intent = new Intent(getActivity(), RecommendActivity.class);
 				intent.putExtra("init", false);
 				getActivity().startActivityForResult(intent, UIHelper.REQUEST_CODE_FOR_RECOMMEND);
-				index = -1;
+				index = oldIndex;
 				break;
 			case 6:
 				if (index == 6) {
@@ -257,7 +238,7 @@ public class MenuFragment extends Fragment {
 				getActivity().getActionBar().setNavigationMode(
 						ActionBar.NAVIGATION_MODE_STANDARD);
 				UIHelper.showSettingsForResult(getActivity());
-				index = -1;
+				index = oldIndex;
 				break;
 			}
 			// anyway , show the sliding menu

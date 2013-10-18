@@ -11,7 +11,7 @@ import com.campusrecruit.common.SmileyParser;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -29,11 +29,12 @@ import android.widget.TextView;
 public class ListViewPrivateMessageListAdapter extends BaseAdapter {
 
 	private Context context;
+	private AppContext appContext;
 	private List<UserMessage> listItems;// 数据集合
 	private LayoutInflater listContainer;// 视图容器
 	private int itemViewResource;// 自定义项视图源
 	private BitmapManager bmpManager;
-	private AppContext appContext;
+	
 
 	static class ListItemView { // 自定义控件集合
 		public LinearLayout layout;

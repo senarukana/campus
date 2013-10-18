@@ -1,4 +1,4 @@
-package com.campusrecruit.common;
+/*package com.campusrecruit.common;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -18,3 +18,4 @@ public class ShutDownReceiver extends BroadcastReceiver {
 	}
 
 }
+*/

@@ -6,7 +6,7 @@ import com.campusrecruit.bean.User;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.net.NetApiClient;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -21,7 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends BaseActivity {
 	AppContext appcontext;
 	private ProgressDialog mProgress;
 	private EditText mUserName;
@@ -37,7 +37,7 @@ public class LoginActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
-		appcontext = (AppContext) getApplication();
+		
 
 		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 		mUserName = (EditText) findViewById(R.id.login_user_name);
@@ -71,17 +71,15 @@ public class LoginActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// TODO Auto-generated method stub
 		getMenuInflater().inflate(R.menu.menu_registe, menu);
 		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case R.id.menu_registe:
-			UIHelper.showRegiste(this);
+			UIHelper.showRegister(this, true);
 			return true;
 		default:
 			return false;
@@ -113,10 +111,6 @@ public class LoginActivity extends Activity {
 					UIHelper.ToastMessage(LoginActivity.this,
 							R.string.msg_login_success);
 					UIHelper.showHome(LoginActivity.this);
-					/*
-					 * if (initFlag == 1) UIHelper.showHome(LoginActivity.this);
-					 * else { //从其他页面进入，登陆成功后关闭 finish(); }
-					 */
 				} else if (msg.what == 0) {
 					UIHelper.ToastMessage(LoginActivity.this,
 							getString(R.string.msg_login_fail));
@@ -137,7 +131,7 @@ public class LoginActivity extends Activity {
 						msg.what = 0;// 失败
 					}
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}

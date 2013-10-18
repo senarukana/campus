@@ -5,7 +5,7 @@ import com.campusrecruit.adapter.ViewPagerScheduleAdapter;
 import com.campusrecruit.app.AppContext;
 import com.campusrecruit.fragment.CareerTalkFavoratesFragment;
 import com.campusrecruit.fragment.RecruitFavoratesFragment;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -13,14 +13,13 @@ import android.app.Application;
 import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
 import android.view.MenuItem;
 
 
-public class UserFavroateActivity extends FragmentActivity{
+public class UserFavroateActivity extends BaseActivity{
 	private ViewPager viewPager = null;
 	
 	private void initTab() {

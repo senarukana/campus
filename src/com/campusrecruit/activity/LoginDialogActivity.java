@@ -5,7 +5,7 @@ import com.campusrecruit.app.AppException;
 import com.campusrecruit.bean.User;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -23,7 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ViewSwitcher;
 
-public class LoginDialogActivity extends Activity {
+public class LoginDialogActivity extends BaseActivity {
 
 	private ImageButton btn_close;
 	private Button btn_login;
@@ -33,7 +33,7 @@ public class LoginDialogActivity extends Activity {
 	private EditText mPwd;
 	private AnimationDrawable loadingAnimation;
 	private InputMethodManager imm;
-	private AppContext appContext;
+	
 
 	public final static int LOGIN_OTHER = 0x00;
 	public final static int LOGIN_MAIN = 0x01;
@@ -44,7 +44,7 @@ public class LoginDialogActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login_dialog);
 
-		appContext = (AppContext) getApplication();
+		
 
 		imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
 
@@ -133,20 +133,12 @@ public class LoginDialogActivity extends Activity {
 						msg.what = 0;// 失败
 					}
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
 				handler.sendMessage(msg);
 			}
 		}.start();
-	}
-
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			this.onDestroy();
-		}
-		return super.onKeyDown(keyCode, event);
 	}
 }

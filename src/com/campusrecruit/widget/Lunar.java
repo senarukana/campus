@@ -96,7 +96,7 @@ public class Lunar {
         try {
             baseDate = chineseDateFormat.parse("1900年1月31日");
         } catch (ParseException e) {
-            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+              //To change body of catch statement use Options | File Templates.
         }
 
         //求出和1900年1月31日相差的天数

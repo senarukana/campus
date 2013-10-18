@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_footer_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:gravity="right"
+    android:orientation="horizontal"
+    android:layout_marginTop="6dp" 
+    android:paddingBottom="5dp">
+
+    <LinearLayout
+        android:id="@+id/item_footer_clicks_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/item_footer_clicks_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="点击数"
+            android:scaleType="fitEnd"
+            android:src="@drawable/user_detail" />
+
+        <TextView
+            android:id="@+id/item_footer_clicks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="25"
+            android:textColor="@color/listitem_gray"
+            android:textSize="@dimen/text_size_10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/item_footer_joins_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ToggleButton
+            android:id="@+id/item_footer_joins_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/clock_background"
+            android:scaleType="fitEnd"
+            android:textOff=""
+            android:textOn="" />
+
+        <TextView
+            android:id="@+id/item_footer_joins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="25"
+            android:textColor="@color/listitem_gray"
+            android:textSize="@dimen/text_size_10"/>
+    </LinearLayout>
+
+    <!--
+         <ImageView
+        android:id="@+id/item_clicks_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="60dp"
+        android:layout_toLeftOf="@+id/item_joins_image"
+        android:src="@drawable/clicks" />
+    -->
+
+    <LinearLayout
+        android:id="@+id/item_footer_comments_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/item_footer_comments_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="fitEnd"
+            android:src="@drawable/user_comments" />
+
+        <TextView
+            android:id="@+id/item_footer_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="25"
+            android:textColor="@color/listitem_gray"
+            android:textSize="@dimen/text_size_10" />
+    </LinearLayout>
+
+</LinearLayout>

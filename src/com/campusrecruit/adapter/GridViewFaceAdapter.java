@@ -1,7 +1,7 @@
 package com.campusrecruit.adapter;
 
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.content.Context;
 import android.view.View;

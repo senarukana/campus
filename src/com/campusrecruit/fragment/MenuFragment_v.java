@@ -17,7 +17,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import com.campusrecruit.activity.MainActivity;
 import com.campusrecruit.adapter.DemoFragmentAdapter;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 
 public class MenuFragment_v extends PreferenceFragment implements OnPreferenceClickListener{

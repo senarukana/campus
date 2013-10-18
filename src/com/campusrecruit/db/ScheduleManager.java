@@ -28,10 +28,9 @@ public class ScheduleManager implements TruncatableManager {
 	}
 
 	private void deleteObsoleteData() {
-		String curDate = StringUtils.getBeforeTimeStamp();
+		String curDate = StringUtils.getYesterdayTimeStamp();
 		String whereClause = String.format("delete from %s where date <= '%s'",
 				SCHEDULE_TABLE_NAME, curDate);
-		Log.i("test!!", whereClause);
 		db.execSQL(whereClause);
 	}
 
@@ -54,6 +53,9 @@ public class ScheduleManager implements TruncatableManager {
 				schedule.setPlace(c.getString(c.getColumnIndex("place")));
 				schedule.setDate(c.getString(c.getColumnIndex("date")));
 				schedule.setTime(c.getString(c.getColumnIndex("time")));
+				schedule.setAlarmTime(c.getString(c
+						.getColumnIndex("alarm_time")));
+				Log.i("alarm",schedule.getAlarmTime());
 				list.add(schedule);
 			}
 		} finally {
@@ -70,34 +72,47 @@ public class ScheduleManager implements TruncatableManager {
 		String date = s.getDate();
 		String time = s.getTime();
 		ContentValues cv = new ContentValues();
-		cv.put("schedule_id", id );
+		cv.put("schedule_id", id);
 		cv.put("company_name", name);
 		cv.put("place", place);
 		cv.put("date", date);
 		cv.put("time", time);
 		cv.put("company_name", name);
+		cv.put("alarm_time", s.getAlarmTime());
 		try {
 			db.insertOrThrow(SCHEDULE_TABLE_NAME, null, cv);
 		} catch (SQLiteConstraintException e) {
-			e.printStackTrace();
+			
 			db.update(SCHEDULE_TABLE_NAME, cv, "schedule_id=?",
-					new String[] { id + ""});
+					new String[] { id + "" });
 		}
 		Log.i("test", "schedule add");
+	}
+
+	public void scheduleUpdate(Schedules s) {
+		int id = s.getScheduleID();
+		String name = s.getCompanyName();
+		String place = s.getPlace();
+		String date = s.getDate();
+		String time = s.getTime();
+		ContentValues cv = new ContentValues();
+		cv.put("schedule_id", id);
+		cv.put("company_name", name);
+		cv.put("place", place);
+		cv.put("date", date);
+		cv.put("time", time);
+		cv.put("company_name", name);
+		cv.put("alarm_time", s.getAlarmTime());
+		db.update(SCHEDULE_TABLE_NAME, cv, "schedule_id=?", new String[] { id
+				+ "" });
+		Log.i("test", "schedule update" + s.getAlarmTime());
 	}
 
 	public void scheduleAddAll(ArrayList<Schedules> l) {
 		try {
 			db.beginTransaction();
 			for (Schedules s : l) {
-				int id = s.getScheduleID();
-				String name = s.getCompanyName();
-				String place = s.getPlace();
-				String date = s.getDate();
-				String time = s.getTime();
-				db.execSQL("INSERT INTO " + SCHEDULE_TABLE_NAME
-						+ " VALUES(?, ?, ?, ?, ?)", new Object[] { id, name,
-						place, date, time });
+				scheduleAddOne(s);
 			}
 		} finally {
 			db.endTransaction();

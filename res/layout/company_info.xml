@@ -12,153 +12,161 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical" >
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/imageView1"
-                android:layout_below="@+id/imageView1"
-                android:layout_marginLeft="@dimen/activity1_bd_margin"
-                android:src="@drawable/comp1" />
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/imageView4"
-                android:layout_marginLeft="@dimen/activity1_bd_margin"
-                android:layout_toRightOf="@+id/imageView4"
-                android:text="全称"
-                android:textSize="15sp"
-                android:textStyle="normal" />
-
-            <TextView
-                android:id="@+id/company_detail_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/textView1"
-                android:layout_alignBottom="@+id/textView1"
-                android:layout_marginLeft="22dp"
-                android:layout_toRightOf="@+id/textView1"
-                android:maxLines="1"
-                android:textSize="15sp" />
-
-            <ImageView
-                android:id="@+id/company_address_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/imageView5"
-                android:layout_below="@+id/imageView5"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/comp3" />
-
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageView4"
-                android:layout_marginTop="10dp"
-                android:layout_toLeftOf="@+id/textView1"
-                android:src="@drawable/comp2" />
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/company_address_image"
-                android:layout_toLeftOf="@+id/company_detail_name"
-                android:text="行业"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/company_detail_industry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/textView3"
-                android:layout_alignBottom="@+id/textView3"
-                android:layout_alignLeft="@+id/company_detail_name"
-                android:maxLines="1"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/company_address_image"
-                android:layout_toLeftOf="@+id/company_detail_name"
-                android:maxLines="1"
-                android:text="地址"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/company_detail_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/textView5"
-                android:layout_alignLeft="@+id/company_detail_industry"
-                android:maxLines="1"
-                android:textSize="15sp" />
-
-            <ImageView
-                android:id="@+id/imageView1"
+            android:orientation="vertical" >
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView10"
-                android:layout_centerHorizontal="true"
-                android:layout_margin="@dimen/activity_vertical_margin"
-                android:layout_weight="0.06"
-                android:src="@drawable/line" />
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/textView10"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/imageView1"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="10dp"
                 android:text="公司简介"
                 android:textColor="#1E90FF"
                 android:textSize="16sp" />
+            <TextView
+                android:id="@+id/company_goto_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text="去讨论组看看 >>"
+                android:textColor="@color/lightorange"
+                android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:src="@drawable/line" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/comp1" />
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="全称"
+                    android:textSize="15sp"
+                    android:textStyle="normal" />
+
+                <TextView
+                    android:id="@+id/company_detail_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:maxLines="1"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/comp3" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="行业"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/company_detail_industry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:maxLines="1"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/comp2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:maxLines="1"
+                    android:text="地址"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/company_detail_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:maxLines="1"
+                    android:textSize="15sp" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/_company_detail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/company_address_image"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="5dp"
                 android:text="公司详细介绍"
                 android:textColor="#1E90FF"
                 android:textSize="16sp" />
 
             <ImageView
-                android:id="@+id/_company_detail_line"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/_company_detail"
-                android:layout_margin="@dimen/activity_vertical_margin"
+                android:layout_height="15dp"
                 android:src="@drawable/line" />
 
             <com.campusrecruit.widget.LinkView
                 android:id="@+id/company_detail_info"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/_company_detail_line"
                 android:layout_marginLeft="@dimen/activity1_bd_margin"
                 android:autoLink="web|email"
                 android:textColor="@color/listitem_black"
                 android:textColorLink="@color/listitem_blue"
                 android:textSize="15sp" />
-        </RelativeLayout>
+
+
+        </LinearLayout>
     </ScrollView>
 
-    <include layout="@layout/loading_footer" />
+    <include
+        android:layout_width="match_parent"
+        layout="@layout/loading_footer" />
 
 </LinearLayout>

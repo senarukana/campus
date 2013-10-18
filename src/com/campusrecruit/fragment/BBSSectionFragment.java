@@ -17,7 +17,7 @@ import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.R.integer;
 import android.annotation.SuppressLint;
@@ -58,7 +58,7 @@ public class BBSSectionFragment extends SearchableFragment implements
 	private int icon_famous_res = R.drawable.header_collect;
 
 	private int actionType;
-	private int displayFlag = 0; // 0 favorate 1:all 2:famous
+	public static int displayFlag = 0; // 0 favorate 1:all 2:famous
 
 	private PullToRefreshListView pvBBSSections = null;
 	// pvFooter
@@ -67,9 +67,6 @@ public class BBSSectionFragment extends SearchableFragment implements
 	private ProgressBar pvFooterProgressBar;
 
 	private Handler lvBBSSearchHandler;
-	// private int lvBBSSectionSum = 0;
-
-	private AppContext appContext;
 
 	private int sortby = AppConfig.SORT_BY_CREATED_TIME;
 
@@ -148,7 +145,7 @@ public class BBSSectionFragment extends SearchableFragment implements
 			return;
 		}
 		appContext.setLvSectionAdapter(new ListViewBBSSectionAdapter(
-				getActivity(), R.layout.bbssection_item));
+				getActivity(),appContext, R.layout.bbssection_item));
 		Log.i("bbssection", "set adapteer");
 		setHasOptionsMenu(true);
 	}
@@ -158,11 +155,8 @@ public class BBSSectionFragment extends SearchableFragment implements
 		super.onCreateOptionsMenu(menu, inflater);
 		Log.i("bbssection", "create menu");
 		inflater.inflate(R.menu.menu_search_sort_show, menu);
-		MenuItem searchItem = menu.findItem(R.id.action_search_bbs);
 		sortItem = menu.findItem(R.id.menu_sort_bbs);
 		famousItem = menu.findItem(R.id.menu_bbs_show_bbs);
-		mSearchView = (SearchView) searchItem.getActionView();
-		setupSearchView(searchItem);
 		Log.i("bbssection", "complete menu");
 	}
 
@@ -339,7 +333,7 @@ public class BBSSectionFragment extends SearchableFragment implements
 
 	};
 
-	private void setupSearchView(MenuItem searchItem) {
+/*	private void setupSearchView(MenuItem searchItem) {
 
 		if (isAlwaysExpanded()) {
 			mSearchView.setIconifiedByDefault(false);
@@ -349,7 +343,7 @@ public class BBSSectionFragment extends SearchableFragment implements
 		}
 
 		mSearchView.setOnQueryTextListener(this);
-	}
+	}*/
 
 	protected boolean isAlwaysExpanded() {
 		return false;
@@ -508,10 +502,12 @@ public class BBSSectionFragment extends SearchableFragment implements
 		@Override
 		protected List<BBSSection> doInBackground(Integer... params) {
 			try {
+				Log.i("test","do in background");
 				List<BBSSection> list = appContext.getBBSSectionList(params[0],
 						displayFlag, sortby);
 				return list;
 			} catch (AppException e) {
+				Log.i("test","on do error");
 				pvFooterTextView.setText(R.string.load_error);
 				pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_EMPTY);
 				e.makeToast(getActivity());
@@ -526,7 +522,9 @@ public class BBSSectionFragment extends SearchableFragment implements
 
 		@Override
 		protected void onPostExecute(List<BBSSection> list) {
+			Log.i("test","on postcreate");
 			pvFooterProgressBar.setVisibility(View.GONE);
+			pvBBSSections.onRefreshComplete(getString(R.string.pull_to_refresh_update) + new Date().toLocaleString());
 			if (actionType == UIHelper.LISTVIEW_ACTION_SORT) {
 				hideLoadProgress(pvBBSSections);
 				appContext.getLvBBSSectionList().clear();
@@ -541,6 +539,7 @@ public class BBSSectionFragment extends SearchableFragment implements
 				pvBBSSections.setTag(UIHelper.LISTVIEW_DATA_EMPTY);
 			} else {
 				if (list.isEmpty()) {
+					appContext.setLvBBSSectionList(new ArrayList<BBSSection>());
 					pvFooterTextView.setText(R.string.bbs_section_null);
 					return;
 				} else {

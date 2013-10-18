@@ -14,7 +14,7 @@ import com.campusrecruit.common.ImageUtils;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LoadingDialog;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -47,7 +47,7 @@ public class UserInfoFragment extends BaseFragment{
 	private String protraitPath;
 	private LoadingDialog loading;
 	
-	private AppContext appContext;
+	
 	
 	private User user;
 	
@@ -276,7 +276,7 @@ public class UserInfoFragment extends BaseFragment{
 						msg.what = -1;
 						msg.obj = e;
 					} catch (IOException e) {
-						e.printStackTrace();
+						
 					}
 					handler.sendMessage(msg);
 				} else {

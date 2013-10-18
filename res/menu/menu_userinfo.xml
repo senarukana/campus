@@ -3,8 +3,8 @@
     
     <item
         android:id="@+id/userinfo_edit"
-        android:icon="@drawable/ic_userinfo_edit"
-        android:showAsAction="ifRoom"
+        android:icon="@drawable/ic_userinfo_save"
+        android:showAsAction="always"
         android:title="@string/userinfo_edit"/>
 
 </menu>

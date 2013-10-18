@@ -31,7 +31,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class BBSTopicListActivity extends Activity {
+public class BBSTopicListActivity extends BaseActivity {
 	// private ProgressBar mHeadProgress;
 
 	private PullToRefreshListView pvTopics;
@@ -42,7 +42,7 @@ public class BBSTopicListActivity extends Activity {
 	private View lvTopics_footer;
 	private TextView lvTopics_foot_more;
 	private ProgressBar lvTopics_foot_progress;
-	private AppContext appContext;// 全局Context
+	// 全局Context
 
 	private final static int DATA_LOAD_ING = 0x001;
 	private final static int DATA_LOAD_COMPLETE = 0x002;
@@ -56,7 +56,7 @@ public class BBSTopicListActivity extends Activity {
 		setContentView(R.layout.topic_list);
 		getActionBar().setHomeButtonEnabled(true);
 		bbsSection = (BBSSection) getIntent().getSerializableExtra("section");
-		appContext = (AppContext) getApplication();
+		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle(bbsSection.getSectionName());
 		// initHeadView();

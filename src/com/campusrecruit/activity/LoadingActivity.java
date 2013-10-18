@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
-public class LoadingActivity extends Activity{
+public class LoadingActivity extends BaseActivity{
 
 	protected View vFooter = null;
 	protected TextView vFooterTextView = null;

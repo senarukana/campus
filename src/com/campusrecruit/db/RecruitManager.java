@@ -109,6 +109,7 @@ public class RecruitManager implements TruncatableManager {
 		cv.put("replies", r.getReplies());
 		cv.put("isjoined", r.getIsJoined());
 		cv.put("clicks", r.getClicks());
+		cv.put("source", r.getSourceFrom());
 		try {
 			db.insertOrThrow(TABLE_NAME, null, cv);
 		} catch (SQLiteConstraintException e) {
@@ -128,7 +129,6 @@ public class RecruitManager implements TruncatableManager {
 		Log.i("db", "careerJoin aa");
 		db.update(TABLE_NAME, cv, "recruit_id=?",
 				new String[] { recruitID + "" });
-		Log.i("db", getFavorates(true).size() + "");
 	}
 
 	public ArrayList<Recruit> getAllData() throws SQLiteException {
@@ -147,6 +147,7 @@ public class RecruitManager implements TruncatableManager {
 				Recruit r = new Recruit();
 				r.setRecruitID(c.getInt(c.getColumnIndex("recruit_id")));
 				r.setTopicID(c.getInt(c.getColumnIndex("topic_id")));
+				r.setSourceFrom(c.getString(c.getColumnIndex("source")));
 				r.setPosition(c.getString(c.getColumnIndex("position")));
 				r.setCreatedTime(c.getString(c.getColumnIndex("time")));
 				r.setPlace(c.getString(c.getColumnIndex("place")));
@@ -188,7 +189,7 @@ public class RecruitManager implements TruncatableManager {
 	}
 
 	private Cursor queryFavorates(boolean flag) throws SQLiteException {
-		String[] columns = new String[] { "recruit_id", "topic_id",
+		String[] columns = new String[] { "recruit_id", "topic_id","source",
 				"company_id", "company_name", "company_type",
 				"company_industry", "company_introduction", "company_place",
 				"position", "place", "contact", "description", "time", "joins","clicks",
@@ -200,7 +201,7 @@ public class RecruitManager implements TruncatableManager {
 	}
 
 	private Cursor queryAllData() {
-		String[] columns = new String[] { "recruit_id", "topic_id",
+		String[] columns = new String[] { "recruit_id", "topic_id", "source",
 				"company_id", "company_name", "company_type",
 				"company_industry", "company_introduction", "company_place",
 				"position", "place", "contact", "description", "time", "joins","clicks",

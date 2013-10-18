@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="今日没有安排" />
+        android:textSize="20sp"
+        android:text="当天没有安排" />
 
 </LinearLayout>

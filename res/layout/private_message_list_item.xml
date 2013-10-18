@@ -48,7 +48,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:includeFontPadding="false"
-                    android:text="test"
                     android:textColor="@color/listitem_blue"
                     android:textSize="@dimen/text_size_12" />
 
@@ -58,7 +57,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
                     android:includeFontPadding="false"
-                    android:text="2013-09-12 12:30:12"
                     android:textColor="@color/listitem_gray"
                     android:textSize="@dimen/text_size_12" />
             </LinearLayout>
@@ -70,7 +68,6 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="8dip"
                 android:autoLink="web|email"
-                android:text="你好吗?"
                 android:textColor="@color/listitem_black"
                 android:textColorLink="@color/listitem_blue"
                 android:textSize="@dimen/text_size_17" />

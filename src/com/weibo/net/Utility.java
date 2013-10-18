@@ -341,7 +341,7 @@ public class Utility {
 					err = json.getString("error");
 					errCode = json.getInt("error_code");
 				} catch (JSONException e) {
-					e.printStackTrace();
+					
 				}
 				throw new WeiboException(String.format(err), errCode);
             }

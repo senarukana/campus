@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="15dp"
+    android:layout_margin="15dp"
     android:orientation="vertical" >
 
     <TextView
@@ -120,7 +120,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-             android:paddingTop="5dp"
+            android:paddingTop="5dp"
             android:text="工作地点"
             android:textColor="#0483ba"
             android:textSize="15sp" />
@@ -144,12 +144,167 @@
             android:textColor="#0483ba"
             android:textSize="15sp" />
     </RelativeLayout>
-    
+
     <TextView
-            android:id="@+id/selected_province_text_show_view"
+        android:id="@+id/selected_province_text_show_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/lightorange"
+        android:textSize="15sp" />
+
+    <LinearLayout
+        android:id="@+id/recommend_notify_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical" >
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/lightorange"
-            android:textSize="14sp" />
+            android:paddingTop="5dp"
+            android:text="数据来源"
+            android:textColor="#0483ba"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
+
+            <ToggleButton
+                android:id="@+id/recommend_source_dajie_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:background="@drawable/recommend_source_dajie"
+                android:tag="source_1"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/recommend_source_byr_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:background="@drawable/recommend_source_byr"
+                android:tag="source_2"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/recommend_source_shuimu_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:background="@drawable/recommend_source_shuimu"
+                android:tag="source_3"
+                android:textOff=""
+                android:textOn="" />
+            
+            <ToggleButton
+                android:id="@+id/recommend_source_haitou_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:background="@drawable/recommend_source_haitou"
+                android:tag="source_4"
+                android:textOff=""
+                android:textOn="" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="大街网"
+                android:textColor="#0483ba"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="北邮人"
+                android:textColor="#0483ba"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="水木"
+                android:textColor="#0483ba"
+                android:textSize="12sp" />
+            
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="海投网"
+                android:textColor="#0483ba"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="推送消息类型"
+            android:textColor="#0483ba"
+            android:textSize="15sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <ToggleButton
+                android:id="@+id/recommend_type_careertalk_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:background="@drawable/recommend_type_careertalk"
+                android:tag="type_1"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/recommend_type_recruit_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:background="@drawable/recommend_type_recruit"
+                android:tag="type_2"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/recommend_type_message_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:background="@drawable/recommend_type_message"
+                android:tag="type_3"
+                android:textOff=""
+                android:textOn="" />
+
+            <ToggleButton
+                android:id="@+id/recommend_type_reply_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_vertical_margin"
+                android:background="@drawable/recommend_type_reply"
+                android:tag="type_4"
+                android:textOff=""
+                android:textOn="" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

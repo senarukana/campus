@@ -83,7 +83,7 @@ public class UserMessage implements Serializable{
 			message.status = 1;
 			return message;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -100,7 +100,7 @@ public class UserMessage implements Serializable{
 			message.status = 1;
 			return message;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}
@@ -113,7 +113,7 @@ public class UserMessage implements Serializable{
 			message.status = 1;
 			return message;
 		} catch (JSONException e) {
-			e.printStackTrace();
+			
 			throw AppException.json(e);
 		}
 	}

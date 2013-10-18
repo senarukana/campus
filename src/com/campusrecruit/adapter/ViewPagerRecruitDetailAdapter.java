@@ -26,32 +26,24 @@ public class ViewPagerRecruitDetailAdapter extends FragmentPagerAdapter {
 
 	private final FragmentManager mFragmentManager;
 	private FragmentTransaction mTransaction = null;
+	
+	private List<BaseFragment> fragmentList;
 
 
-	public ViewPagerRecruitDetailAdapter(FragmentManager fm) {
+	public ViewPagerRecruitDetailAdapter(FragmentManager fm, List<BaseFragment> fragmentList) {
 		super(fm);
 		mFragmentManager = fm;
+		this.fragmentList = fragmentList;
 	}
 
 	@Override
 	public int getCount() {
-		return 4;
+		return fragmentList.size();
 	}
 
 	public Fragment getItem(int position) {
 		Log.i("main", "get item" + position);
-		switch (position) {
-		case 0:
-			return RecruitDetailActivity.recruitDetailFragment;
-		case 1:
-			return RecruitDetailActivity.recruitProcessFragment;
-		case 2:
-			return RecruitDetailActivity.companyDetailFragment;
-		case 3:
-			return RecruitDetailActivity.commentsFragment;
-		default:
-			return RecruitDetailActivity.recruitDetailFragment;
-		}
+		return fragmentList.get(position);
 	}
 
 	/*

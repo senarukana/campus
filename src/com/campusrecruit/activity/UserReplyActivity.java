@@ -14,7 +14,7 @@ import com.campusrecruit.fragment.RecruitFavoratesFragment;
 import com.campusrecruit.fragment.ReplyByOtherUserFragment;
 import com.campusrecruit.fragment.ReplyToOtherUserFragment;
 import com.campusrecruit.fragment.UserTopicFragment;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -23,7 +23,6 @@ import android.app.ActionBar.Tab;
 import android.app.ActionBar.TabListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.SimpleOnPageChangeListener;
 import android.util.Log;
@@ -31,9 +30,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-public class UserReplyActivity extends FragmentActivity {
+public class UserReplyActivity extends BaseActivity {
 	private ViewPager viewPager = null;
-	private AppContext appContext;
+	
 	private ViewPagerUserMessageAdapter adapter;
 
 	private ReplyByOtherUserFragment replyByFragment;
@@ -110,7 +109,7 @@ public class UserReplyActivity extends FragmentActivity {
 				.setTabListener(tabListener));
 		actionBar.addTab(actionBar.newTab().setText("我回复的")
 				.setTabListener(tabListener));
-		actionBar.addTab(actionBar.newTab().setText("我的帖子")
+		actionBar.addTab(actionBar.newTab().setText("参与主题")
 				.setTabListener(tabListener));
 	}
 
@@ -119,7 +118,7 @@ public class UserReplyActivity extends FragmentActivity {
 		super.onCreate(arg0);
 		Log.i("test", "init user meesage");
 		setContentView(R.layout.user_message);
-		appContext = (AppContext) getApplication();
+		
 		initFragment();
 		initView();
 		Log.i("test", "init message complete");

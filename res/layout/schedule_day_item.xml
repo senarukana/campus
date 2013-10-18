@@ -58,19 +58,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:text="8:00-10:00"
                 android:textColor="@color/item1_bg2" />
-
-            <Button
-                android:id="@+id/schedule_day_item_cancel"
-                android:layout_width="80dp"
-                android:layout_height="25dp"
-                android:layout_marginRight="5dp"
-                android:gravity="center_vertical|center"
-                android:background="@drawable/button_background"
-                android:text="取消日程"
-                android:textColor="#FFFFFF"
-                android:textSize="10dp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -103,7 +91,6 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"
                 android:gravity="center_vertical"
-                android:text="TextView"
                 android:textSize="17dp" />
         </LinearLayout>
     </LinearLayout>
@@ -134,8 +121,78 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="5dp"
-                android:gravity="center_vertical"
-                android:text="TextView" />
+                android:gravity="center_vertical" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/lightwhite"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/clock_1" />
+
+            <TextView
+                android:id="@+id/schedule_day_item_alarm_time"
+                style="@style/defaultTextColor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_weight="1" >
+
+            <Button
+                android:id="@+id/schedule_day_item_set_alarm_date"
+                android:layout_width="140dp"
+                android:layout_height="35dp"
+                android:background="@drawable/login_btn"
+                android:text="设置提醒时间"
+                android:textColor="@color/myblue"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" >
+
+            <Button
+                android:id="@+id/schedule_day_item_cancel"
+                android:layout_marginLeft="20dp"
+                android:layout_width="140dp"
+                android:layout_height="32dp"
+                android:background="@drawable/login_btn"
+                android:text="取消当前日程"
+                android:textColor="@color/myblue"
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 

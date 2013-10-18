@@ -47,7 +47,7 @@ import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.BadgeView;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 *//**
  * 新闻详情
@@ -110,7 +110,7 @@ public class CareerTalkDetailFragment extends BaseFragment {
 	private CareerTalk careerTalkDetail;
 	private int topicID;
 	private boolean flag;
-	private AppContext appContext;
+	
 
 	private String _content;
 
@@ -318,7 +318,7 @@ public class CareerTalkDetailFragment extends BaseFragment {
 					msg.what = (careerTalkDetail.getIntroduction() != null) ? 1
 							: 0;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -445,7 +445,7 @@ public class CareerTalkDetailFragment extends BaseFragment {
 									true);
 						}
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 					}
 				}
 			}.start();
@@ -648,7 +648,7 @@ public class CareerTalkDetailFragment extends BaseFragment {
 					msg.what = replylist.size();
 					msg.obj = replylist;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -738,7 +738,7 @@ public class CareerTalkDetailFragment extends BaseFragment {
 						msg.what = 1;
 						msg.obj = reply;
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 						msg.what = -1;
 						msg.obj = e;
 					}

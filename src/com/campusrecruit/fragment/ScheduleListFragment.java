@@ -3,6 +3,7 @@ package com.campusrecruit.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,14 +16,16 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.campusrecruit.activity.MainActivity;
 import com.campusrecruit.activity.ScheduleActivity;
 import com.campusrecruit.adapter.ListViewScheduleAdapter;
 import com.campusrecruit.app.AppContext;
 import com.campusrecruit.app.AppException;
 import com.campusrecruit.bean.Recruit;
 import com.campusrecruit.bean.Schedules;
+import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 public class ScheduleListFragment extends EmptyFragment {
 
@@ -49,6 +52,16 @@ public class ScheduleListFragment extends EmptyFragment {
 		View view = inflater.inflate(R.layout.schedule_day_list, null);
 		initLoadingView(view);
 		setEmptyText(R.string.schedule_list_empty);
+		emptyText.setTextColor(getResources().getColor(R.color.myblue));
+		emptyLayout.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				MainActivity.currentViewPosition = 1;
+				getActivity().setResult(Activity.RESULT_OK);
+				getActivity().finish();
+			}
+		});
 
 		pvSchedule = (PullToRefreshListView) view
 				.findViewById(R.id.schedule_day_listview);
@@ -68,7 +81,6 @@ public class ScheduleListFragment extends EmptyFragment {
 				mAdapter.notifyDataSetChanged();
 			}
 		}
-		Log.i("bug", "return schedule view");
 		return view;
 	}
 

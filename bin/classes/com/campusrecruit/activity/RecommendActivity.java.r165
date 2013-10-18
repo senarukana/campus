@@ -29,7 +29,7 @@ import com.campusrecruit.bean.UserPreference;
 import com.campusrecruit.common.UIHelper;
 import com.krislq.sliding.R;
 
-public class RecommendActivity extends Activity{
+public class RecommendActivity extends BaseActivity{
 
 	private ToggleButton industryComputeToggle = null;
 	private ToggleButton industryCommunicationToggle = null;
@@ -51,7 +51,7 @@ public class RecommendActivity extends Activity{
 	
 	private Handler preferenceHandler;
 	
-	private AppContext appContext;
+	
 	
 	
 	@Override

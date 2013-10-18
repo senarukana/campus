@@ -46,13 +46,15 @@
                 android:textColor="#1E90FF"
                 android:textSize="18sp" />
 
-            <ImageView
+            <ToggleButton
                 android:id="@+id/bbssection_isjoined_image"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:layout_marginRight="2dp"
+                android:background="@drawable/star_background"
                 android:scaleType="fitEnd"
-                android:src="@drawable/user_favorate" />
+                android:textOff=""
+                android:textOn="" />
 
             <TextView
                 android:id="@+id/bbssection_item_joins"
@@ -90,8 +92,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:text="行业："
-                android:textSize="12sp"
-                 />
+                android:textSize="12sp" />
 
             <TextView
                 android:id="@+id/bbssection_company_industry"

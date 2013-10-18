@@ -11,7 +11,7 @@ import com.campusrecruit.app.AppContext;
 import com.campusrecruit.bean.Schedule;
 import com.campusrecruit.bean.Schedules;
 import com.campusrecruit.widget.PullToRefreshListView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.R.anim;
 import android.app.Activity;
@@ -25,7 +25,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-public class DailyActivity extends Activity {
+public class DailyActivity extends BaseActivity {
 
 	private PullToRefreshListView pvScheudle = null;
 	private ArrayList<Schedules> scheduleList = new ArrayList<Schedules>();

@@ -36,7 +36,7 @@ public class CryptoUtils {
 	        byte[] bytes = cipher.doFinal(data.getBytes());            
 	        return byte2hex(bytes);
     	}catch(Exception e){
-    		e.printStackTrace();
+    		
     		return data;
     	}
     }
@@ -63,7 +63,7 @@ public class CryptoUtils {
             cipher.init(Cipher.DECRYPT_MODE, secretKey, paramSpec);
             return new String(cipher.doFinal(hex2byte(data.getBytes())));
         } catch (Exception e){
-    		e.printStackTrace();
+    		
     		return data;
         }
     }

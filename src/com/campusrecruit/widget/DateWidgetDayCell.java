@@ -2,7 +2,7 @@ package com.campusrecruit.widget;
 
 import java.util.Calendar;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -26,7 +26,7 @@ public class DateWidgetDayCell extends View implements GestureDetector.OnGesture
 
   public static int ANIM_ALPHA_DURATION = 100;
   // fields
-  private final static float fTextSize = 18;
+  private final static float fTextSize = 22;
   private final static int iMargin = 1;
   private final static int iAlphaInactiveBg = 0x11;
   private final static int iAlphaInactiveSelectBg = 0x22;

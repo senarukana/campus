@@ -5,14 +5,14 @@
     
     <string name="search_empty">没有找到您搜索的内容</string>
     <string name="search_return">回到此前数据</string>
-    <string name="bbs_section_null">还没有加入任何讨论组，试试收藏招聘信息？</string>
-    <string name="schedule_list_empty">还没有任何日程，添加宣讲会试试？</string>
+    <string name="bbs_section_null">暂未加入任何讨论组，试试收藏招聘信息？</string>
+    <string name="schedule_list_empty">暂无任何日程，添加宣讲会试试？</string>
     <string name="comment_list_empty">暂无评论，不如你先开始吧？</string>
-    <string name="user_topic_empty">还没有发过贴</string>
+    <string name="user_topic_empty">暂未发过贴</string>
     <string name="reply_by_other_empty">暂无人回复你</string>
     <string name="reply_to_other_empty">尚未回复他人</string>
-    <string name="recruit_favorate_empty">尚未收藏校园招聘</string>
-    <string name="career_favorate_empty">尚未收藏宣讲会</string>
+    <string name="recruit_favorate_empty">暂未收藏校园招聘，再去看看?</string>
+    <string name="career_favorate_empty">暂未收藏宣讲会，再去看看?</string>
     <string name="private_message_list_empty">暂无聊天记录，不如你先开始吧？</string>
     <string name="private_message_empty">暂无私信</string>
     <string name="nodata">很抱歉，还没有相关信息</string>

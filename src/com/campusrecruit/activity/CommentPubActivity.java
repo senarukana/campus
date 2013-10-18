@@ -9,7 +9,7 @@ import com.campusrecruit.common.SmileyParser;
 import com.campusrecruit.common.StringUtils;
 import com.campusrecruit.common.UIHelper;
 import com.campusrecruit.widget.LinkView;
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -26,7 +26,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-public class CommentPubActivity extends Activity {
+public class CommentPubActivity extends BaseActivity {
 
 //	private ImageView mBack;
 	private EditText mContent;
@@ -38,7 +38,7 @@ public class CommentPubActivity extends Activity {
 	private String _content;
 	private int _replyid;// 被回复的单个评论id
 
-	private AppContext appContext;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class CommentPubActivity extends Activity {
 		setContentView(R.layout.comment_pub);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		getActionBar().setTitle("评论回复");
-		appContext = (AppContext) getApplication();
+		
 		this.initView();
 
 	}
@@ -150,7 +150,7 @@ public class CommentPubActivity extends Activity {
 					msg.what = 1;
 					msg.obj = reply;
 				} catch (AppException e) {
-					e.printStackTrace();
+					
 					msg.what = -1;
 					msg.obj = e;
 				}
@@ -217,7 +217,7 @@ public class CommentPubActivity extends Activity {
 						msg.what = 1;
 						msg.obj = reply;
 					} catch (AppException e) {
-						e.printStackTrace();
+						
 						msg.what = -1;
 						msg.obj = e;
 					}

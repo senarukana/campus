@@ -1,6 +1,6 @@
 package com.campusrecruit.widget;
 
-import com.krislq.sliding.R;
+import com.pcncad.campusRecruit.R;
 
 import android.app.Dialog;
 import android.content.Context;
