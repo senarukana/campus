@@ -1,5 +1,6 @@
 This is an android app for campus recruit. 
 ===================================  
+The server side code is at: https://github.com/zx150842/campusRecruit-server
 Now it requires android 4.0+.
 ----------------------
 There are 3 main tasks need to do :<br />  
